@@ -10,13 +10,14 @@ import matplotlib.pyplot as plt
 import webbrowser 
 print("libraries are loaded successfully")
 
+#3l4an a create window 
 window = Tk()
 window.title('Robotic Arm Virtual Lab App')
 window.state('zoomed') 
 BG_COLOR = "#04153B" 
 window.configure(bg=BG_COLOR)
 
-
+#3l4an 3d robot elfeh simulation
 def update_robot_plot(ax, canvas, joints):
     ax.clear()
     ax.set_facecolor('#081b4b')
@@ -46,7 +47,7 @@ def update_robot_plot(ax, canvas, joints):
     ax.view_init(elev=30, azim=45)
     canvas.draw()
 
-
+# 3l4an popup manual 3la 4kl window
 def show_fancy_manual(title, content):
     manual_window = Toplevel(window)
     manual_window.title(title)
@@ -54,7 +55,6 @@ def show_fancy_manual(title, content):
     manual_window.configure(bg="#0a1e4d")
     manual_window.transient(window)
     manual_window.grab_set()
-    
     Label(manual_window, text=" " + title, font=("Helvetica", 18, "bold"), fg="#f39c12", bg="#0a1e4d").pack(pady=20)
     text_area = Message(manual_window, text=content, font=("Arial", 12), fg="white", bg="#0a1e4d", width=400, justify=LEFT)
     text_area.pack(pady=10, padx=20)
@@ -62,7 +62,7 @@ def show_fancy_manual(title, content):
     Button(manual_window, text="LET'S GO!", font=("Arial", 12, "bold"), bg="#f36412", fg="white", 
            padx=20, pady=10, command=manual_window.destroy).pack(pady=20)
 
-
+#da message box 3la gnb keda
 def create_manual_box(parent, title, steps):
     manual_frame = Frame(parent, bg="#0a1e4d", bd=1, relief=SOLID)
     manual_frame.pack(side=RIGHT, fill=Y, padx=10, pady=20)
@@ -72,7 +72,7 @@ def create_manual_box(parent, title, steps):
     msg.pack(pady=10, padx=10, anchor=NW)
     Label(manual_frame, text="Sync with ESP32 for real motion.", font=("Arial", 8, "italic"), fg="white", bg="#0a1e4d").pack(side=BOTTOM, pady=(0, 10), padx=10)
 
-
+#3la IK page lsa hnkmlha fiha m4akel kter aftkry 
 def open_ik_page():
     for widget in window.winfo_children(): widget.destroy()
     Button(window, text=" Back to Experiments", font=("Arial", 12, "bold"), fg="#f36412", bg=BG_COLOR, bd=0, command=open_experiments_page, borderwidth=10).pack(anchor=NW, padx=20, pady=10)
@@ -84,11 +84,10 @@ def open_ik_page():
     canvas = FigureCanvasTkAgg(fig, master=right_p); canvas.get_tk_widget().pack(expand=True, fill=BOTH)
     update_robot_plot(ax, canvas, [0]*6)
 
-
+#de FK gahza t2riban l7d bs ma n7ot video lina l 4ar7ha bdl link elm7tot
 def open_fk_page():
     for widget in window.winfo_children(): widget.destroy()
     
-   
     fk_info = (
         "WELCOME TO FORWARD KINEMATICS LAB!\n\n"
         "Objectives:\n"
@@ -102,8 +101,6 @@ def open_fk_page():
     show_fancy_manual("FK Study Guide", fk_info)
 
     Button(window, text="Back to Experiments", font=("Arial", 12, "bold"), fg="#f36412", bg=BG_COLOR, bd=0, command=open_experiments_page, borderwidth=10).pack(anchor=NW, padx=20, pady=10)
-    
-    
     container = Frame(window, bg=BG_COLOR)
     container.pack(expand=True, fill=BOTH, padx=20)
     
@@ -142,7 +139,7 @@ def open_fk_page():
     
     update_robot_plot(ax, canvas, [0]*6)
 
-
+#page fiha kol experiments hna
 def open_experiments_page():
     for widget in window.winfo_children(): widget.destroy()
     Button(window, text="Back to Main Menu", font=("Arial", 12, "bold"), fg="#f36412", bg=BG_COLOR, bd=0, command=show_welcome_page, borderwidth=10).pack(anchor=NW, padx=20, pady=10)
@@ -154,11 +151,12 @@ def open_experiments_page():
         ("4. Pick and Place Control", None),
         ("5. Cup Filling Simulation", None)
     ]
+    #aywa 7aga tban bs f ba2y el exp 
     for text, cmd in Experiments:
         action = cmd if cmd else lambda t=text: messagebox.showinfo("lsa m3mlto4", f"{t},isa yt3ml 3latol ")
         Button(window, text=text, font=("Arial", 16), fg="white", bg="#03265b", width=35, pady=12, command=action, borderwidth=5).pack(pady=10)
 
-
+#de main page kolha texts
 def show_welcome_page():
     for widget in window.winfo_children(): widget.destroy()
     left_c = Frame(window, bg=BG_COLOR); left_c.pack(side=LEFT, expand=True, fill=BOTH, padx=80)
@@ -169,6 +167,7 @@ def show_welcome_page():
     how_to_use = ("How to use this lab:\n1. Click the button below to start.\n2. Select your desired experiment.\n3. Observe the 3D simulation in real-time.\n4. Connect your ESP32 kit to sync motion!")
     Label(left_c, text=how_to_use, font=("Arial", 13), fg="white", bg=BG_COLOR, justify=LEFT).pack(pady=20, anchor=W)
     Button(left_c, text='ENTER THE LAB', bg='#f36412', fg='white', font=('Arial', 14, 'bold'), padx=40, pady=20, bd=0, command=open_experiments_page).pack(pady=30, anchor=W)
+   #3l4an elsoura 
     try:
         img_path = os.path.join(os.path.dirname(__file__), "robot_arm.png")
         img = ImageTk.PhotoImage(Image.open(img_path).resize((800, 800)))
