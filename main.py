@@ -1,10 +1,4 @@
-from simulation.sim import plot_arm
+from gui.main_gui import start_gui
 
-points = [
-    (0, 0, 0),
-    (2, 0, 0),
-    (2, 2, 0),
-    (2, 2, 2)
-]
-
-plot_arm(points)
+if __name__ == "__main__":
+    start_gui()
