@@ -70,7 +70,6 @@ def create_manual_box(parent, title, steps):
     Label(manual_frame, text=title, font=("Arial", 11, "bold", "underline"), fg="white", bg="#0a1e4d").pack(pady=5, anchor=W, padx=10)
     msg = Message(manual_frame, text=steps, font=("Arial", 10), fg="#70afc2", bg="#0a1e4d", width=220, justify=LEFT)
     msg.pack(pady=10, padx=10, anchor=NW)
-    Label(manual_frame, text="Pro Tip:", font=("Arial", 9, "bold"), fg="#f36412", bg="#0a1e4d").pack(side=BOTTOM, anchor=W, padx=10)
     Label(manual_frame, text="Sync with ESP32 for real motion.", font=("Arial", 8, "italic"), fg="white", bg="#0a1e4d").pack(side=BOTTOM, pady=(0, 10), padx=10)
 
 
