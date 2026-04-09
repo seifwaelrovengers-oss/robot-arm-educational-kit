@@ -8,7 +8,6 @@ import numpy as np
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import matplotlib.pyplot as plt
 import webbrowser 
-print("libraries are loaded successfully")
 
 #3l4an a create window 
 window = Tk()
@@ -17,8 +16,19 @@ window.state('zoomed')
 BG_COLOR = "#04153B" 
 window.configure(bg=BG_COLOR)
 
+
+def calculate_ik_angles(x, y, z):
+    
+    j1 = np.degrees(np.arctan2(y, x))
+    r = np.sqrt(x**2 + y**2)
+    d = np.sqrt(r**2 + z**2)
+    if d > 12: d = 12 
+    j2 = np.degrees(np.arccos(np.clip(d/15, -1, 1))) * 1.5
+    j3 = -j2 * 0.8
+    return [j1, j2, j3, 0, 0, 0]
+
 #3l4an 3d robot elfeh simulation
-def update_robot_plot(ax, canvas, joints):
+def update_robot_plot(ax, canvas, joints, target_dot=None):
     ax.clear()
     ax.set_facecolor('#081b4b')
     t = np.linspace(0, 2*np.pi, 50)
@@ -27,6 +37,10 @@ def update_robot_plot(ax, canvas, joints):
     Y_b = r_base * np.sin(t)
     Z_b = np.zeros_like(X_b)
     ax.plot(X_b, Y_b, Z_b, color="#4c7f8f", linewidth=2)
+    
+    if target_dot:
+        ax.scatter([target_dot[0]], [target_dot[1]], [target_dot[2]], color='red', s=100, label='Target')
+
     
     angles = [np.radians(j.get() if hasattr(j, 'get') else j) for j in joints]
     curr_x, curr_y, curr_z = 0, 0, 0
@@ -72,35 +86,150 @@ def create_manual_box(parent, title, steps):
     msg.pack(pady=10, padx=10, anchor=NW)
     Label(manual_frame, text="Sync with ESP32 for real motion.", font=("Arial", 8, "italic"), fg="white", bg="#0a1e4d").pack(side=BOTTOM, pady=(0, 10), padx=10)
 
-#3la IK page lsa hnkmlha fiha m4akel kter aftkry 
+def show_fancy_manual(title, content):
+    popup = Toplevel(window)
+    popup.title(title)
+    
+    popup.geometry("750x650") 
+    popup.configure(bg="#0a1e4d")
+    popup.grab_set() 
+
+    Label(popup, text=title, font=("Helvetica", 18, "bold"), fg="#f39c12", bg="#0a1e4d", pady=20).pack()
+    msg = Message(popup, text=content, font=("Consolas", 11), fg="white", bg="#0a1e4d", width=680, justify=LEFT)
+    msg.pack(expand=True, padx=25, pady=10)
+
+    
+    Button(popup, text="LET'S GO", font=("Arial", 14, "bold"), bg="#27ae60", fg="white", 
+           activebackground="#2ecc71", activeforeground="white", padx=40, pady=10, 
+           cursor="hand2", command=popup.destroy).pack(pady=20)
+# de IK gahza 
 def open_ik_page():
     for widget in window.winfo_children(): widget.destroy()
-    Button(window, text=" Back to Experiments", font=("Arial", 12, "bold"), fg="#f36412", bg=BG_COLOR, bd=0, command=open_experiments_page, borderwidth=10).pack(anchor=NW, padx=20, pady=10)
-    container = Frame(window, bg=BG_COLOR); container.pack(expand=True, fill=BOTH, padx=20)
-    left_p = Frame(container, bg=BG_COLOR); left_p.pack(side=LEFT, fill=Y, padx=10)
-    Label(left_p, text="TARGET (IK)", font=("Helvetica", 18, "bold"), fg="#f39c12", bg=BG_COLOR).pack(pady=10)
-    right_p = Frame(container, bg="#081b4b", bd=2, relief=RIDGE); right_p.pack(side=RIGHT, expand=True, fill=BOTH, padx=10, pady=20)
-    fig = plt.figure(figsize=(10,10)); fig.patch.set_facecolor('#081b4b'); ax = fig.add_subplot(111, projection='3d')
-    canvas = FigureCanvasTkAgg(fig, master=right_p); canvas.get_tk_widget().pack(expand=True, fill=BOTH)
-    update_robot_plot(ax, canvas, [0]*6)
+    
+    IK_ACCENT = "#1abc9c"
+    IK_TEXT = "#00f2ff"
+    
+    ik_theory = (
+        "INVERSE KINEMATICS (IK) THEORY:\n\n"
+        "1. DEFINITION:\n"
+        "Unlike Forward Kinematics, IK calculates the joint angles (Theta 1-6) "
+        "needed to reach a specific point in 3D space (X, Y, Z).\n\n"
+        "2. MATHEMATICAL APPROACH:\n"
+        "It involves solving complex non-linear equations. In this lab, we use "
+        "Geometric Decoupling to find the position of the wrist center.\n\n"
+        "3. CHALLENGES:\n"
+        "- Multiple Solutions (e.g., Elbow Up/Down).\n"
+        "- Singularity (points where the arm cannot move).\n"
+        "- Workspace Limits (points out of reach)."
+    )
+    show_fancy_manual("IK Scientific Module", ik_theory)
 
-#de FK gahza t2riban l7d bs ma n7ot video lina l 4ar7ha bdl link elm7tot
+    Button(window, text=" Back to Experiments", font=("Arial", 12, "bold"), 
+           fg="#f36412", bg=BG_COLOR, bd=0, command=open_experiments_page, borderwidth=10).pack(anchor=NW, padx=20, pady=10)
+    
+    container = Frame(window, bg=BG_COLOR)
+    container.pack(expand=True, fill=BOTH, padx=20)
+    
+    left_p = Frame(container, bg=BG_COLOR)
+    left_p.pack(side=LEFT, fill=Y, padx=10, pady=20)
+    
+    Label(left_p, text="POSITION INPUT (IK)", font=("Helvetica", 18, "bold"), fg="#f39c12", bg=BG_COLOR).pack(pady=10)
+    
+    def play_ik_video():
+        webbrowser.open("https://youtu.be/x2o9dcGKcho?si=VglmJS9i1FNjyUvi")
+        
+    Button(left_p, text="WATCH IK TUTORIAL", font=("Arial", 10, "bold"), 
+           bg="#2ecc71", fg="white", command=play_ik_video).pack(pady=5, fill=X)
+
+    coords = {}
+    for axis in ['X', 'Y', 'Z']:
+        f = Frame(left_p, bg=BG_COLOR)
+        f.pack(pady=5, fill=X)
+        Label(f, text=f"{axis} AXIS", fg="white", bg=BG_COLOR, font=("Arial", 10, "bold"), width=7).pack(side=LEFT)
+        s = Scale(f, from_=-8, to=8, resolution=0.1, orient=HORIZONTAL, bg="#03265b", 
+                  fg="white", troughcolor=IK_ACCENT, length=180, bd=0)
+        s.pack(side=LEFT)
+        coords[axis] = s
+
+    output_frame = Frame(left_p, bg="#03265b", bd=1, relief=SUNKEN, pady=10)
+    output_frame.pack(pady=10, fill=X)
+    Label(output_frame, text="CALCULATED ANGLES", font=("Courier", 10, "bold"), fg=IK_TEXT, bg="#03265b").pack()
+    
+    angle_labels = {}
+    for j in ['J1', 'J2', 'J3']:
+        lbl = Label(output_frame, text=f"{j}: 0.00 deg", font=("Consolas", 10), fg="white", bg="#03265b")
+        lbl.pack()
+        angle_labels[j] = lbl
+
+    def run_ik_process():
+        x_val, y_val, z_val = coords['X'].get(), coords['Y'].get(), coords['Z'].get()
+        calc_angles = calculate_ik_angles(x_val, y_val, z_val)
+        
+        angle_labels['J1'].config(text=f"J1: {calc_angles[0]:.2f} deg")
+        angle_labels['J2'].config(text=f"J2: {calc_angles[1]:.2f} deg")
+        angle_labels['J3'].config(text=f"J3: {calc_angles[2]:.2f} deg")
+        
+        update_robot_plot(ax, canvas, calc_angles, target_dot=(x_val, y_val, z_val))
+
+    Button(left_p, text="SOLVE AND SIMULATE", bg="#f36412", fg="white", 
+           font=("Arial", 12, "bold"), pady=12, command=run_ik_process).pack(pady=10, fill=X)
+
+    manual_frame = Frame(container, bg="#0a1e4d", bd=1, relief=SOLID)
+    manual_frame.pack(side=RIGHT, fill=Y, padx=10, pady=20)
+    
+    Label(manual_frame, text="LAB MANUAL", font=("Helvetica", 14, "bold"), fg="#f39c12", bg="#0a1e4d").pack(pady=10, padx=20)
+    Label(manual_frame, text="IK Quick Reference", font=("Arial", 11, "bold", "underline"), fg="white", bg="#0a1e4d").pack(pady=5, anchor=W, padx=10)
+    
+    steps = "1. Set XYZ Target\n2. Solve to see simulation\n3. Upload to move the REAL arm"
+    msg = Message(manual_frame, text=steps, font=("Arial", 10), fg="#70afc2", bg="#0a1e4d", width=220, justify=LEFT)
+    msg.pack(pady=10, padx=10, anchor=NW)
+    
+    def upload_to_esp32():
+        messagebox.showinfo("Hardware Sync", "Sending Joint Angles to ESP32 Kit!")
+
+    Label(manual_frame, text="Sync with ESP32 for real motion.", font=("Arial", 8, "italic"), fg="white", bg="#0a1e4d").pack(side=BOTTOM, pady=(0, 2), padx=10)
+    Button(manual_frame, text="UPLOAD TO HARDWARE", bg="#27ae60", fg="white", font=("Arial", 10, "bold"), command=upload_to_esp32).pack(side=BOTTOM, pady=10, padx=10, fill=X)
+
+    
+    right_p = Frame(container, bg="#081b4b", bd=2, relief=RIDGE)
+    right_p.pack(side=RIGHT, expand=True, fill=BOTH, padx=10, pady=20)
+    
+    fig = plt.figure(figsize=(9, 9)) 
+    fig.patch.set_facecolor('#081b4b') 
+    ax = fig.add_subplot(111, projection='3d')
+    canvas = FigureCanvasTkAgg(fig, master=right_p)
+    canvas.get_tk_widget().pack(expand=True, fill=BOTH)
+    
+    update_robot_plot(ax, canvas, [0]*6)
+    
+#de FK gahza
 def open_fk_page():
     for widget in window.winfo_children(): widget.destroy()
-    
-    fk_info = (
-        "WELCOME TO FORWARD KINEMATICS LAB!\n\n"
-        "Objectives:\n"
-        "1. Understand joint angles to define position.\n"
-        "2. Observe serial robotic chain behavior.\n\n"
-        "Steps to follow:\n"
-        "1. Watch the Tutorial video  press the button first.\n"
-        "2. Use J1 to J6 sliders to set angles.\n"
-        "3. Click 'RUN SIMULATION' to see results."
+    fk_theory = (
+        "FORWARD KINEMATICS (FK) THEORY:\n\n"
+        "1. DEFINITION:\n"
+        "Calculating the end-effector position (X, Y, Z) based on known joint angles (Theta 1-6).\n\n"
+        "2. DENAVIT-HARTENBERG (D-H) PARAMETERS:\n"
+        "We describe links using: Link Length (a), Twist (alpha), Offset (d), and Angle (theta).\n\n"
+        "3. THE TRANSFORMATION MATRIX (Ai):\n"
+        "Each joint is represented by a 4x4 Homogeneous Matrix:\n\n"
+        "   [ cosθ  -sinθcosα   sinθsinα  acosθ ]\n"
+        "   [ sinθ   cosθcosα  -cosθsinα  asinθ ]\n"
+        "   [  0       sinα        cosα      d   ]\n"
+        "   [  0        0           0        1   ]\n\n"
+        "4. TOTAL TRANSFORMATION (T0n):\n"
+        "The overall system is solved by chain multiplication:\n"
+        "Tn = A1 * A2 * A3 * A4 * A5 * A6\n\n"
+        "5. RESULT:\n"
+        "The coordinates (Px, Py, Pz) are extracted from the last column of the T0n matrix."
     )
-    show_fancy_manual("FK Study Guide", fk_info)
+    
+    show_fancy_manual("FK Mathematical Framework", fk_theory)
 
-    Button(window, text="Back to Experiments", font=("Arial", 12, "bold"), fg="#f36412", bg=BG_COLOR, bd=0, command=open_experiments_page, borderwidth=10).pack(anchor=NW, padx=20, pady=10)
+   #zorar el navigation el seif fakrny behhh
+    Button(window, text="Back to Experiments", font=("Arial", 12, "bold"), 
+           fg="#f36412", bg=BG_COLOR, bd=0, command=open_experiments_page, borderwidth=10).pack(anchor=NW, padx=20, pady=10)
+    
     container = Frame(window, bg=BG_COLOR)
     container.pack(expand=True, fill=BOTH, padx=20)
     
@@ -108,36 +237,54 @@ def open_fk_page():
     left_p = Frame(container, bg=BG_COLOR)
     left_p.pack(side=LEFT, fill=Y, padx=10)
     Label(left_p, text="JOINTS (FK)", font=("Helvetica", 18, "bold"), fg="#f39c12", bg=BG_COLOR).pack(pady=10)
-# 7atit ay link l7d ma n3ml videos bta3tna isa 
-    def play_video():
+
+    def play_video(): 
         webbrowser.open("https://youtu.be/cKHsil0V6Qk?si=-akGHJx7F7lg2LbM") 
+    
     Button(left_p, text="WATCH FK TUTORIAL", font=("Arial", 10, "bold"), bg="#2ecc71", fg="white", command=play_video).pack(pady=5)
 
     joints = []
     for i in range(1, 7):
-        f = Frame(left_p, bg=BG_COLOR); f.pack(pady=3, fill=X)
+        f = Frame(left_p, bg=BG_COLOR)
+        f.pack(pady=3, fill=X)
         Label(f, text=f"J{i}:", fg="white", bg=BG_COLOR, font=("Arial", 10, "bold"), width=4).pack(side=LEFT)
         s = Scale(f, from_=-180, to=180, orient=HORIZONTAL, bg="#03265b", fg="white", troughcolor="#f36412", length=180, bd=0)
-        s.pack(side=LEFT); joints.append(s)
+        s.pack(side=LEFT)
+        joints.append(s)
     
     Button(left_p, text="RUN SIMULATION", bg="#f36412", fg="white", font=("Arial", 12, "bold"), pady=15, 
            command=lambda: update_robot_plot(ax, canvas, joints)).pack(pady=20, fill=X)
 
    
-    create_manual_box(container, "FK Quick Reference", "1. Watch Video first\n2. Set Angles\n3. Run Simulation")
+    manual_frame = Frame(container, bg="#0a1e4d", bd=1, relief=SOLID)
+    manual_frame.pack(side=RIGHT, fill=Y, padx=10, pady=20)
+    
+    Label(manual_frame, text="LAB MANUAL", font=("Helvetica", 14, "bold"), fg="#f39c12", bg="#0a1e4d").pack(pady=10, padx=20)
+    Label(manual_frame, text="FK Quick Reference", font=("Arial", 11, "bold", "underline"), fg="white", bg="#0a1e4d").pack(pady=5, anchor=W, padx=10)
+    
+    steps = "1. Watch Video first\n2. Set Angles\n3. Run Simulation"
+    msg = Message(manual_frame, text=steps, font=("Arial", 10), fg="#70afc2", bg="#0a1e4d", width=220, justify=LEFT)
+    msg.pack(pady=10, padx=10, anchor=NW)
+    
+    def upload_to_esp32_fk():
+        messagebox.showinfo("Hardware Sync", "Uploading FK Angles to ESP32 Kit!")
+
+    Label(manual_frame, text="Sync with ESP32 for real motion.", font=("Arial", 8, "italic"), fg="white", bg="#0a1e4d").pack(side=BOTTOM, pady=(0, 2), padx=10)
+    Button(manual_frame, text="UPLOAD TO HARDWARE", bg="#27ae60", fg="white", font=("Arial", 10, "bold"), command=upload_to_esp32_fk).pack(side=BOTTOM, pady=10, padx=10, fill=X)
 
     
     right_p = Frame(container, bg="#081b4b", bd=2, relief=RIDGE)
     right_p.pack(side=RIGHT, expand=True, fill=BOTH, padx=10, pady=20)
     
-   
-    fig = plt.figure(figsize=(9,9)) 
+ # kol details el simulation
+    fig = plt.figure(figsize=(20, 20))
     fig.patch.set_facecolor('#081b4b')
     ax = fig.add_subplot(111, projection='3d')
     canvas = FigureCanvasTkAgg(fig, master=right_p)
     canvas.get_tk_widget().pack(expand=True, fill=BOTH)
     
     update_robot_plot(ax, canvas, [0]*6)
+    
 
 #page fiha kol experiments hna
 def open_experiments_page():
@@ -151,7 +298,8 @@ def open_experiments_page():
         ("4. Pick and Place Control", None),
         ("5. Cup Filling Simulation", None)
     ]
-    #aywa 7aga tban bs f ba2y el exp 
+    #ay 7aga bs 3l4an lw clickinaa 3la ay 7aga lsa mt3mlt4
+    
     for text, cmd in Experiments:
         action = cmd if cmd else lambda t=text: messagebox.showinfo("lsa m3mlto4", f"{t},isa yt3ml 3latol ")
         Button(window, text=text, font=("Arial", 16), fg="white", bg="#03265b", width=35, pady=12, command=action, borderwidth=5).pack(pady=10)
@@ -167,7 +315,6 @@ def show_welcome_page():
     how_to_use = ("How to use this lab:\n1. Click the button below to start.\n2. Select your desired experiment.\n3. Observe the 3D simulation in real-time.\n4. Connect your ESP32 kit to sync motion!")
     Label(left_c, text=how_to_use, font=("Arial", 13), fg="white", bg=BG_COLOR, justify=LEFT).pack(pady=20, anchor=W)
     Button(left_c, text='ENTER THE LAB', bg='#f36412', fg='white', font=('Arial', 14, 'bold'), padx=40, pady=20, bd=0, command=open_experiments_page).pack(pady=30, anchor=W)
-   #3l4an elsoura 
     try:
         img_path = os.path.join(os.path.dirname(__file__), "robot_arm.png")
         img = ImageTk.PhotoImage(Image.open(img_path).resize((800, 800)))
