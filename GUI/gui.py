@@ -324,7 +324,7 @@ def open_ik_page():
     )
     show_fancy_manual("IK Scientific Module", ik_theory)
 
-    # zorar el back elly sytem el seif 3amlho
+    # zorar el back  el seif  2ali a3mlo 
     Button(window, text=" Back to Experiments", font=("Arial", 12, "bold"), 
            fg="#f36412", bg=BG_COLOR, bd=0, command=open_experiments_page, borderwidth=10).pack(anchor=NW, padx=20, pady=10)
     
