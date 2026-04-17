@@ -47,6 +47,15 @@ This project presents a **complete educational kit** for a **6-DOF robotic arm**
        alt="6-DOF Robot Arm" 
        width="500"/>
 </p>
+---
+## 🚀 How to Run
+🔹 1. Clone the Repository
+git clone https://github.com/your-username/robot-arm-educational-kit.git
+cd robot-arm-educational-kit
+🔹 2. Install Requirements
+pip install -r requirements.txt
+🔹 3. Run the Application
+python main.py
 
 ---
 
