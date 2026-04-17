@@ -18,7 +18,6 @@ window.state('zoomed')
 BG_COLOR = "#04153B" 
 window.configure(bg=BG_COLOR)
 
-
 # file seif 
 def run_pybullet_sim():
     try:
@@ -439,7 +438,7 @@ def open_fk_intro_page():
     
     Label(header_frame, text="Forward Kinematics ", font=("Helvetica", 22, "bold"), 
           fg="white", bg=BG_COLOR , anchor=W).pack(pady=20)
-
+#https://en1.savefrom.net/21-youtube-to-mp4-37Nq.html mkan el7wl video mn yt link to mp4
     video_frame = Frame(window, bg="#0a1e4d", bd=3, relief=RIDGE)
     video_frame.pack(pady=10, padx=50, fill=BOTH, expand=True)
     
