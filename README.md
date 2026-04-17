@@ -50,7 +50,4 @@ This project presents a **complete educational kit** for a **6-DOF robotic arm**
 
 ---
 
-<img width="480" height="480" alt="robot_arm" src="https://github.com/user-attachments/assets/862ec26d-4a0c-4802-94b7-bc9e0a669197" />
 
-
----
