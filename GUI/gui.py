@@ -8,6 +8,7 @@ import numpy as np
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import matplotlib.pyplot as plt
 import webbrowser 
+import subprocess 
 
 
 #3l4an a create window 
@@ -17,6 +18,24 @@ window.state('zoomed')
 BG_COLOR = "#04153B" 
 window.configure(bg=BG_COLOR)
 
+
+import subprocess
+import os
+
+# file seif 
+def run_pybullet_sim():
+    try:
+        # 7ot hna asm file bta3k 
+        file_name = "pybullet_robot_sim.py" 
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        file_path = os.path.join(base_path, file_name)
+        
+        if os.path.exists(file_path):
+            subprocess.Popen(["python", file_path])
+        else:
+            messagebox.showerror("File Error", f"Simulation file not found \nMake sure '{file_name}' is located in the same project folder.")
+    except Exception as e:
+        messagebox.showerror("Error", f"Could not start simulation: {str(e)}")
 
 def calculate_ik_angles(x, y, z):
     j1 = np.degrees(np.arctan2(y, x))
@@ -105,15 +124,9 @@ def update_robot_plot(ax, canvas, joints, matrix_labels=None, dh_labels=None):
     ax.set_xlabel('X Axis', color='white', labelpad=10)
     ax.set_ylabel('Y Axis', color='white', labelpad=10)
     ax.set_zlabel('Z Axis', color='white', labelpad=10)
-
     ax.tick_params(axis='x', colors='white')
     ax.tick_params(axis='y', colors='white')
     ax.tick_params(axis='z', colors='white')
-    
-    ax.text(7, 0, 0, "X", color="white", fontweight='bold')
-    ax.text(0, 7, 0, "Y", color="white", fontweight='bold')
-    ax.text(0, 0, 7, "Z", color="white", fontweight='bold')
-
     ax.set_xlim([-15, 30])
     ax.set_ylim([-20, 20])
     ax.set_zlim([0, 30])
@@ -416,77 +429,99 @@ def open_ik_page():
     
     update_robot_plot(ax, canvas, [0]*6)
     
-#de FK gahza
+#de FK gahza kamlaaaa into w FK calculations
+#intro page 
+def open_fk_intro_page():
+    for widget in window.winfo_children(): widget.destroy()
+
+    header_frame = Frame(window, bg=BG_COLOR)
+    header_frame.pack(fill=X)
+    
+    Button(header_frame, text="← Back to Experiments", font=("Arial", 12, "bold"), 
+           fg="#f36412", bg=BG_COLOR, bd=0, command=open_experiments_page, borderwidth=10).pack(side=LEFT, padx=20, pady=10)
+    
+    Label(header_frame, text="Forward Kinematics ", font=("Helvetica", 22, "bold"), 
+          fg="white", bg=BG_COLOR , anchor=W).pack(pady=20)
+
+    video_frame = Frame(window, bg="#0a1e4d", bd=3, relief=RIDGE)
+    video_frame.pack(pady=10, padx=50, fill=BOTH, expand=True)
+    
+    Label(video_frame, text=" WATCHING SOLVED EXAMPLE", font=("Arial", 18, "bold"), 
+          fg="#2ecc71", bg="#0a1e4d").pack(pady=(60, 10))
+
+    def play_local_video():
+        video_name = "Solved Example - Forward Kinematics.mp4"
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        video_path = os.path.join(base_path, video_name)
+        if os.path.exists(video_path): os.startfile(video_path)
+
+    window.after(500, play_local_video)
+
+    btn_container = Frame(window, bg=BG_COLOR)
+    btn_container.pack(side=BOTTOM, fill=X, pady=50, padx=80)
+
+    Button(btn_container, text="Simulation & Calculations →", font=("Arial", 13, "bold"), 
+           bg="#f36412", fg="white", width=25, height=2, command=open_fk_page).pack(side=RIGHT)
+
+    # button bybullet
+    Button(btn_container, 
+           text=" ← 3D Visualization (PyBullet)", 
+           font=("Arial", 13, "bold"), 
+           bg="#2980b9", 
+           fg="white", 
+           width=25, 
+           height=2, 
+           command=run_pybullet_sim).pack(side=LEFT)
+
+
+
+# FK el gdida
 def open_fk_page():
     for widget in window.winfo_children(): widget.destroy()
 
-    # Theory Manual 
+    # Manual theory
     fk_theory = (
+
         "FORWARD KINEMATICS (FK) THEORY:\n\n"
-        "1. DEFINITION:\n"
-        "Calculating the end-effector position (X, Y, Z) based on known joint angles (Theta 1-6).\n\n"
-        "2. DENAVIT-HARTENBERG (D-H) PARAMETERS:\n"
-        "We describe links using: Link Length (a), Twist (alpha), Offset (d), and Angle (theta).\n\n"
-        "3. THE TRANSFORMATION MATRIX (Ai):\n"
-        "Each joint is represented by a 4x4 Homogeneous Matrix:\n\n"
+        "1. DEFINITION:\nCalculating the end-effector position (X, Y, Z) based on known joint angles (Theta 1-6).\n\n"
+        "2. DENAVIT-HARTENBERG (D-H) PARAMETERS:\nWe describe links using: Link Length (a), Twist (alpha), Offset (d), and Angle (theta).\n\n"
+        "3. THE TRANSFORMATION MATRIX (Ai):\nEach joint is represented by a 4x4 Homogeneous Matrix:\n\n"
         "   [ cosθ  -sinθcosα   sinθsinα  acosθ ]\n"
         "   [ sinθ   cosθcosα  -cosθsinα  asinθ ]\n"
         "   [  0       sinα        cosα      d   ]\n"
         "   [  0        0           0        1   ]\n\n"
-        "4. TOTAL TRANSFORMATION (T0n):\n"
-        "The overall system is solved by chain multiplication:\n"
-        "Tn = A1 * A2 * A3 * A4 * A5 * A6\n\n"
-        "5. RESULT:\n"
-        "The coordinates (Px, Py, Pz) are extracted from the last column of the T0n matrix."
+        "4. TOTAL TRANSFORMATION (T0n):\nThe overall system is solved by chain multiplication:\nTn = A1 * A2 * A3 * A4 * A5 * A6\n\n"
+        "5. RESULT:\nThe coordinates (Px, Py, Pz) are extracted from the last column of the T0n matrix."
+
     )
+
     try: show_fancy_manual("FK Mathematical Framework", fk_theory)
     except: pass
 
-    #  Navigation
     header_frame = Frame(window, bg=BG_COLOR)
     header_frame.pack(fill=X)
-    Button(header_frame, text="Back to Experiments", font=("Arial", 12, "bold"), 
-           fg="#f36412", bg=BG_COLOR, bd=0, command=open_experiments_page).pack(side=LEFT, padx=20, pady=10)
+    
+    # yrg3 l saf7t el video tany na gbt elashom mn website https://www.i2symbol.com/symbols/arrows 3l4an mnsa4
+    Button(header_frame, text="← Back to Video Intro ", font=("Arial", 12, "bold"), 
+           fg="#f36412", bg=BG_COLOR, bd=0, command=open_fk_intro_page , borderwidth=10).pack(side=LEFT, padx=20, pady=10)
 
     main_container = Frame(window, bg=BG_COLOR)
-    main_container.pack(expand=True, fill=BOTH, padx=20, pady=10)
+    main_container.pack(expand=True, fill=BOTH, padx=10, pady=5)
 
-    #  Left Panel video w sliders
-    left_p = LabelFrame(main_container, text=" Forward Kinematics Controls ", font=("Arial", 12, "bold"),
-                        fg="#f39c12", bg=BG_COLOR, bd=2, relief=RIDGE)
-    left_p.pack(side=LEFT, fill=Y, padx=10, pady=10)
-
-    def play_video(): 
-        webbrowser.open("https://youtu.be/0a9qIj7kwiA?si=0omm9mtpQCxgg2xu") 
-    
-    # video button
-    Button(left_p, text="WATCH FK TUTORIAL", font=("Arial", 10, "bold"), bg="#2ecc71", 
-           fg="white", command=play_video).pack(pady=10, padx=10)
+    #  Sliders 
+    left_p = LabelFrame(main_container, text=" Joint Controls ", font=("Arial", 12, "bold"), fg="#f39c12", bg=BG_COLOR, bd=2)
+    left_p.pack(side=LEFT, fill=Y, padx=5, pady=5)
 
     joints = []
     for i in range(1, 7):
         f = Frame(left_p, bg=BG_COLOR)
-        f.pack(pady=3, fill=X, padx=10)
-        Label(f, text=f"θ{i}:", fg="white", bg=BG_COLOR, font=("Arial", 11, "bold"), width=3).pack(side=LEFT)
-        s = Scale(f, from_=-180, to=180, orient=HORIZONTAL, bg="#03265b", fg="white", 
-                  troughcolor="#f36412", length=180, bd=0, highlightthickness=0)
-        s.pack(side=LEFT, padx=5)
-   
-        joints.append(s)
-        
-# hna seif hi7ot el code hnaaaaaaaaa<-----------
-    def run_pybullet_sim():
-        try:
-            messagebox.showinfo("3D Sync", "PyBullet Simulation is running!")
-        except Exception as e:
-            messagebox.showerror("Error", f"Failed to start PyBullet: {e}")
+        f.pack(pady=2, fill=X, padx=5)
+        Label(f, text=f"θ{i}:", fg="white", bg=BG_COLOR, font=("Arial", 10, "bold"), width=3).pack(side=LEFT)
+        s = Scale(f, from_=-180, to=180, orient=HORIZONTAL, bg="#03265b", fg="white", troughcolor="#f36412", length=150)
+        s.pack(side=LEFT, padx=5); joints.append(s)
 
-    Button(left_p, text="RUN SIMULATION", bg="#f36412", fg="white", font=("Arial", 12, "bold"), 
-           command=lambda: update_robot_plot(ax, canvas, joints, matrix_labels, dh_labels)).pack(pady=(20,5), fill=X, padx=20)
-
-    # PyBullet button
-    Button(left_p, text="SIMULATION TO 3D(PYBULLET)", bg="#2980b9", fg="white", font=("Arial", 12, "bold"), 
-           command=run_pybullet_sim).pack(pady=5, fill=X, padx=20)
+    Button(left_p, text="RUN SIMULATION", bg="#f36412", fg="white", font=("Arial", 11, "bold"), 
+           command=lambda: update_robot_plot(ax, canvas, joints, matrix_labels, dh_labels)).pack(pady=20, fill=X, padx=10)
 
     #  Middle Panel 3D Visualization
     middle_p = Frame(main_container, bg="#081b4b", bd=2, relief=SUNKEN)
@@ -505,39 +540,31 @@ def open_fk_page():
     canvas = FigureCanvasTkAgg(fig, master=middle_p)
     canvas.get_tk_widget().pack(expand=True, fill=BOTH)
 
-    # Right Panel 
+    #  Calculations 
     right_p = Frame(main_container, bg=BG_COLOR)
-    right_p.pack(side=RIGHT, fill=Y, padx=20, pady=10)
+    right_p.pack(side=RIGHT, fill=Y, padx=5, pady=5)
 
     # T6 Matrix 
-   
-    tm_frame = LabelFrame(right_p, text=" Transformation Matrix (T6) ", font=("Arial", 11, "bold"),
-                          fg="white", bg=BG_COLOR, bd=2)
-    tm_frame.pack(fill=X, pady=5, padx=5)
-
-   
-    for i in range(4):
-        tm_frame.grid_columnconfigure(i, weight=1, uniform="matrix")
+    tm_frame = LabelFrame(right_p, text=" Transformation Matrix (T6) ", font=("Arial", 11, "bold"), fg="white", bg=BG_COLOR)
+    tm_frame.pack(fill=X, pady=5)
+    for i in range(4): tm_frame.grid_columnconfigure(i, weight=1, uniform="matrix")
 
     matrix_labels = []
-    rows_names = ["x", "y", "z"]
-    cols_names = ["n", "o", "a", "p"] 
+    rows_names, cols_names = ["x", "y", "z"], ["n", "o", "a", "p"] 
+
     
     for r_idx, axis in enumerate(rows_names):
         for c_idx, component in enumerate(cols_names):
-           
-            lbl = Label(tm_frame, text=f"{component}{axis} = 0.0000", font=("Consolas", 10), 
-                        fg="#70afc2", bg=BG_COLOR, anchor=W, width=12)
-            lbl.grid(row=r_idx, column=c_idx, padx=6, pady=6, sticky="w")
+            # yb2a kolo 0 0 0 0 l7d ma a7rk sliders
+            lbl = Label(tm_frame, text=f"{component}{axis} = 0.0000", 
+                        font=("Consolas", 10), fg="#70afc2", bg=BG_COLOR, width=12)
+            lbl.grid(row=r_idx, column=c_idx, padx=5, pady=6)
             matrix_labels.append(lbl)
 
-    # sabt f sabto 3latol f ay 7aga 
-    bottom_vals = ["0.0000", "0.0000", "0.0000", "1.0000"]
-    for i, val in enumerate(bottom_vals):
-        Label(tm_frame, text=val, font=("Consolas", 10), fg="white", 
-              bg=BG_COLOR, width=12).grid(row=3, column=i, pady=10)
-        
-        
+    # 3l4an a5r satr yb2a sabt howa keda keda sabt fe ay matrix
+    for i, val in enumerate(["0.0000", "0.0000", "0.0000", "1.0000"]):
+        Label(tm_frame, text=val, font=("Consolas", 10), fg="white", bg=BG_COLOR, width=12).grid(row=3, column=i, pady=10)
+
     # DH Table
     dh_frame = LabelFrame(right_p, text=" Denavit-Hartenberg Parameters ", font=("Arial", 11, "bold"), fg="white", bg=BG_COLOR, bd=2)
     dh_frame.pack(fill=X, pady=15)
@@ -563,16 +590,16 @@ def open_fk_page():
         Label(dh_frame, text=str(row[1]), fg="white", bg=BG_COLOR).grid(row=i+1, column=3, padx=10)
         Label(dh_frame, text=str(row[2]), fg="white", bg=BG_COLOR).grid(row=i+1, column=4, padx=10)
 
+
     # Hardware Sync Button
     sync_frame = Frame(right_p, bg="#0a1e4d", bd=1, relief=SOLID)
     sync_frame.pack(side=BOTTOM, fill=X, pady=10)
     Button(sync_frame, text="UPLOAD TO HARDWARE", bg="#27ae60", fg="white", 
            font=("Arial", 10, "bold"), command=lambda: messagebox.showinfo("Hardware Sync", "Uploading to ESP32")).pack(pady=10, padx=10, fill=X)
 
-    # intial
-    for lbl in matrix_labels:
-        prefix = lbl.cget("text").split('=')[0]
-        lbl.config(text=f"{prefix}= 0.0000")
+
+    # Initial Draw
+    #window.after(200, lambda: update_robot_plot(ax, canvas, joints, matrix_labels, dh_labels))
 
 
 #page fiha kol experiments hna
@@ -581,7 +608,7 @@ def open_experiments_page():
     Button(window, text="Back to Main Menu", font=("Arial", 12, "bold"), fg="#f36412", bg=BG_COLOR, bd=0, command=show_welcome_page, borderwidth=10).pack(anchor=NW, padx=20, pady=10)
     Label(window, text="SELECT EXPERIMENT", font=("Helvetica", 30, "bold"), fg="#f39c12", bg=BG_COLOR).pack(pady=20)
     Experiments = [
-        ("1. Forward Kinematics (FK)", open_fk_page), 
+        ("1. Forward Kinematics (FK)", open_fk_intro_page), 
         ("2. Inverse Kinematics (IK)", open_ik_page), 
         ("3. Trajectory Planning", open_trajectory_page), 
         ("4. Pick and Place Control", None),
