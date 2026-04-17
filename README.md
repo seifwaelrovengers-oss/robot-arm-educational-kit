@@ -14,7 +14,6 @@ This project presents a **complete educational kit** for a **6-DOF robotic arm**
 * 🖥️ Graphical User Interface (GUI)
 * 🎯 Simulation & Visualization
 * 📡 IoT Control using ESP32
-* 👁️ Computer Vision Applications
 * 🚀 Trajectory Planning
 
 ---
@@ -39,8 +38,6 @@ This project presents a **complete educational kit** for a **6-DOF robotic arm**
 * 📷 ESP32-CAM
 * 🎨 Tkinter (GUI)
 * 📈 Matplotlib (3D Visualization)
-* 🤖 OpenCV (Computer Vision)
-
 ---
 
 ## 📷 Robot Arm Preview
