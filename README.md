@@ -1,3 +1,25 @@
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0ea5e9,100:8b5cf6&height=200&section=header&text=6-DOF%20Robot%20Arm%20Educational%20Kit&fontSize=32&fontColor=ffffff&animation=fadeIn&fontAlignY=35"/>
+</p>
+
+<p align="center">
+🚀 Interactive Robotics • IoT • Computer Vision • Digital Twin • Simulation
+</p>
+
+---
+
+<p align="center">
+
+<img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
+<img src="https://img.shields.io/badge/ESP32-000000?style=for-the-badge&logo=espressif&logoColor=white"/>
+<img src="https://img.shields.io/badge/Computer%20Vision-ff6f00?style=for-the-badge"/>
+<img src="https://img.shields.io/badge/IoT-00bcd4?style=for-the-badge"/>
+<img src="https://img.shields.io/badge/Digital%20Twin-7c3aed?style=for-the-badge"/>
+
+</p>
+
+---
+
 # 🤖 6-DOF Robot Arm Educational Kit
 
 > 🚀 An Interactive Robotics Learning Platform using **ESP32, ESP32-CAM, Python, IoT Control, and Digital Twin** integrated with an interactive GUI
@@ -14,6 +36,7 @@ This project presents a **complete educational kit** for a **6-DOF robotic arm**
 * 🖥️ Graphical User Interface (GUI)
 * 🎯 Simulation & Visualization
 * 📡 IoT Control using ESP32
+* 👁️ Computer Vision Applications
 * 🚀 Trajectory Planning
 
 ---
@@ -38,14 +61,28 @@ This project presents a **complete educational kit** for a **6-DOF robotic arm**
 * 📷 ESP32-CAM
 * 🎨 Tkinter (GUI)
 * 📈 Matplotlib (3D Visualization)
+* 🤖 OpenCV (Computer Vision)
+
 ---
 
 ## 📷 Robot Arm Preview
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/862ec26d-4a0c-4802-94b7-bc9e0a669197" 
-       alt="6-DOF Robot Arm" 
-       width="500"/>
+  <img src="https://github.com/user-attachments/assets/862ec26d-4a0c-4802-94b7-bc9e0a669197" width="500"/>
+</p>
+
+---
+
+## 📸 Project Gallery
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/862ec26d-4a0c-4802-94b7-bc9e0a669197" width="250"/>
+  <img src="https://github.com/user-attachments/assets/862ec26d-4a0c-4802-94b7-bc9e0a669197" width="250"/>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/862ec26d-4a0c-4802-94b7-bc9e0a669197" width="250"/>
+  <img src="https://github.com/user-attachments/assets/862ec26d-4a0c-4802-94b7-bc9e0a669197" width="250"/>
 </p>
 
 ---
@@ -54,20 +91,20 @@ This project presents a **complete educational kit** for a **6-DOF robotic arm**
 
 ### 🔹 1. Clone the Repository
 
-```bash id="3h9x1a"
+```bash
 git clone https://github.com/your-username/robot-arm-educational-kit.git
 cd robot-arm-educational-kit
 ```
 
 ### 🔹 2. Install Requirements
 
-```bash id="9qk2mn"
+```bash
 pip install -r requirements.txt
 ```
 
 ### 🔹 3. Run the Application
 
-```bash id="l8v0fd"
+```bash
 python main.py
 ```
 
@@ -75,7 +112,7 @@ python main.py
 
 ## 📂 Project Structure
 
-```bash id="r1k7pm"
+```bash
 📁 robot-arm-educational-kit
  ┣ 📁 GUI
  ┣ 📁 Kinematics
@@ -92,42 +129,54 @@ python main.py
 
 ### 🤖 Forward Kinematics (FK)
 
-Calculate end-effector position based on joint angles.
+Compute end-effector position from joint angles.
 
 ### 🎯 Inverse Kinematics (IK)
 
-Compute joint angles required to reach a target position.
+Find joint angles for target position.
 
 ### 📦 Pick & Place
 
-Simulate object manipulation using predefined trajectories.
+Object manipulation using predefined paths.
 
 ### 🥤 Cup Filling System
 
-Automated filling process using sensors and control logic.
+Automated filling using sensors and control logic.
 
 ### 🚀 Trajectory Planning
 
-Generate smooth, optimized motion paths between waypoints to ensure stable and continuous robot arm movement without sudden jumps.
+Generate smooth optimized motion paths between waypoints for stable robot movement.
 
 ---
 
 ## 🌐 IoT & Hardware Integration
 
-* 📡 ESP32 for wireless control
-* 📷 ESP32-CAM for vision-based tasks
+* 📡 ESP32 wireless control
+* 📷 ESP32-CAM vision system
 * 🔌 Real-time communication between GUI and hardware
-* ⚡ Motor control for robot movement
+* ⚡ Motor control integration
 
 ---
 
 ## 🧠 Digital Twin Concept
 
-This project implements a **Digital Twin** where:
+* Virtual robot mirrors real robot
+* Real-time synchronization
+* GUI-based interactive control
 
-* The virtual robot mirrors the real robot
-* Real-time synchronization between simulation and hardware
-* Interactive control through GUI
+---
+
+## 🚀 Vision
+
+This project is not just a robotic arm —
+it is a **complete robotics learning ecosystem** that connects:
+
+* 🔬 Theory (Kinematics)
+* 🖥️ Simulation (Digital Twin)
+* 📡 Hardware (ESP32 IoT)
+* 👁️ Intelligence (Computer Vision)
+
+👉 Designed to simulate real industrial robotic systems in an educational environment.
 
 ---
 
@@ -148,3 +197,5 @@ This project implements a **Digital Twin** where:
 
 **Mina Bahgat**
 Mechatronics Engineering Student
+
+---
