@@ -1,0 +1,146 @@
+import tkinter as tk
+from tkinter import *
+from tkinter import messagebox
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import webbrowser
+
+window = Tk()
+window.title('Robotic Arm Virtual Lab App')
+window.state('zoomed') 
+BG_COLOR = "#04153B" 
+window.configure(bg=BG_COLOR)
+
+
+
+
+
+# --- 1. DH Logic (Calculation Only) ---
+def get_dh_matrix(theta, d, a, alpha):
+    return np.array([
+        [np.cos(theta), -np.sin(theta)*np.cos(alpha),  np.sin(theta)*np.sin(alpha), a*np.cos(theta)],
+        [np.sin(theta),  np.cos(theta)*np.cos(alpha), -np.cos(theta)*np.sin(alpha), a*np.sin(theta)],
+        [0,              np.sin(alpha),               np.cos(alpha),              d],
+        [0,              0,                           0,                          1]
+    ])
+
+def open_fk_page():
+    for widget in window.winfo_children(): widget.destroy()
+
+    # --- 2. الـ Popup Manual (نفسه بالظبط) ---
+    fk_theory = (
+        "FORWARD KINEMATICS (FK) THEORY:\n\n"
+        "1. DEFINITION:\n"
+        "Calculating the end-effector position (X, Y, Z) based on known joint angles.\n\n"
+        "2. DENAVIT-HARTENBERG (D-H) PARAMETERS:\n"
+        "We describe links using: Link Length (a), Twist (alpha), Offset (d), and Angle (theta).\n\n"
+        "3. THE TRANSFORMATION MATRIX (Ai):\n"
+        "Tn = A1 * A2 * A3 * A4 * A5 * A6"
+    )
+    show_fancy_manual("FK Mathematical Framework", fk_theory)
+
+    # --- 3. Navigation (Back Button) ---
+    Button(window, text="Back to Experiments", font=("Arial", 12, "bold"), 
+           fg="#f36412", bg="#081b4b", bd=0, command=open_experiments_page).pack(anchor=NW, padx=20, pady=10)
+    
+    container = Frame(window, bg="#081b4b")
+    container.pack(expand=True, fill=BOTH, padx=20)
+    
+    # --- 4. Left Panel (Controls) ---
+    left_p = Frame(container, bg="#081b4b")
+    left_p.pack(side=LEFT, fill=Y, padx=10)
+    Label(left_p, text="JOINTS (FK)", font=("Helvetica", 18, "bold"), fg="#f39c12", bg="#081b4b").pack(pady=10)
+
+    def play_video(): 
+        webbrowser.open("https://youtu.be/cKHsil0V6Vk?si=-akGHJx7F7lg2LbM") 
+    
+    Button(left_p, text="WATCH FK TUTORIAL", font=("Arial", 10, "bold"), bg="#2ecc71", fg="white", command=play_video).pack(pady=5)
+
+    joints = []
+    for i in range(1, 7):
+        f = Frame(left_p, bg="#081b4b")
+        f.pack(pady=3, fill=X)
+        Label(f, text=f"J{i}:", fg="white", bg="#081b4b", font=("Arial", 10, "bold"), width=4).pack(side=LEFT)
+        s = Scale(f, from_=-180, to=180, orient=HORIZONTAL, bg="#03265b", fg="white", troughcolor="#f36412", length=180, bd=0)
+        s.pack(side=LEFT)
+        joints.append(s)
+    
+    # --- 5. Middle Panel (Simulation Plot) ---
+    right_p = Frame(container, bg="#081b4b", bd=2, relief=RIDGE)
+    right_p.pack(side=LEFT, expand=True, fill=BOTH, padx=10, pady=20)
+    
+    fig = plt.figure(figsize=(7, 7), facecolor='#081b4b')
+    ax = fig.add_subplot(111, projection='3d')
+    canvas = FigureCanvasTkAgg(fig, master=right_p)
+    canvas.get_tk_widget().pack(expand=True, fill=BOTH)
+
+    # --- 6. Right Panel (Dynamic Matrices - The New Part) ---
+    manual_frame = Frame(container, bg="#0a1e4d", bd=1, relief=SOLID)
+    manual_frame.pack(side=RIGHT, fill=Y, padx=10, pady=20)
+    
+    Label(manual_frame, text="LIVE KINEMATICS", font=("Helvetica", 14, "bold"), fg="#f39c12", bg="#0a1e4d").pack(pady=10, padx=20)
+    
+    # عرض المصفوفة النهائية T06
+    Label(manual_frame, text="Transformation Matrix (T06):", font=("Arial", 10, "bold"), fg="white", bg="#0a1e4d").pack(anchor=W, padx=10)
+    matrix_label = Label(manual_frame, text="[[1, 0, 0, 0]\n[0, 1, 0, 0]\n[0, 0, 1, 0]\n[0, 0, 0, 1]]", 
+                         font=("Courier", 8), fg="#70afc2", bg="#051233", justify=LEFT, padx=10, pady=10)
+    matrix_label.pack(pady=10, padx=10, fill=X)
+
+    # عرض الإحداثيات النهائية
+    Label(manual_frame, text="End-Effector (X, Y, Z):", font=("Arial", 10, "bold"), fg="white", bg="#0a1e4d").pack(anchor=W, padx=10)
+    pos_label = Label(manual_frame, text="X: 0.00 | Y: 0.00 | Z: 0.00", font=("Arial", 10, "bold"), fg="#2ecc71", bg="#051233", pady=5)
+    pos_label.pack(pady=5, padx=10, fill=X)
+
+    # الأزرار السفلية (نفسها بالظبط)
+    def upload_to_esp32_fk():
+        messagebox.showinfo("Hardware Sync", "Uploading FK Angles to ESP32 Kit!")
+
+    Label(manual_frame, text="Sync with ESP32 for real motion.", font=("Arial", 8, "italic"), fg="white", bg="#0a1e4d").pack(side=BOTTOM, pady=(0, 2), padx=10)
+    Button(manual_frame, text="UPLOAD TO HARDWARE", bg="#27ae60", fg="white", font=("Arial", 10, "bold"), command=upload_to_esp32_fk).pack(side=BOTTOM, pady=10, padx=10, fill=X)
+
+    # --- 7. Run Logic (Simulation + Calculations) ---
+    def run_simulation():
+        thetas = [np.radians(j.get()) for j in joints]
+        # DH: (theta, d, a, alpha)
+        # تقدري تعدلي القيم دي حسب أبعاد الروبوت بتاعك
+        dh_config = [
+            (thetas[0], 2, 0, np.pi/2),
+            (thetas[1], 0, 5, 0),
+            (thetas[2], 0, 5, 0),
+            (thetas[3], 0, 0, np.pi/2),
+            (thetas[4], 2, 0, -np.pi/2),
+            (thetas[5], 0, 0, 0)
+        ]
+        
+        T_total = np.identity(4)
+        ax.clear()
+        ax.set_facecolor('#081b4b')
+        curr_p = np.array([0, 0, 0])
+        
+        for i, (th, d, a, al) in enumerate(dh_config):
+            prev_p = curr_p
+            Ai = get_dh_matrix(th, d, a, al)
+            T_total = T_total @ Ai
+            curr_p = T_total[:3, 3]
+            
+            # رسم اللينكات والـ 6 Joints
+            ax.plot([prev_p[0], curr_p[0]], [prev_p[1], curr_p[1]], [prev_p[2], curr_p[2]], 
+                    color='#f36412', linewidth=10, solid_capstyle='round')
+            ax.scatter(curr_p[0], curr_p[1], curr_p[2], color='white', s=60, edgecolors='black', zorder=10)
+
+        # تحديث النصوص في الجزء اليمين
+        formatted_matrix = "\n".join([" ".join([f"{x:5.2f}" for x in row]) for row in T_total])
+        matrix_label.config(text=formatted_matrix)
+        pos_label.config(text=f"X: {curr_p[0]:.2f} | Y: {curr_p[1]:.2f} | Z: {curr_p[2]:.2f}")
+        
+        # تظبيط الـ Plot
+        ax.set_xlim([-15, 15]); ax.set_ylim([-15, 15]); ax.set_zlim([0, 20])
+        ax.tick_params(colors='white')
+        canvas.draw()
+
+    Button(left_p, text="RUN SIMULATION", bg="#f36412", fg="white", font=("Arial", 12, "bold"), 
+           pady=15, command=run_simulation).pack(pady=20, fill=X)
+
+    # أول رسمة تظهر عند فتح الصفحة
+    run_simulation()
