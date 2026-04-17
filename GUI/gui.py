@@ -19,9 +19,6 @@ BG_COLOR = "#04153B"
 window.configure(bg=BG_COLOR)
 
 
-import subprocess
-import os
-
 # file seif 
 def run_pybullet_sim():
     try:
