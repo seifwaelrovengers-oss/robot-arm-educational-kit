@@ -1,4 +1,7 @@
 # Libraries 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk
@@ -8,7 +11,9 @@ import numpy as np
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import matplotlib.pyplot as plt
 import webbrowser 
-import subprocess 
+import subprocess
+import threading
+from simulation.fk import run_fk
 
 
 #3l4an a create window 
@@ -460,14 +465,16 @@ def open_fk_intro_page():
            bg="#f36412", fg="white", width=25, height=2, command=open_fk_page).pack(side=RIGHT)
 
     # button bybullet
-    Button(btn_container, 
-           text=" ← 3D Visualization (PyBullet)", 
-           font=("Arial", 13, "bold"), 
-           bg="#2980b9", 
-           fg="white", 
-           width=25, 
-           height=2, 
-           command=run_pybullet_sim).pack(side=LEFT)
+    Button(
+    btn_container,
+    text=" ← 3D Visualization (PyBullet)",
+    font=("Arial", 13, "bold"),
+    bg="#2980b9",
+    fg="white",
+    width=25,
+    height=2,
+   command=lambda: threading.Thread(target=run_fk).start()
+).pack(side=LEFT)
 
 
 
