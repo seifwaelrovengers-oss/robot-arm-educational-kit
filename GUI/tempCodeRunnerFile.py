@@ -1,219 +1,157 @@
-# Libraries 
-from tkinter import *
-from tkinter import messagebox
-from PIL import Image, ImageTk
-import os
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import numpy as np
-from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-import matplotlib.pyplot as plt
-import webbrowser 
+file_path = "lab_records.csv"
 
-#3l4an a create window 
-window = Tk()
-window.title('Robotic Arm Virtual Lab App')
-window.state('zoomed') 
-BG_COLOR = "#04153B" 
-window.configure(bg=BG_COLOR)
+if not os.path.exists(file_path):
+    with open(file_path, mode='w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(["Timestamp", "Student Name", "Student ID", "Experiment Type", "Result Data"])
 
+CURRENT_USER = ""
+CURRENT_ID = ""
 
-def calculate_ik_angles(x, y, z):
-    
-    j1 = np.degrees(np.arctan2(y, x))
-    r = np.sqrt(x**2 + y**2)
-    d = np.sqrt(r**2 + z**2)
-    if d > 12: d = 12 
-    j2 = np.degrees(np.arccos(np.clip(d/15, -1, 1))) * 1.5
-    j3 = -j2 * 0.8
-    return [j1, j2, j3, 0, 0, 0]
+def save_lab_result(exp_name, data_values):
+    # Lazm CURRENT_USER yeb2a global hena kaman
+    global CURRENT_USER, CURRENT_ID
+    with open("lab_records.csv", mode='a', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            CURRENT_USER, 
+            CURRENT_ID, 
+            exp_name, 
+            data_values
+        ])
 
-#3l4an 3d robot elfeh simulation
-def update_robot_plot(ax, canvas, joints, target_dot=None):
-    ax.clear()
-    ax.set_facecolor('#081b4b')
-    t = np.linspace(0, 2*np.pi, 50)
-    r_base = 1.2
-    X_b = r_base * np.cos(t)
-    Y_b = r_base * np.sin(t)
-    Z_b = np.zeros_like(X_b)
-    ax.plot(X_b, Y_b, Z_b, color="#4c7f8f", linewidth=2)
-    
-    if target_dot:
-        ax.scatter([target_dot[0]], [target_dot[1]], [target_dot[2]], color='red', s=100, label='Target')
-
-    
-    angles = [np.radians(j.get() if hasattr(j, 'get') else j) for j in joints]
-    curr_x, curr_y, curr_z = 0, 0, 0
-    L = 2 
-    for i in range(len(angles)):
-        prev_pos = [curr_x, curr_y, curr_z]
-        curr_x += L * np.cos(sum(angles[:i+1]))
-        curr_y += L * np.sin(sum(angles[:i+1]))
-        curr_z += L * np.sin(angles[i]) 
-        new_pos = [curr_x, curr_y, curr_z]
-        ax.plot([prev_pos[0], new_pos[0]], [prev_pos[1], new_pos[1]], [prev_pos[2], new_pos[2]], 
-                color='#f36412', linewidth=10, solid_capstyle='round')
-        ax.scatter([curr_x], [curr_y], [curr_z], color='white', s=60, edgecolors='black')
-
-    ax.set_xlim([-10, 10]); ax.set_ylim([-10, 10]); ax.set_zlim([0, 10])
-    ax.grid(True, linestyle='--', alpha=0.3)
-    ax.set_title("3D ROBOTIC ARM SIMULATION", color='white', fontname="Arial", fontsize=14, fontweight='bold')
-    ax.view_init(elev=30, azim=45)
-    canvas.draw()
-
-# 3l4an popup manual 3la 4kl window
-def show_fancy_manual(title, content):
-    manual_window = Toplevel(window)
-    manual_window.title(title)
-    manual_window.geometry("550x550")
-    manual_window.configure(bg="#0a1e4d")
-    manual_window.transient(window)
-    manual_window.grab_set()
-    Label(manual_window, text=" " + title, font=("Helvetica", 18, "bold"), fg="#f39c12", bg="#0a1e4d").pack(pady=20)
-    text_area = Message(manual_window, text=content, font=("Arial", 12), fg="white", bg="#0a1e4d", width=400, justify=LEFT)
-    text_area.pack(pady=10, padx=20)
-    Label(manual_window, text="__________________________", fg="#f36412", bg="#0a1e4d").pack()
-    Button(manual_window, text="LET'S GO!", font=("Arial", 12, "bold"), bg="#f36412", fg="white", 
-           padx=20, pady=10, command=manual_window.destroy).pack(pady=20)
-
-#da message box 3la gnb keda
-def create_manual_box(parent, title, steps):
-    manual_frame = Frame(parent, bg="#0a1e4d", bd=1, relief=SOLID)
-    manual_frame.pack(side=RIGHT, fill=Y, padx=10, pady=20)
-    Label(manual_frame, text="LAB MANUAL", font=("Helvetica", 14, "bold"), fg="#f39c12", bg="#0a1e4d").pack(pady=10, padx=20)
-    Label(manual_frame, text=title, font=("Arial", 11, "bold", "underline"), fg="white", bg="#0a1e4d").pack(pady=5, anchor=W, padx=10)
-    msg = Message(manual_frame, text=steps, font=("Arial", 10), fg="#70afc2", bg="#0a1e4d", width=220, justify=LEFT)
-    msg.pack(pady=10, padx=10, anchor=NW)
-    Label(manual_frame, text="Sync with ESP32 for real motion.", font=("Arial", 8, "italic"), fg="white", bg="#0a1e4d").pack(side=BOTTOM, pady=(0, 10), padx=10)
-
-# de IK gahza 
-def open_ik_page():
+def show_login_page():
     for widget in window.winfo_children(): widget.destroy()
     
-    ik_info = (
-        "WELCOME TO INVERSE KINEMATICS LAB!\n\n"
-        "Objectives:\n"
-        "1. Input coordinates (X, Y, Z).\n"
-        "2. Let the algorithm find the required angles.\n\n"
-        "Steps:\n"
-        "1. Set the target position using sliders.\n"
-        "2. Click 'SOLVE & MOVE'.\n"
-        "3. Watch the arm reach the target."
-    )
-    show_fancy_manual("IK Study Guide", ik_info)
+    login_frame = Frame(window, bg=BG_COLOR)
+    login_frame.pack(expand=True, fill=BOTH)
 
-    Button(window, text=" Back to Experiments", font=("Arial", 12, "bold"), fg="#f36412", bg=BG_COLOR, bd=0, command=open_experiments_page, borderwidth=10).pack(anchor=NW, padx=20, pady=10)
-    
-    container = Frame(window, bg=BG_COLOR); container.pack(expand=True, fill=BOTH, padx=20)
-    
-    left_p = Frame(container, bg=BG_COLOR); left_p.pack(side=LEFT, fill=Y, padx=10)
-    Label(left_p, text="TARGET POSITION (IK)", font=("Helvetica", 18, "bold"), fg="#f39c12", bg=BG_COLOR).pack(pady=10)
-    
-    # Sliders l X, Y, Z coordinates
-    coords = {}
-    for axis in ['X', 'Y', 'Z']:
-        f = Frame(left_p, bg=BG_COLOR); f.pack(pady=5, fill=X)
-        Label(f, text=f"{axis}:", fg="white", bg=BG_COLOR, font=("Arial", 10, "bold"), width=4).pack(side=LEFT)
-        s = Scale(f, from_=-8, to=8, resolution=0.1, orient=HORIZONTAL, bg="#03265b", fg="white", troughcolor="#2ecc71", length=180, bd=0)
-        s.pack(side=LEFT)
-        coords[axis] = s
+    card = Frame(login_frame, bg="#0d2142", highlightbackground="#099da5", highlightthickness=2, padx=50, pady=50)
+    card.place(relx=0.5, rely=0.5, anchor=CENTER)
 
-    def run_ik_process():
-        x_val = coords['X'].get()
-        y_val = coords['Y'].get()
-        z_val = coords['Z'].get()
+    Label(card, text="STUDENT IDENTIFICATION", font=("Helvetica", 18, "bold"), fg="#099da5", bg="#0d2142").pack(pady=(0, 20))
+
+    Label(card, text="Full Name:", font=("Arial", 10), fg="#efefef", bg="#0d2142").pack(anchor=W)
+    name_entry = Entry(card, font=("Arial", 14), bg="#050c1f", fg="white", insertbackground="white", bd=0)
+    name_entry.pack(fill=X, pady=(5, 15))
+    Frame(card, height=1, bg="#099da5").pack(fill=X)
+
+    Label(card, text="Student ID:", font=("Arial", 10), fg="#efefef", bg="#0d2142").pack(anchor=W)
+    id_entry = Entry(card, font=("Arial", 14), bg="#050c1f", fg="white", insertbackground="white", bd=0)
+    id_entry.pack(fill=X, pady=(5, 15))
+    Frame(card, height=1, bg="#099da5").pack(fill=X)
+
+    # El-Zetona: Damegna attempt_login gowa final_step
+    def final_step():
+        global CURRENT_USER, CURRENT_ID
+        name = name_entry.get()
+        uid = id_entry.get()
         
-        # hn7sb el Angles
-        calc_angles = calculate_ik_angles(x_val, y_val, z_val)
-        
-        # hna bn3ml update ll parameters 
-        update_robot_plot(ax, canvas, calc_angles, target_dot=(x_val, y_val, z_val))
+        if name and uid:
+            CURRENT_USER = name
+            CURRENT_ID = uid
+            
+            # 1. Save data awel ma yedous verify
+            save_lab_result("Login System", "Student Verified & Entered Lab")
+            
+            # 2. El-Rabt bel-page elly ba3d keda
+            try:
+                open_experiments_page() 
+            except NameError:
+               
+                print("Error: Function 'open_experiments_page' not found!")
+        else:
+            err = Label(card, text="Please fill all fields", fg="#f36412", bg="#0d2142")
+            err.pack(pady=5)
+            window.after(2000, err.destroy)
+            
+    Button(card, text="VERIFY & ENTER LAB →", bg="#099da5", fg="white", 
+           font=("Arial", 12, "bold"), padx=30, pady=10, bd=0, command=final_step).pack(pady=25)
 
-    Button(left_p, text="SOLVE & MOVE ARM", bg="#f36412", fg="white", font=("Arial", 12, "bold"), pady=15, 
-           command=run_ik_process).pack(pady=20, fill=X)
 
-    create_manual_box(container, "IK Quick Reference", "1. Set Target XYZ\n2. Solve IK\n3. Verify Reachability")
-
-    right_p = Frame(container, bg="#081b4b", bd=2, relief=RIDGE); right_p.pack(side=RIGHT, expand=True, fill=BOTH, padx=10, pady=20)
-    fig = plt.figure(figsize=(10,10)); fig.patch.set_facecolor('#081b4b'); ax = fig.add_subplot(111, projection='3d')
-    canvas = FigureCanvasTkAgg(fig, master=right_p); canvas.get_tk_widget().pack(expand=True, fill=BOTH)
-    update_robot_plot(ax, canvas, [0]*6)
-
-#de FK gahza
-def open_fk_page():
-    for widget in window.winfo_children(): widget.destroy()
-    
-    fk_info = (
-        "WELCOME TO FORWARD KINEMATICS LAB!\n\n"
-        "Objectives:\n"
-        "1. Understand joint angles to define position.\n"
-        "2. Observe serial robotic chain behavior.\n\n"
-        "Steps to follow:\n"
-        "1. Watch the Tutorial video.\n"
-        "2. Use J1 to J6 sliders to set angles.\n"
-        "3. Click 'RUN SIMULATION' to see results."
-    )
-    show_fancy_manual("FK Study Guide", fk_info)
-
-    Button(window, text="Back to Experiments", font=("Arial", 12, "bold"), fg="#f36412", bg=BG_COLOR, bd=0, command=open_experiments_page, borderwidth=10).pack(anchor=NW, padx=20, pady=10)
-    container = Frame(window, bg=BG_COLOR); container.pack(expand=True, fill=BOTH, padx=20)
-    
-    left_p = Frame(container, bg=BG_COLOR); left_p.pack(side=LEFT, fill=Y, padx=10)
-    Label(left_p, text="JOINTS (FK)", font=("Helvetica", 18, "bold"), fg="#f39c12", bg=BG_COLOR).pack(pady=10)
-
-    def play_video():
-        webbrowser.open("https://youtu.be/cKHsil0V6Qk?si=-akGHJx7F7lg2LbM") 
-    Button(left_p, text="WATCH FK TUTORIAL", font=("Arial", 10, "bold"), bg="#2ecc71", fg="white", command=play_video).pack(pady=5)
-
-    joints = []
-    for i in range(1, 7):
-        f = Frame(left_p, bg=BG_COLOR); f.pack(pady=3, fill=X)
-        Label(f, text=f"J{i}:", fg="white", bg=BG_COLOR, font=("Arial", 10, "bold"), width=4).pack(side=LEFT)
-        s = Scale(f, from_=-180, to=180, orient=HORIZONTAL, bg="#03265b", fg="white", troughcolor="#f36412", length=180, bd=0)
-        s.pack(side=LEFT); joints.append(s)
-    
-    Button(left_p, text="RUN SIMULATION", bg="#f36412", fg="white", font=("Arial", 12, "bold"), pady=15, 
-           command=lambda: update_robot_plot(ax, canvas, joints)).pack(pady=20, fill=X)
-
-    create_manual_box(container, "FK Quick Reference", "1. Watch Video first\n2. Set Angles\n3. Run Simulation")
-
-    right_p = Frame(container, bg="#081b4b", bd=2, relief=RIDGE); right_p.pack(side=RIGHT, expand=True, fill=BOTH, padx=10, pady=20)
-    fig = plt.figure(figsize=(9,9)); fig.patch.set_facecolor('#081b4b'); ax = fig.add_subplot(111, projection='3d')
-    canvas = FigureCanvasTkAgg(fig, master=right_p); canvas.get_tk_widget().pack(expand=True, fill=BOTH)
-    update_robot_plot(ax, canvas, [0]*6)
-
-#page fiha kol experiments hna
-def open_experiments_page():
-    for widget in window.winfo_children(): widget.destroy()
-    Button(window, text="Back to Main Menu", font=("Arial", 12, "bold"), fg="#f36412", bg=BG_COLOR, bd=0, command=show_welcome_page, borderwidth=10).pack(anchor=NW, padx=20, pady=10)
-    Label(window, text="SELECT EXPERIMENT", font=("Helvetica", 30, "bold"), fg="#f39c12", bg=BG_COLOR).pack(pady=20)
-    Experiments = [
-        ("1. Forward Kinematics (FK)", open_fk_page), 
-        ("2. Inverse Kinematics (IK)", open_ik_page), 
-        ("3. Trajectory Planning", None), 
-        ("4. Pick and Place Control", None),
-        ("5. Cup Filling Simulation", None)
-    ]
-    for text, cmd in Experiments:
-        action = cmd if cmd else lambda t=text: messagebox.showinfo("lsa m3mlto4", f"{t},isa yt3ml 3latol ")
-        Button(window, text=text, font=("Arial", 16), fg="white", bg="#03265b", width=35, pady=12, command=action, borderwidth=5).pack(pady=10)
 
 #de main page kolha texts
 def show_welcome_page():
     for widget in window.winfo_children(): widget.destroy()
-    left_c = Frame(window, bg=BG_COLOR); left_c.pack(side=LEFT, expand=True, fill=BOTH, padx=80)
-    right_c = Frame(window, bg=BG_COLOR); right_c.pack(side=RIGHT, expand=True, fill=BOTH)
-    Label(left_c, text="WELCOME TO OUR VIRTUAL LAB", font=("Helvetica", 35, "bold"), fg="#f36412", bg=BG_COLOR, justify=LEFT).pack(pady=(120, 20), anchor=W)
-    intro_text = ("This Virtual Lab provides an integrated environment to simulate and analyze 4 distinct robotic experiments. It allows you to explore robotic kinematics and trajectory planning in a 3D simulation. Finally, you can bridge the gap between virtual and reality by connecting your ESP32 kit to synchronize and observe the real-time motion of the physical robotic arm.")
-    Label(left_c, text=intro_text, font=("Times New Roman", 14, "bold"), fg="#70afc2", bg=BG_COLOR, justify=LEFT, wraplength=600).pack(pady=10, anchor=W)
-    how_to_use = ("How to use this lab:\n1. Click the button below to start.\n2. Select your desired experiment.\n3. Observe the 3D simulation in real-time.\n4. Connect your ESP32 kit to sync motion!")
-    Label(left_c, text=how_to_use, font=("Arial", 13), fg="white", bg=BG_COLOR, justify=LEFT).pack(pady=20, anchor=W)
-    Button(left_c, text='ENTER THE LAB', bg='#f36412', fg='white', font=('Arial', 14, 'bold'), padx=40, pady=20, bd=0, command=open_experiments_page).pack(pady=30, anchor=W)
+    
+    main_frame = Frame(window, bg=BG_COLOR)
+    main_frame.pack(expand=True, fill=BOTH)
+
+   
+    Label(main_frame, text="6-DOF ROBOTIC ARM EDUCATIONAL KIT", 
+          font=("Helvetica", 24, "bold"), fg="#099da5", bg=BG_COLOR).place(relx=0.5, rely=0.05, anchor=CENTER)
+    Label(main_frame, text="VIRTUAL LAB INTERFACE v1.0", font=("Consolas", 10, "bold"), 
+          fg="#efefef", bg=BG_COLOR).place(relx=0.5, rely=0.08, anchor=CENTER)
+
+    # Logo
     try:
-        img_path = os.path.join(os.path.dirname(__file__), "robot_arm.png")
-        img = ImageTk.PhotoImage(Image.open(img_path).resize((800, 800)))
-        lbl = Label(right_c, image=img, bg=BG_COLOR); lbl.image = img; lbl.pack(expand=True)
+        logo_path = r"C:\Users\Bassant\robot-arm-educational-kit\GUI\uni_logo.png"
+        logo_img = Image.open(logo_path).resize((110, 110), Image.Resampling.LANCZOS)
+        logo_photo = ImageTk.PhotoImage(logo_img)
+        l_lbl = Label(main_frame, image=logo_photo, bg=BG_COLOR)
+        l_lbl.image = logo_photo
+        l_lbl.place(relx=0.92, rely=0.07, anchor=CENTER)
     except: pass
 
-show_welcome_page()
+
+    text_container = Frame(main_frame, bg=BG_COLOR)
+    text_container.place(relx=0.07, rely=0.15, width=500)
+
+    title_txt = "WELCOME TO\nOUR\nVIRTUAL LAB"
+    Label(text_container, text=title_txt, font=("Helvetica", 48, "bold"), 
+          fg="#050c1f", bg=BG_COLOR, justify=LEFT).place(x=3, y=3)
+    Label(text_container, text=title_txt, font=("Helvetica", 48, "bold"), 
+          fg="#099da5", bg=BG_COLOR, justify=LEFT).pack(anchor=W)
+
+    desc_text = (
+    "Explore robotics through real-time simulation, motion analysis,\n"
+    "and live synchronization with a physical 6-DOF robotic arm."
+)
+    Label(text_container, text=desc_text, font=("Segoe UI", 12, "italic"), 
+          fg="#efefef", bg=BG_COLOR, justify=LEFT).pack(pady=(15, 10), anchor=W)
+
+    instr_card = Frame(text_container, bg="#0d2142", bd=0, highlightbackground="#099da5", highlightthickness=1, padx=20, pady=15)
+    instr_card.pack(anchor=W, fill=X, pady=10)
+    
+    Label(instr_card, text="LABORATORY OBJECTIVES & SCOPE:", font=("Arial", 11, "bold"), fg="#efefef", bg="#0d2142").pack(anchor=W, pady=(0,5))
+    
+
+    points = [
+    "• REAL-TIME SIMULATION: Visualize robotic arm motion inside a 3D virtual workspace.",
+    "• HARDWARE SYNCHRONIZATION: Observe the physical robotic arm responding live to simulation commands.",
+    "• KINEMATIC ANALYSIS: Perform Forward and Inverse Kinematics calculations using DH Parameters.",
+    "• TRAJECTORY & CONTROL: Analyze motion paths, joint behavior, and actuator responses in real time."
+]
+    for p in points:
+        Label(instr_card, text=p, font=("Arial", 9), fg="#9db2bf", bg="#0d2142", justify=LEFT, wraplength=450).pack(anchor=W, pady=2)
+
+    btn_get_started = Button(text_container, text="GET STARTED / LOGIN →", bg="#099da5", fg="white", 
+                            font=("Arial", 12, "bold"), padx=40, pady=12, bd=0, cursor="hand2",
+                            command=show_login_page) 
+    btn_get_started.pack(pady=20, anchor=W)
+
+
+    glow_frame = Frame(main_frame, bg="#0d2142", bd=0, highlightbackground="#099da5", highlightthickness=1)
+    glow_frame.place(relx=0.55, rely=0.20, width=520, height=580) # Much larger frame
+
+    try:
+        robot_path = os.path.join(os.path.dirname(__file__), "robot_arm.png")
+        # Image resize kabbarnah le 480
+        r_img = Image.open(robot_path).resize((480, 480), Image.Resampling.LANCZOS)
+        r_photo = ImageTk.PhotoImage(r_img)
+        robot_lbl = Label(glow_frame, image=r_photo, bg="#14264d")
+        robot_lbl.image = r_photo
+        robot_lbl.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+        # Animation (Enhanced)
+        def animate_robot(angle=0):
+            import math
+            off_y = math.sin(angle) 
+            robot_lbl.place(relx=0.5, rely=0.5, y=off_y, anchor=CENTER)
+            window.after(50, lambda: animate_robot(angle + 0.04))
+        animate_robot()
+    except: pass
+        
+show_welcome_page()      
 window.mainloop()

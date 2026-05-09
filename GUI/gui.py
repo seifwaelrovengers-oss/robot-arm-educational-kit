@@ -1,7 +1,4 @@
-# Libraries 
-import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+#libraries
 from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk
@@ -11,9 +8,12 @@ import numpy as np
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import matplotlib.pyplot as plt
 import webbrowser 
-import subprocess
-import threading
-from simulation.fk import run_fk
+import subprocess 
+import matplotlib.ticker as ticker
+from PIL import Image, ImageTk
+import csv
+from datetime import datetime
+
 
 
 #3l4an a create window 
@@ -37,6 +37,7 @@ def run_pybullet_sim():
             messagebox.showerror("File Error", f"Simulation file not found \nMake sure '{file_name}' is located in the same project folder.")
     except Exception as e:
         messagebox.showerror("Error", f"Could not start simulation: {str(e)}")
+        
 
 def calculate_ik_angles(x, y, z):
     j1 = np.degrees(np.arctan2(y, x))
@@ -48,7 +49,7 @@ def calculate_ik_angles(x, y, z):
     return [j1, j2, j3, 0, 0, 0]
 
 #3l4an 3d robot elfeh simulation
-def update_robot_plot(ax, canvas, joints, matrix_labels=None, dh_labels=None):
+def update_robot_plot(ax, canvas, joints, matrix_labels=None, dh_labels=None, ee_coords=None):
     ax.clear()
     # Style
     ax.set_facecolor('#081b4b')
@@ -57,11 +58,14 @@ def update_robot_plot(ax, canvas, joints, matrix_labels=None, dh_labels=None):
 
     angles = []
     for j in joints:
-        if hasattr(j, "get"):
-            angles.append(np.radians(j.get())) 
-        else:
-            angles.append(np.radians(j))
-
+        try:
+            # Ben7awel el text le float el awel, ba3den radians
+            val = float(j.get()) if hasattr(j, "get") else float(j)
+            angles.append(np.radians(val))
+        except ValueError:
+            # Lw el user katab 7arf aw sabha fadya,n5leha 0.0
+            angles.append(0.0)
+            
     # DRAW BASE  
     t = np.linspace(0, 2*np.pi, 60)
     ax.plot(np.cos(t)*2, np.sin(t)*2, 0, color="white", linewidth=2)
@@ -109,31 +113,42 @@ def update_robot_plot(ax, canvas, joints, matrix_labels=None, dh_labels=None):
         A = np.array([
             [ct, -st*ca,  st*sa, a_dh*ct],
             [st,  ct*ca, -ct*sa, a_dh*st],
-            [0,   sa,     ca,    d_dh],
-            [0,   0,      0,     1]
+            [0,   sa,     ca,     d_dh],
+            [0,   0,      0,      1]
         ])
         T_total = T_total @ A
-        # hna 3l4an a5od kol angles mn slider parameter wa7d bs elgowa matrix elhit8ir elba2y na hsbto t7t mn mechanical 
-        if dh_labels is not None:
-            try:
-                current_theta_deg = np.degrees(theta_dh)
-                dh_labels[i].config(text=f"{current_theta_deg:.1f}")
-            except:
-                pass
 
-    #  7agat tb3 AXES design 
-    ax.set_xlabel('X Axis', color='white', labelpad=10)
-    ax.set_ylabel('Y Axis', color='white', labelpad=10)
-    ax.set_zlabel('Z Axis', color='white', labelpad=10)
-    ax.tick_params(axis='x', colors='white')
-    ax.tick_params(axis='y', colors='white')
-    ax.tick_params(axis='z', colors='white')
+
+    ax.plot([x, x], [y, y], [0, z], color="white", linestyle="--", linewidth=0.8, alpha=0.5)
+    ax.plot([0, x], [y, y], [0, 0], color="#e74c3c", linestyle=":", linewidth=1)
+    ax.plot([x, x], [0, y], [0, 0], color="#2ecc71", linestyle=":", linewidth=1)
+    
+    
+    ax.text(x, y, z + 1.5, f"P({x:.1f}, {y:.1f}, {z:.1f})", color="#f1c40f", 
+            fontsize=10, fontweight='bold', ha='center',
+            bbox=dict(facecolor='#081b4b', alpha=0.6, edgecolor='none'))
+   
+
+   
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(5))
+    ax.yaxis.set_major_locator(ticker.MultipleLocator(5))
+    ax.zaxis.set_major_locator(ticker.MultipleLocator(5))
+
+
+    ax.grid(True, which='major', linestyle='--', linewidth=0.5, color='white', alpha=0.2)
+    
+    ax.set_xlabel('X Axis (cm)', color='#00eeee', fontweight='bold')
+    ax.set_ylabel('Y Axis (cm)', color='#00eeee', fontweight='bold')
+    ax.set_zlabel('Z Axis (cm)', color='#00eeee', fontweight='bold')
+
+
     ax.set_xlim([-15, 30])
     ax.set_ylim([-20, 20])
     ax.set_zlim([0, 30])
-    ax.tick_params(colors="white")
+    
+    
+    ax.tick_params(colors="white", labelsize=8)
     ax.set_title("6-DOF ROBOTIC ARM SIMULATION", color="white", fontsize=12, fontweight="bold")
-    ax.grid(True)
     
     # MATRIX OUTPUT 
     if matrix_labels:
@@ -146,12 +161,26 @@ def update_robot_plot(ax, canvas, joints, matrix_labels=None, dh_labels=None):
         for i in range(12):
             matrix_labels[i].config(text=f"{names[i]} = {vals[i]:.4f}")
 
+    
+    if ee_coords:
+        ee_coords["X"].config(text=f"{x:.2f}")
+        ee_coords["Y"].config(text=f"{y:.2f}")
+        ee_coords["Z"].config(text=f"{z:.2f}")
+
     if dh_labels:
         for i, s in enumerate(joints):
-            val = s.get()
-            dh_labels[i].config(text=f"{val:.1f}")
+            try:
+                # Lazem float 3ashan el formatting (:.1f) yashtaghal
+                val = float(s.get())
+                dh_labels[i].config(text=f"{val:.1f}")
+            except ValueError:
+                dh_labels[i].config(text="0.0")
+                
     canvas.draw()
     
+   
+   
+   
     
 # 3l4an popup manual 3la 4kl window
 def show_fancy_manual(title, content):
@@ -168,6 +197,11 @@ def show_fancy_manual(title, content):
     Button(popup, text="LET'S GO", font=("Arial", 14, "bold"), bg="#27ae60", fg="white", 
            activebackground="#2ecc71", activeforeground="white", padx=40, pady=10, 
            cursor="hand2", command=popup.destroy).pack(pady=20)
+
+
+
+
+
 
 # trajectory page 
 def open_trajectory_page():
@@ -433,48 +467,63 @@ def open_ik_page():
 #de FK gahza kamlaaaa into w FK calculations
 #intro page 
 def open_fk_intro_page():
-    for widget in window.winfo_children(): widget.destroy()
-
+    for widget in window.winfo_children(): 
+        widget.destroy()
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    image_path = os.path.join(base_path, "video_preview.PNG")
     header_frame = Frame(window, bg=BG_COLOR)
     header_frame.pack(fill=X)
-    
     Button(header_frame, text="← Back to Experiments", font=("Arial", 12, "bold"), 
            fg="#f36412", bg=BG_COLOR, bd=0, command=open_experiments_page, borderwidth=10).pack(side=LEFT, padx=20, pady=10)
     
     Label(header_frame, text="Forward Kinematics ", font=("Helvetica", 22, "bold"), 
           fg="white", bg=BG_COLOR , anchor=W).pack(pady=20)
-#https://en1.savefrom.net/21-youtube-to-mp4-37Nq.html mkan el7wl video mn yt link to mp4
-    video_frame = Frame(window, bg="#0a1e4d", bd=3, relief=RIDGE)
-    video_frame.pack(pady=10, padx=50, fill=BOTH, expand=True)
-    
-    Label(video_frame, text=" WATCHING SOLVED EXAMPLE", font=("Arial", 18, "bold"), 
-          fg="#2ecc71", bg="#0a1e4d").pack(pady=(60, 10))
 
     def play_local_video():
         video_name = "Solved Example - Forward Kinematics.mp4"
-        base_path = os.path.dirname(os.path.abspath(__file__))
-        video_path = os.path.join(base_path, video_name)
-        if os.path.exists(video_path): os.startfile(video_path)
+        video_full_path = os.path.join(base_path, video_name)
+        if os.path.exists(video_full_path): 
+            os.startfile(video_full_path)
+        else:
+            from tkinter import messagebox
+            messagebox.showerror("Error", f"Video not found at: {video_full_path}")
 
-    window.after(500, play_local_video)
+    video_frame = Frame(window, bg="#0a1e4d", bd=3, relief=RIDGE)
+    video_frame.pack(pady=10, padx=50, fill=BOTH, expand=True)
+    
+    Label(video_frame, text="WATCHING TUTORIAL", font=("Arial", 18, "bold"), 
+          fg="#2ecc71", bg="#0a1e4d").pack(pady=(20, 10))
+
+    preview_container = Frame(video_frame, bg="#0a1e4d")
+    preview_container.pack(expand=True)
+
+    image_path = r"C:\Users\Bassant\robot-arm-educational-kit\GUI\video_preview.png"
+    try:
+        img = Image.open(image_path) 
+        img = img.resize((750, 420), Image.Resampling.LANCZOS)
+        photo = ImageTk.PhotoImage(img)
+        
+        img_label = Label(preview_container, image=photo, bg="#0a1e4d", cursor="hand2")
+        img_label.image = photo
+        img_label.pack(pady=10)
+        
+        img_label.bind("<Button-1>", lambda e: play_local_video())
+        Label(preview_container, text="Click image to play tutorial", 
+              font=("Arial", 10, "italic"), fg="white", bg="#0a1e4d").pack()
+
+    except Exception as e:
+    
+        print(f"DEBUG: Image not found at {image_path}. Error: {e}")
+        Button(preview_container, text="▶ Watch Tutorial", font=("Arial", 16, "bold"),
+               bg="#2ecc71", fg="white", padx=30, pady=15,
+               command=play_local_video, cursor="hand2").pack(pady=50)
 
     btn_container = Frame(window, bg=BG_COLOR)
-    btn_container.pack(side=BOTTOM, fill=X, pady=50, padx=80)
-
+    btn_container.pack(side=BOTTOM, fill=X, pady=40, padx=80)
     Button(btn_container, text="Simulation & Calculations →", font=("Arial", 13, "bold"), 
            bg="#f36412", fg="white", width=25, height=2, command=open_fk_page).pack(side=RIGHT)
-
-    # button bybullet
-    Button(
-    btn_container,
-    text=" ← 3D Visualization (PyBullet)",
-    font=("Arial", 13, "bold"),
-    bg="#2980b9",
-    fg="white",
-    width=25,
-    height=2,
-   command=lambda: threading.Thread(target=run_fk).start()
-).pack(side=LEFT)
+    Button(btn_container, text=" ← 3D Visualization (PyBullet)", font=("Arial", 13, "bold"), 
+           bg="#2980b9", fg="white", width=25, height=2, command=run_pybullet_sim).pack(side=LEFT)
 
 
 
@@ -510,22 +559,49 @@ def open_fk_page():
 
     main_container = Frame(window, bg=BG_COLOR)
     main_container.pack(expand=True, fill=BOTH, padx=10, pady=5)
-
-    #  Sliders 
-    left_p = LabelFrame(main_container, text=" Joint Controls ", font=("Arial", 12, "bold"), fg="#f39c12", bg=BG_COLOR, bd=2)
+    
+    #  Inputs (Entry Boxes instead of Sliders)
+    left_p = LabelFrame(main_container, text=" Joint Controls (Degrees) ", font=("Arial", 12, "bold"), fg="#f39c12", bg=BG_COLOR, bd=2)
     left_p.pack(side=LEFT, fill=Y, padx=5, pady=5)
-
+    
+    #  Joint Controls Container
+    left_p = LabelFrame(main_container, text=" Joint Controls ", font=("Arial", 12, "bold"), 
+                        fg="#f39c12", bg=BG_COLOR, bd=2, padx=10, pady=10)
+    left_p.pack(side=LEFT, fill=Y, padx=10, pady=5)
+    
     joints = []
-    for i in range(1, 7):
-        f = Frame(left_p, bg=BG_COLOR)
-        f.pack(pady=2, fill=X, padx=5)
-        Label(f, text=f"θ{i}:", fg="white", bg=BG_COLOR, font=("Arial", 10, "bold"), width=3).pack(side=LEFT)
-        s = Scale(f, from_=-180, to=180, orient=HORIZONTAL, bg="#03265b", fg="white", troughcolor="#f36412", length=150)
-        s.pack(side=LEFT, padx=5); joints.append(s)
+    # Esmaa el joints 3ashan nsa3ed el user
+    joint_names = ["Base", "Shoulder", "Elbow", "Wrist Pitch", "Wrist Roll", "Gripper"]
 
-    Button(left_p, text="RUN SIMULATION", bg="#f36412", fg="white", font=("Arial", 11, "bold"), 
-           command=lambda: update_robot_plot(ax, canvas, joints, matrix_labels, dh_labels)).pack(pady=20, fill=X, padx=10)
+    for i in range(6):
+        # Frame le kol joint (Card)
+        joint_card = Frame(left_p, bg=BG_COLOR, pady=8)
+        joint_card.pack(fill=X)
+        
+        # 1. El Label (esm el joint) mn fo2
+        Label(joint_card, text=f"θ{i+1}: {joint_names[i]}", 
+              fg="#70afc2", bg=BG_COLOR, font=("Arial", 9, "bold")).pack(anchor=W)
+        
+        # 2. El Entry Box (t7toh)
+        e = Entry(joint_card, font=("Consolas", 12, "bold"), width=15, 
+                  justify="center", bg="#0a1e4d", fg="#2ecc71", 
+                  insertbackground="white", relief=FLAT, bd=2)
+        
+        # Trick: Ne3mel line ta7t el box 3ashan yban "Modern"
+        e.insert(0, "0.0")
+        e.pack(pady=2)
+        
+        # Line decorative ta7t el box
+        Frame(joint_card, height=2, bg="#f36412").pack(fill=X, padx=2)
+        
+        joints.append(e)
 
+    # Simulation Button
+    Button(left_p, text="RUN SIMULATION", bg="#2ecc71", fg="white", font=("Arial", 11, "bold"), 
+           activebackground="#27ae60", cursor="hand2", 
+           command=lambda: update_robot_plot(ax, canvas, joints, matrix_labels, dh_labels, ee_coords)).pack(pady=25, fill=X)
+    
+    
     #  Middle Panel 3D Visualization
     middle_p = Frame(main_container, bg="#081b4b", bd=2, relief=SUNKEN)
     middle_p.pack(side=LEFT, expand=True, fill=BOTH, padx=10, pady=10)
@@ -592,52 +668,231 @@ def open_fk_page():
         Label(dh_frame, text=str(row[0]), fg="white", bg=BG_COLOR).grid(row=i+1, column=2, padx=10)
         Label(dh_frame, text=str(row[1]), fg="white", bg=BG_COLOR).grid(row=i+1, column=3, padx=10)
         Label(dh_frame, text=str(row[2]), fg="white", bg=BG_COLOR).grid(row=i+1, column=4, padx=10)
+        
+    #  End-Effector Position (Coordinates) 
+    ee_frame = LabelFrame(right_p, text=" End-Effector Position (X, Y, Z) ", 
+                          font=("Arial", 11, "bold"), fg="#27ae60", bg=BG_COLOR, bd=2)
+    ee_frame.pack(fill=X, pady=10)
 
+    for i in range(3): ee_frame.grid_columnconfigure(i, weight=1)
+
+    ee_coords = {}
+    axes_cfg = [("X", "#e74c3c"), ("Y", "#2ecc71"), ("Z", "#3498db")]
+
+    for i, (axis, color) in enumerate(axes_cfg):
+        container = Frame(ee_frame, bg=BG_COLOR)
+        container.grid(row=0, column=i, pady=10, padx=2)
+        
+        Label(container, text=f"{axis}:", font=("Arial", 10, "bold"), fg=color, bg=BG_COLOR).pack(side=LEFT)
+        
+        
+        val_lbl = Label(container, text="0.00", font=("Consolas", 11, "bold"), 
+                        fg="white", bg="#0a1e4d", width=7, relief=RIDGE)
+        val_lbl.pack(side=LEFT, padx=3)
+        ee_coords[axis] = val_lbl
 
     # Hardware Sync Button
     sync_frame = Frame(right_p, bg="#0a1e4d", bd=1, relief=SOLID)
     sync_frame.pack(side=BOTTOM, fill=X, pady=10)
     Button(sync_frame, text="UPLOAD TO HARDWARE", bg="#27ae60", fg="white", 
            font=("Arial", 10, "bold"), command=lambda: messagebox.showinfo("Hardware Sync", "Uploading to ESP32")).pack(pady=10, padx=10, fill=X)
+    
+    
 
 
     # Initial Draw
     #window.after(200, lambda: update_robot_plot(ax, canvas, joints, matrix_labels, dh_labels))
 
 
+
 #page fiha kol experiments hna
 def open_experiments_page():
     for widget in window.winfo_children(): widget.destroy()
-    Button(window, text="Back to Main Menu", font=("Arial", 12, "bold"), fg="#f36412", bg=BG_COLOR, bd=0, command=show_welcome_page, borderwidth=10).pack(anchor=NW, padx=20, pady=10)
-    Label(window, text="SELECT EXPERIMENT", font=("Helvetica", 30, "bold"), fg="#f39c12", bg=BG_COLOR).pack(pady=20)
+    
+    # Zorrar el-Back
+    Button(window, text="Back to Main Menu", font=("Arial", 12, "bold"), 
+           fg="#f36412", bg=BG_COLOR, bd=0, command=show_welcome_page, borderwidth=10).pack(anchor=NW, padx=20, pady=10)
+    
+    Label(window, text="SELECT EXPERIMENT", font=("Helvetica", 30, "bold"), 
+          fg="#f39c12", bg=BG_COLOR).pack(pady=30) 
+
     Experiments = [
         ("1. Forward Kinematics (FK)", open_fk_intro_page), 
         ("2. Inverse Kinematics (IK)", open_ik_page), 
         ("3. Trajectory Planning", open_trajectory_page), 
-        ("4. Pick and Place Control", None),
-        ("5. Cup Filling Simulation", None)
+        ("4. Pick and Place Control", None)
     ]
-    #ay 7aga bs 3l4an lw clickinaa 3la ay 7aga lsa mt3mlt4
+
     for text, cmd in Experiments:
-        action = cmd if cmd else lambda t=text: messagebox.showinfo("lsa m3mlto4", f"{t},isa yt3ml 3latol ")
-        Button(window, text=text, font=("Arial", 16), fg="white", bg="#03265b", width=35, pady=12, command=action, borderwidth=5).pack(pady=10)
+        def log_and_open(t=text, c=cmd):
+            if c:
+                save_lab_result(t, "Experiment Started Successfully")
+                c()
+            else:
+                messagebox.showinfo("lsa m3mlto4", f"{t}, isa yt3ml 3latol")
+
+        
+        Button(window, text=text, font=("Arial", 16, "bold"), fg="white", 
+               bg="#03265b", width=35, pady=18, 
+               command=log_and_open, 
+               borderwidth=5).pack(pady=15) 
+
+file_path = "lab_records.csv"
+
+if not os.path.exists(file_path):
+    with open(file_path, mode='w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(["Timestamp", "Student Name", "Student ID", "Experiment Type", "Result Data"])
+
+CURRENT_USER = ""
+CURRENT_ID = ""
+
+def save_lab_result(exp_name, data_values):
+    # Lazm CURRENT_USER yeb2a global hena kaman
+    global CURRENT_USER, CURRENT_ID
+    with open("lab_records.csv", mode='a', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            CURRENT_USER, 
+            CURRENT_ID, 
+            exp_name, 
+            data_values
+        ])
+
+def show_login_page():
+    for widget in window.winfo_children(): widget.destroy()
+    
+    login_frame = Frame(window, bg=BG_COLOR)
+    login_frame.pack(expand=True, fill=BOTH)
+
+    card = Frame(login_frame, bg="#0d2142", highlightbackground="#099da5", highlightthickness=2, padx=50, pady=50)
+    card.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+    Label(card, text="STUDENT IDENTIFICATION", font=("Helvetica", 18, "bold"), fg="#099da5", bg="#0d2142").pack(pady=(0, 20))
+
+    Label(card, text="Full Name:", font=("Arial", 10), fg="#efefef", bg="#0d2142").pack(anchor=W)
+    name_entry = Entry(card, font=("Arial", 14), bg="#050c1f", fg="white", insertbackground="white", bd=0)
+    name_entry.pack(fill=X, pady=(5, 15))
+    Frame(card, height=1, bg="#099da5").pack(fill=X)
+
+    Label(card, text="Student ID:", font=("Arial", 10), fg="#efefef", bg="#0d2142").pack(anchor=W)
+    id_entry = Entry(card, font=("Arial", 14), bg="#050c1f", fg="white", insertbackground="white", bd=0)
+    id_entry.pack(fill=X, pady=(5, 15))
+    Frame(card, height=1, bg="#099da5").pack(fill=X)
+
+    def final_step():
+        global CURRENT_USER, CURRENT_ID
+        name = name_entry.get()
+        uid = id_entry.get()
+        
+        if name and uid:
+            CURRENT_USER = name
+            CURRENT_ID = uid
+            
+            # Save data awel ma ydous verify
+            save_lab_result("Login System", "Student Verified & Entered Lab")
+
+            try:
+                open_experiments_page() 
+            except NameError:
+               
+                print("Error: Function 'open_experiments_page' not found!")
+        else:
+            err = Label(card, text="Please fill all fields", fg="#f36412", bg="#0d2142")
+            err.pack(pady=5)
+            window.after(2000, err.destroy)
+    Button(card, text="VERIFY & ENTER LAB →", bg="#099da5", fg="white", 
+           font=("Arial", 12, "bold"), padx=30, pady=10, bd=0, command=final_step).pack(pady=25)
+
+
 
 #de main page kolha texts
 def show_welcome_page():
-    for widget in window.winfo_children(): widget.destroy()
-    left_c = Frame(window, bg=BG_COLOR); left_c.pack(side=LEFT, expand=True, fill=BOTH, padx=80)
-    right_c = Frame(window, bg=BG_COLOR); right_c.pack(side=RIGHT, expand=True, fill=BOTH)
-    Label(left_c, text="WELCOME TO OUR VIRTUAL LAB", font=("Helvetica", 35, "bold"), fg="#f36412", bg=BG_COLOR, justify=LEFT).pack(pady=(120, 20), anchor=W)
-    intro_text = ("This Virtual Lab provides an integrated environment to simulate and analyze 4 distinct robotic experiments. It allows you to explore robotic kinematics and trajectory planning in a 3D simulation. Finally, you can bridge the gap between virtual and reality by connecting your ESP32 kit to synchronize and observe the real-time motion of the physical robotic arm.")
-    Label(left_c, text=intro_text, font=("Times New Roman", 14, "bold"), fg="#70afc2", bg=BG_COLOR, justify=LEFT, wraplength=600).pack(pady=10, anchor=W)
-    how_to_use = ("How to use this lab:\n1. Click the button below to start.\n2. Select your desired experiment.\n3. Observe the 3D simulation in real-time.\n4. Connect your ESP32 kit to sync motion!")
-    Label(left_c, text=how_to_use, font=("Arial", 13), fg="white", bg=BG_COLOR, justify=LEFT).pack(pady=20, anchor=W)
-    Button(left_c, text='ENTER THE LAB', bg='#f36412', fg='white', font=('Arial', 14, 'bold'), padx=40, pady=20, bd=0, command=open_experiments_page).pack(pady=30, anchor=W)
-    try:
-        img_path = os.path.join(os.path.dirname(__file__), "robot_arm.png")
-        img = ImageTk.PhotoImage(Image.open(img_path).resize((800, 800)))
-        lbl = Label(right_c, image=img, bg=BG_COLOR); lbl.image = img; lbl.pack(expand=True)
-    except: pass
+    for widget in window.winfo_children(): 
+        widget.destroy()
+    
+    main_frame = Frame(window, bg=BG_COLOR)
+    main_frame.pack(expand=True, fill=BOTH)
 
-show_welcome_page()
+    # Headers
+    Label(main_frame, text="6-DOF ROBOTIC ARM EDUCATIONAL KIT", 
+          font=("Helvetica", 24, "bold"), fg="#099da5", bg=BG_COLOR).place(relx=0.5, rely=0.05, anchor=CENTER)
+    Label(main_frame, text="VIRTUAL LAB INTERFACE v1.0", font=("Consolas", 10, "bold"), 
+          fg="#efefef", bg=BG_COLOR).place(relx=0.5, rely=0.08, anchor=CENTER)
+
+   
+    try:
+        logo_path = r"C:\Users\Bassant\robot-arm-educational-kit\GUI\uni_logo.png"
+        logo_img = Image.open(logo_path).resize((110, 110), Image.Resampling.LANCZOS)
+        logo_photo = ImageTk.PhotoImage(logo_img)
+        l_lbl = Label(main_frame, image=logo_photo, bg=BG_COLOR)
+        l_lbl.image = logo_photo
+        l_lbl.place(relx=0.92, rely=0.07, anchor=CENTER)
+    except: 
+        pass
+
+    
+    text_container = Frame(main_frame, bg=BG_COLOR)
+    text_container.place(relx=0.07, rely=0.15, width=500)
+
+    title_txt = "WELCOME TO\nOUR\nVIRTUAL LAB"
+    Label(text_container, text=title_txt, font=("Helvetica", 48, "bold"), 
+          fg="#050c1f", bg=BG_COLOR, justify=LEFT).place(x=3, y=3)
+    Label(text_container, text=title_txt, font=("Helvetica", 48, "bold"), 
+          fg="#099da5", bg=BG_COLOR, justify=LEFT).pack(anchor=W)
+
+    desc_text = ("Explore robotics through real-time simulation, motion analysis,\n"
+                 "and live synchronization with a physical 6-DOF robotic arm.")
+    Label(text_container, text=desc_text, font=("Segoe UI", 12, "italic"), 
+          fg="#efefef", bg=BG_COLOR, justify=LEFT).pack(pady=(15, 10), anchor=W)
+
+
+    instr_card = Frame(text_container, bg="#0d2142", bd=0, highlightbackground="#099da5", highlightthickness=1, padx=20, pady=15)
+    instr_card.pack(anchor=W, fill=X, pady=10)
+    
+    Label(instr_card, text="LABORATORY OBJECTIVES & SCOPE:", font=("Arial", 11, "bold"), fg="#efefef", bg="#0d2142").pack(anchor=W, pady=(0,5))
+    
+    points = [
+        "• REAL-TIME SIMULATION: Visualize robotic arm motion inside a 3D virtual workspace.",
+        "• HARDWARE SYNCHRONIZATION: Observe the physical robotic arm responding live to simulation commands.",
+        "• KINEMATIC ANALYSIS: Perform Forward and Inverse Kinematics calculations using DH Parameters.",
+        "• TRAJECTORY & CONTROL: Analyze motion paths, joint behavior, and actuator responses in real time."
+    ]
+    for p in points:
+        Label(instr_card, text=p, font=("Arial", 9), fg="#9db2bf", bg="#0d2142", justify=LEFT, wraplength=450).pack(anchor=W, pady=2)
+
+   
+    btn_get_started = Button(text_container, text="GET STARTED / LOGIN →", bg="#099da5", fg="white", 
+                            font=("Arial", 12, "bold"), padx=40, pady=12, bd=0, cursor="hand2",
+                            command=show_login_page) 
+    btn_get_started.pack(pady=20, anchor=W)
+
+    
+    glow_frame = Frame(main_frame, bg="#0d2142", bd=0, highlightbackground="#099da5", highlightthickness=1)
+    glow_frame.place(relx=0.55, rely=0.20, width=520, height=580)
+
+    try:
+        robot_path = os.path.join(os.path.dirname(__file__), "robot_arm.png")
+        r_img = Image.open(robot_path).resize((480, 480), Image.Resampling.LANCZOS)
+        r_photo = ImageTk.PhotoImage(r_img)
+        robot_lbl = Label(glow_frame, image=r_photo, bg="#14264d")
+        robot_lbl.image = r_photo
+        robot_lbl.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+        #3ayzen nzabt animation zi ma shahd 2alttt
+        def animate_robot(angle=0):
+            import math
+            # Sin wave movement (10 pixels up/down)
+            off_y = math.sin(angle) * 10 
+            robot_lbl.place(relx=0.5, rely=0.5, y=off_y, anchor=CENTER)
+            # Repeat after 20ms (Fast & Smooth)
+            window.after(20, lambda: animate_robot(angle + 0.1)) 
+            
+        animate_robot()
+        
+    except Exception as e: 
+        print(f"Error in animation or image: {e}")
+
+show_welcome_page()       
 window.mainloop()
