@@ -1,10 +1,28 @@
-import serial
-import time
+import socket
 
-ser = serial.Serial('COM4', 115200)
-time.sleep(2)
+ESP_IP = "192.168.4.1"
+ESP_PORT = 80
 
 def send_angles(angles):
-    data = ",".join([str(int(a)) for a in angles[:6]]) + "\n"
-    ser.write(data.encode())
-    print("Sent:", data)
+
+    data = ",".join(
+        [str(int(a)) for a in angles[:6]]
+    ) + "\n"
+
+    try:
+
+        sock = socket.socket(
+            socket.AF_INET,
+            socket.SOCK_STREAM
+        )
+
+        sock.settimeout(0.1)
+
+        sock.connect((ESP_IP, ESP_PORT))
+
+        sock.send(data.encode())
+
+        sock.close()
+
+    except:
+        pass
