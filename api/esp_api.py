@@ -16,13 +16,21 @@ def send_angles(angles):
             socket.SOCK_STREAM
         )
 
-        sock.settimeout(0.1)
+        sock.settimeout(0.01)
 
-        sock.connect((ESP_IP, ESP_PORT))
+        sock.connect(
+            (ESP_IP, ESP_PORT)
+        )
 
-        sock.send(data.encode())
+        sock.send(
+            data.encode()
+        )
 
         sock.close()
 
-    except:
-        pass
+    except Exception as e:
+
+        print(
+            "Connection Error:",
+            e
+        )

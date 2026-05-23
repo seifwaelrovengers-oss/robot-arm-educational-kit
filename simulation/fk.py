@@ -30,11 +30,12 @@ def run_fk():
 
     try:
 
-        # Init PyBullet
+        # Reset old session
         if p.isConnected():
 
             p.disconnect()
 
+        # Start PyBullet
         p.connect(p.GUI)
 
         p.setAdditionalSearchPath(
@@ -49,7 +50,9 @@ def run_fk():
         )
 
         # Plane
-        plane = p.loadURDF("plane.urdf")
+        plane = p.loadURDF(
+            "plane.urdf"
+        )
 
         p.changeDynamics(
             plane,
@@ -65,7 +68,9 @@ def run_fk():
             useFixedBase=True
         )
 
-        for i in range(p.getNumJoints(robot)):
+        for i in range(
+            p.getNumJoints(robot)
+        ):
 
             p.changeDynamics(
                 robot,
@@ -76,6 +81,14 @@ def run_fk():
 
         end_effector_index = (
             p.getNumJoints(robot) - 1
+        )
+
+        # Camera
+        p.resetDebugVisualizerCamera(
+            cameraDistance=1.5,
+            cameraYaw=45,
+            cameraPitch=-35,
+            cameraTargetPosition=[0, 0, 0.3]
         )
 
         # Joint sliders
@@ -94,7 +107,7 @@ def run_fk():
 
             joint_sliders.append(slider)
 
-        # DH parameter sliders
+        # DH sliders
         a1_slider = p.addUserDebugParameter(
             "a1",
             100,
@@ -129,16 +142,22 @@ def run_fk():
 
         last_sent = None
 
-        # Motion parameters
+        # Motion tuning
         max_speed = 0.07
         accel = 0.015
         damping = 0.92
 
+        # Print timer
+        last_print = time.time()
+
         # Main loop
         while True:
 
-            # Stop if window closed
+            # Window closed
             if not p.isConnected():
+
+                run_fk.running = False
+
                 break
 
             # Read DH parameters
@@ -209,7 +228,7 @@ def run_fk():
                     force=2000
                 )
 
-            # Convert to degrees
+            # Degrees
             angles_deg = [
 
                 int(np.degrees(a))
@@ -217,30 +236,25 @@ def run_fk():
                 for a in current_angles[:6]
             ]
 
-            # Send to ESP32
+            # ESP32 Sync
             if angles_deg != last_sent:
 
                 send_angles(angles_deg)
 
                 last_sent = angles_deg
 
-            # FK math
-            
-
+            # FK
             t1 = current_angles[0]
             t2 = current_angles[1]
             t3 = current_angles[2]
 
-            # Base height
             d1 = a1
 
-            # Radius in XY plane
             r = (
                 a2 * np.cos(t2) +
                 a3 * np.cos(t2 + t3)
             )
 
-            # Cartesian coordinates
             x = r * np.cos(t1)
 
             y = r * np.sin(t1)
@@ -251,7 +265,7 @@ def run_fk():
                 a3 * np.sin(t2 + t3)
             )
 
-            # End effector orientation
+            # Orientation
             orn = p.getLinkState(
                 robot,
                 end_effector_index
@@ -261,28 +275,43 @@ def run_fk():
                 p.getEulerFromQuaternion(orn)
             )
 
-            # Print FK
-            print(
-                f"X: {x:.2f} | "
-                f"Y: {y:.2f} | "
-                f"Z: {z:.2f} | "
-                f"Roll: {np.degrees(roll):.2f} | "
-                f"Pitch: {np.degrees(pitch):.2f} | "
-                f"Yaw: {np.degrees(yaw):.2f}"
-            )
+            # Print every 0.2 sec
+            if time.time() - last_print > 0.2:
 
-            # Display FK
-            p.addUserDebugText(
-                (
-                    f"X={x:.2f}\n"
-                    f"Y={y:.2f}\n"
-                    f"Z={z:.2f}"
-                ),
-                [0, 0, 1.5],
-                textColorRGB=[1, 0, 0],
-                textSize=1.5,
-                lifeTime=0.1
-            )
+                print(
+                    f"X: {x:.2f} | "
+                    f"Y: {y:.2f} | "
+                    f"Z: {z:.2f} | "
+                    f"Roll: {np.degrees(roll):.2f} | "
+                    f"Pitch: {np.degrees(pitch):.2f} | "
+                    f"Yaw: {np.degrees(yaw):.2f}"
+                )
+
+                p.addUserDebugText(
+                    f"X = {x:.2f}",
+                    [0.3, 0, 0.4],
+                    textColorRGB=[1, 0, 0],
+                    textSize=1.5,
+                    lifeTime=0.2
+                )
+
+                p.addUserDebugText(
+                    f"Y = {y:.2f}",
+                    [0.3, 0, 0.3],
+                    textColorRGB=[0, 1, 0],
+                    textSize=1.5,
+                    lifeTime=0.2
+                )
+
+                p.addUserDebugText(
+                    f"Z = {z:.2f}",
+                    [0.3, 0, 0.2],
+                    textColorRGB=[0, 0.7, 1],
+                    textSize=1.5,
+                    lifeTime=0.2
+                )
+
+                last_print = time.time()
 
             p.stepSimulation()
 
@@ -291,6 +320,10 @@ def run_fk():
     finally:
 
         run_fk.running = False
+
+        if p.isConnected():
+
+            p.disconnect()
 
 
 if __name__ == "__main__":

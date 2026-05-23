@@ -2,7 +2,6 @@
 from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk
-import os
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
@@ -13,6 +12,20 @@ import matplotlib.ticker as ticker
 from PIL import Image, ImageTk
 import csv
 from datetime import datetime
+import sys
+import os
+
+sys.path.append(
+    os.path.abspath(
+        os.path.join(
+            os.path.dirname(__file__),
+            '..'
+        )
+    )
+)
+
+import threading
+from simulation.fk import run_fk
 
 
 
@@ -466,6 +479,12 @@ def open_ik_page():
     
 #de FK gahza kamlaaaa into w FK calculations
 #intro page 
+def start_fk_simulation():
+
+    threading.Thread(
+        target=run_fk,
+        daemon=True
+    ).start()
 def open_fk_intro_page():
     for widget in window.winfo_children(): 
         widget.destroy()
@@ -523,11 +542,12 @@ def open_fk_intro_page():
     Button(btn_container, text="Simulation & Calculations →", font=("Arial", 13, "bold"), 
            bg="#f36412", fg="white", width=25, height=2, command=open_fk_page).pack(side=RIGHT)
     Button(btn_container, text=" ← 3D Visualization (PyBullet)", font=("Arial", 13, "bold"), 
-           bg="#2980b9", fg="white", width=25, height=2, command=run_pybullet_sim).pack(side=LEFT)
+           bg="#2980b9", fg="white", width=25, height=2, command=start_fk_simulation).pack(side=LEFT)
 
 
 
 # FK el gdida
+
 def open_fk_page():
     for widget in window.winfo_children(): widget.destroy()
 
