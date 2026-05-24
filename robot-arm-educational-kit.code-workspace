@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "robot-arm-educational-kit",
+			"path": "."
+		},
+		{
+			"name": "esp32_controller",
+			"path": "C:/Users/green/Documents/PlatformIO/Projects/esp32_controller"
+		}
+	],
+	"settings": {}
+}
