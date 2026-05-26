@@ -1,86 +1,243 @@
 def run_ik():
-    import sys, os
-    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+    import sys
+    import os
+
+    sys.path.append(
+        os.path.abspath(
+            os.path.join(
+                os.path.dirname(__file__),
+                ".."
+            )
+        )
+    )
 
     import pybullet as p
-    import pybullet_data as pd
+    import pybullet_data
     import time
     import numpy as np
+    import tkinter as tk
 
-    # 🔥 لو عندك esp API
     try:
         from api.esp_api import send_angles
     except:
         def send_angles(x):
-            print("SIM SEND:", x)
+            print("SIM:", x)
 
-    # ===== INIT =====
+    # =========================
+    # INIT
+    # =========================
     if p.isConnected():
         p.disconnect()
 
     p.connect(p.GUI)
-    p.setAdditionalSearchPath(pd.getDataPath())
+
+    p.setAdditionalSearchPath(
+        pybullet_data.getDataPath()
+    )
+
     p.setGravity(0, 0, -9.8)
 
-    # ===== LOAD =====
+    # =========================
+    # LOAD
+    # =========================
     plane = p.loadURDF("plane.urdf")
-    robot = p.loadURDF("kuka_iiwa/model.urdf", useFixedBase=True)
 
-    end_effector = p.getNumJoints(robot) - 1
+    robot = p.loadURDF(
+        "kuka_iiwa/model.urdf",
+        useFixedBase=True
+    )
+    p.resetDebugVisualizerCamera(
+    cameraDistance=1.5,
+    cameraYaw=45,
+    cameraPitch=-30,
+    cameraTargetPosition=[0, 0, 0.3]
+)
 
-    # ===== SLIDERS =====
-    x_slider = p.addUserDebugParameter("X", -1, 1, 0.4)
-    y_slider = p.addUserDebugParameter("Y", -1, 1, 0)
-    z_slider = p.addUserDebugParameter("Z", 0, 1, 0.4)
+    # 6 theta
+    end_effector = 5
 
-    # ===== LOOP =====
-    while True:
-        # 🎯 target position
-        x = p.readUserDebugParameter(x_slider)
-        y = p.readUserDebugParameter(y_slider)
-        z = p.readUserDebugParameter(z_slider)
+    # =========================
+    # TK WINDOW
+    # =========================
+    root = tk.Tk()
 
-        target = [x, y, z]
+    root.title("IK Input")
 
-        # 🔥 IK
-        joint_angles = p.calculateInverseKinematics(
-            robot,
-            end_effector,
-            target
-        )
+    tk.Label(
+        root,
+        text="X"
+    ).grid(row=0, column=0)
 
-        # ===== APPLY =====
-        for i in range(p.getNumJoints(robot)):
-            p.setJointMotorControl2(
-                robot,
-                i,
-                p.POSITION_CONTROL,
-                targetPosition=joint_angles[i],
-                force=2000
+    tk.Label(
+        root,
+        text="Y"
+    ).grid(row=1, column=0)
+
+    tk.Label(
+        root,
+        text="Z"
+    ).grid(row=2, column=0)
+
+    x_var = tk.StringVar(value="0.4")
+    y_var = tk.StringVar(value="0")
+    z_var = tk.StringVar(value="0.4")
+
+    tk.Entry(
+        root,
+        textvariable=x_var
+    ).grid(row=0, column=1)
+
+    tk.Entry(
+        root,
+        textvariable=y_var
+    ).grid(row=1, column=1)
+
+    tk.Entry(
+        root,
+        textvariable=z_var
+    ).grid(row=2, column=1)
+
+    target = None
+
+    # =========================
+    # APPLY
+    # =========================
+    def apply_values():
+
+        nonlocal target
+
+        try:
+
+            x = float(
+                x_var.get()
             )
 
-        # ===== CONVERT TO DEG =====
-        angles_deg = [int(np.degrees(a)) for a in joint_angles[:6]]
+            y = float(
+                y_var.get()
+            )
 
-        # ===== PRINT =====
-        print("Angles:", angles_deg)
+            z = float(
+                z_var.get()
+            )
 
-        # ===== SEND TO DIGITAL TWIN =====
-        send_angles(angles_deg)
+            target = [
+                x,
+                y,
+                z
+            ]
 
-        # ===== DISPLAY =====
-        p.addUserDebugText(
-            f"Angles: {angles_deg}",
-            [0, 0, 1.2],
-            textColorRGB=[1, 1, 0],
-            textSize=1.5,
-            lifeTime=0.1,
-        )
+            print(
+                "\nTarget:",
+                target
+            )
+
+        except:
+
+            print(
+                "Invalid Input"
+            )
+
+    tk.Button(
+        root,
+        text="Apply",
+        command=apply_values
+    ).grid(
+        row=3,
+        column=0,
+        columnspan=2,
+        pady=10
+    )
+
+    # =========================
+    # LOOP
+    # =========================
+    while True:
+
+        root.update()
+
+        if target is not None:
+
+            # IK
+            joint_angles = p.calculateInverseKinematics(
+                robot,
+                end_effector,
+                target
+            )
+
+            # ---------------------
+            # FLOAT for terminal
+            # ---------------------
+            angles_deg_float = [
+
+                round(
+                    np.degrees(a),
+                    2
+                )
+
+                for a in joint_angles[:6]
+            ]
+
+            # gripper
+            gripper = 40
+
+            angles_deg_float.append(
+                gripper
+            )
+
+            # ---------------------
+            # INT for pybullet/esp
+            # ---------------------
+            angles_deg_int = [
+
+                int(a)
+
+                for a in angles_deg_float
+            ]
+
+            # terminal
+            print(
+                "Theta:",
+                angles_deg_float
+            )
+
+            # send esp
+            send_angles(
+                angles_deg_float
+            )
+
+            # move robot
+            for i in range(6):
+
+                p.setJointMotorControl2(
+                    robot,
+                    i,
+                    p.POSITION_CONTROL,
+                    targetPosition=joint_angles[i],
+                    force=2000
+                )
+
+            # show theta
+            p.addUserDebugText(
+                f"Theta = {angles_deg_int}",
+                [0, 0, 1.2],
+                textColorRGB=[
+                    1,
+                    1,
+                    0
+                ],
+                textSize=1.5,
+                lifeTime=5
+            )
+
+            # wait next apply
+            target = None
 
         p.stepSimulation()
-        time.sleep(1/60)
+
+        time.sleep(
+            1 / 240
+        )
 
 
-# تشغيل مباشر
 if __name__ == "__main__":
     run_ik()
