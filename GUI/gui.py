@@ -195,12 +195,12 @@ def open_dynamics_intro_page():
 
 
 
-
+# lsa m7tagh a3dlha kolha 3la rules eldr
 def open_dynamics_page():
     for widget in window.winfo_children():
         widget.destroy()
 
-    # ================= THEME =================
+   
     BG = "#0b1a3a"
     PANEL = "#102a5c"
     ACCENT = "#00d2ff"
@@ -209,7 +209,7 @@ def open_dynamics_page():
 
     sim = {"run": True}
 
-    # ================= HEADER =================
+  
     header = tk.Frame(window, bg=BG)
     header.pack(fill=tk.X)
 
@@ -235,7 +235,7 @@ def open_dynamics_page():
              fg=ACCENT,
              font=("Arial", 18, "bold")).pack(side=tk.LEFT, padx=25)
 
-    # ================= MAIN =================
+  
     main = tk.Frame(window, bg=BG)
     main.pack(fill=tk.BOTH, expand=True)
 
@@ -248,7 +248,7 @@ def open_dynamics_page():
     right = tk.Frame(main, bg=BG, width=350)
     right.pack(side=tk.RIGHT, fill=tk.Y)
 
-    # ================= INPUTS =================
+    
     def make_input(label, default):
         tk.Label(left, text=label, fg="white", bg=BG).pack(anchor="w")
         e = tk.Entry(left, bg=PANEL, fg=ACCENT, insertbackground="white")
@@ -265,7 +265,7 @@ def open_dynamics_page():
     theta = [make_input(f"θ{i+1} (deg)", 20*(i+1)) for i in range(6)]
     links = [make_input(f"Link L{i+1} (cm)", 10+i*2) for i in range(6)]
 
-    # ================= OUTPUT =================
+   
     status = tk.Label(right, text="READY", fg=GREEN, bg=BG,
                       font=("Arial", 12, "bold"))
     status.pack(pady=10)
@@ -290,7 +290,7 @@ def open_dynamics_page():
                             font=("Consolas", 8))
     jacobian_lbl.pack()
 
-    # ================= GRAPH =================
+
     fig, ax = plt.subplots()
     fig.patch.set_facecolor(PANEL)
     ax.set_facecolor(PANEL)
@@ -301,7 +301,7 @@ def open_dynamics_page():
     t_data = []
     tau = [[] for _ in range(6)]
 
-    # ================= TORQUE MODEL =================
+  
     def torque_model(m, th, L, t):
 
         g = 9.81
@@ -316,7 +316,7 @@ def open_dynamics_page():
 
         return out
 
-    # ================= LAGRANGE =================
+    
     def lagrange(m, th, L):
 
         g = 9.81
@@ -333,7 +333,7 @@ def open_dynamics_page():
 
         return T, V, T - V
 
-    # ================= 6x6 JACOBIAN =================
+   
     def jacobian(th, L):
 
         J = np.zeros((6,6))
@@ -351,7 +351,7 @@ def open_dynamics_page():
 
         return J
 
-    # ================= RUN =================
+   
     def run():
 
         m = float(mass.get())
@@ -375,7 +375,7 @@ def open_dynamics_page():
             for j in range(6):
                 tau[j].append(τ[j])
 
-            # ================= GRAPH =================
+           
             ax.clear()
 
             for j in range(6):
@@ -386,7 +386,7 @@ def open_dynamics_page():
 
             canvas.draw()
 
-            # ================= OUTPUT =================
+          
             for j in range(6):
                 torque_labels[j].config(text=f"τ{j+1} = {τ[j]:.2f}")
 
@@ -404,7 +404,7 @@ def open_dynamics_page():
             window.update()
             window.after(50)
 
-    # ================= BUTTONS =================
+  
     tk.Button(left, text="▶ START",
               bg=GREEN, fg="white",
               command=run).pack(fill=tk.X, pady=5)
@@ -588,9 +588,7 @@ def open_trajectory_page():
     PANEL = "#081b4b"
     EXPERIMENT_TYPE = StringVar(value="Pick and Place")
 
-    # =====================================================
-    # HEADER
-    # =====================================================
+   
 
     header = Frame(window, bg=BG)
     header.pack(fill=X)
@@ -617,23 +615,14 @@ def open_trajectory_page():
         font=("Helvetica",18,"bold")
     ).pack(side=LEFT,padx=25)
 
-    # =====================================================
-    # MAIN
-    # =====================================================
+
 
     main = Frame(window,bg=BG)
     main.pack(fill=BOTH,expand=True)
 
-    # =====================================================
-    # LEFT PANEL
-    # =====================================================
-
     left = Frame(main,bg=BG,width=280)
     left.pack(side=LEFT,fill=Y,padx=10,pady=10)
 
-    # =====================================================
-    # EXPERIMENT SELECTION
-    # =====================================================
 
     selection_frame = LabelFrame(
         left,
@@ -675,16 +664,9 @@ def open_trajectory_page():
 
     sync_btn.pack(fill=X, padx=5, pady=5)
 
-    # =====================================================
-    # DYNAMIC LEFT
-    # =====================================================
-
+   
     dynamic_left_frame = Frame(left,bg=BG)
     dynamic_left_frame.pack(fill=BOTH,expand=True)
-
-    # =====================================================
-    # CENTER
-    # =====================================================
 
     center = Frame(main,bg=PANEL)
     center.pack(side=LEFT,fill=BOTH,expand=True,padx=10,pady=10)
@@ -697,9 +679,6 @@ def open_trajectory_page():
     canvas = FigureCanvasTkAgg(fig,master=center)
     canvas.get_tk_widget().pack(fill=BOTH,expand=True)
 
-    # =====================================================
-    # RIGHT PANEL
-    # =====================================================
 
     right = Frame(main,bg=BG,width=340)
     right.pack(side=RIGHT,fill=Y,padx=10,pady=10)
@@ -707,9 +686,6 @@ def open_trajectory_page():
     dynamic_right_frame = Frame(right,bg=BG)
     dynamic_right_frame.pack(fill=BOTH,expand=True)
 
-    # =====================================================
-    # STATUS
-    # =====================================================
 
     status_frame=LabelFrame(
         right,
@@ -730,9 +706,6 @@ def open_trajectory_page():
     )
     status_lbl.pack(fill=X)
 
-    # =====================================================
-    # MATRIX
-    # =====================================================
 
     matrix_frame=LabelFrame(
         right,
@@ -755,9 +728,7 @@ def open_trajectory_page():
     )
     matrix_lbl.pack(fill=BOTH,expand=True)
 
-    # =====================================================
-    # JACOBIAN
-    # =====================================================
+  
 
     jacobian_frame=LabelFrame(
         right,
@@ -780,9 +751,6 @@ def open_trajectory_page():
     )
     jacobian_lbl.pack(fill=BOTH,expand=True)
 
-    # =====================================================
-    # EULER
-    # =====================================================
 
     euler_frame=LabelFrame(
         right,
@@ -805,9 +773,7 @@ def open_trajectory_page():
     )
     euler_lbl.pack(fill=X)
 
-    # =====================================================
-    # MOTION
-    # =====================================================
+
 
     motion_frame=LabelFrame(
         right,
@@ -830,9 +796,6 @@ def open_trajectory_page():
     )
     motion_lbl.pack(fill=X)
 
-    # =====================================================
-    # ANALYSIS
-    # =====================================================
 
     analysis_frame=LabelFrame(
         right,
@@ -855,9 +818,6 @@ def open_trajectory_page():
     )
     analysis_lbl.pack(fill=X)
     
-    # =====================================================
-    # ROBOT FUNCTIONS
-    # =====================================================
 
     def draw_workspace(d1,a2,a3):
 
@@ -878,7 +838,7 @@ def open_trajectory_page():
             alpha=0.05
         )
 
-    # =====================================================
+   
 
     def draw_cylinder(p1,p2,radius=7,color='#3498db'):
 
@@ -926,7 +886,7 @@ def open_trajectory_page():
             alpha=0.95
         )
 
-    # =====================================================
+   
 
     def draw_gripper(p3,theta1,theta2,theta3,open_amount=15):
 
@@ -968,7 +928,7 @@ def open_trajectory_page():
             linewidth=4
         )
 
-    # =====================================================
+    
 
     def IK(x, y, z,
        roll, pitch, yaw,
@@ -976,9 +936,7 @@ def open_trajectory_page():
        a2, a3,
        d4, d5, d6):
 
-        # =========================
-        # ROTATION MATRIX (RPY)
-        # =========================
+      
         cr, sr = np.cos(roll), np.sin(roll)
         cp, sp = np.cos(pitch), np.sin(pitch)
         cy, sy = np.cos(yaw), np.sin(yaw)
@@ -989,23 +947,16 @@ def open_trajectory_page():
             [-sp,   cp*sr,            cp*cr]
         ])
 
-        # =========================
-        # WRIST CENTER (IMPORTANT)
-        # d4 + d5 = fixed offsets
-        # =========================
+
         tool_offset =  d6
         wc = np.array([x, y, z]) - tool_offset * R06[:, 2]
 
         wc_x, wc_y, wc_z = wc
 
-        # =========================
-        # BASE ANGLE
-        # =========================
+      
         theta1 = np.arctan2(wc_y, wc_x)
 
-        # =========================
-        # PLANAR IK (2 LINKS)
-        # =========================
+       
         r = np.sqrt(wc_x**2 + wc_y**2)
         s = wc_z - d1
 
@@ -1021,9 +972,7 @@ def open_trajectory_page():
             a2 + a3 * np.cos(theta3)
         )
 
-        # =========================
-        # FORWARD KINEMATICS (R03)
-        # =========================
+       
         def DH(theta, d, a, alpha):
             return np.array([
                 [np.cos(theta), -np.sin(theta)*np.cos(alpha),
@@ -1043,9 +992,7 @@ def open_trajectory_page():
         T03 = T01 @ T12 @ T23
         R03 = T03[:3, :3]
 
-        # =========================
-        # WRIST ORIENTATION
-        # =========================
+        
         R36 = R03.T @ R06
 
         theta5 = np.arctan2(
@@ -1061,7 +1008,7 @@ def open_trajectory_page():
             theta6 = np.arctan2(R36[2,1], -R36[2,0])
 
         return theta1, theta2, theta3, theta4, theta5, theta6
-    # =====================================================
+  
 
     def update_matrix(theta1, theta2, theta3,
                   theta4, theta5, theta6,
@@ -1081,23 +1028,17 @@ def open_trajectory_page():
                 [0,0,0,1]
             ])
 
-        # =====================
-        # ARM (3 DOF position)
-        # =====================
+        
         T01 = DH(theta1, d1, 0, np.pi/2)
         T12 = DH(theta2, 0, a2, 0)
         T23 = DH(theta3, 0, a3, 0)
 
-        # =====================
-        # WRIST (3 DOF orientation)
-        # =====================
+        
         T34 = DH(theta4, d4, 0, np.pi/2)   # yaw link
         T45 = DH(theta5, d5, 0, -np.pi/2)  # roll link
         T56 = DH(theta6, d6, 0, 0)         # gripper
 
-        # =====================
-        # FULL TRANSFORM
-        # =====================
+       
         T06 = T01 @ T12 @ T23 @ T34 @ T45 @ T56
 
         txt = (
@@ -1111,7 +1052,7 @@ def open_trajectory_page():
 
         return T06
 
-    # =====================================================
+    
 
     def update_euler(theta1, theta2, theta3,
                  theta4, theta5, theta6,
@@ -1162,7 +1103,7 @@ def open_trajectory_page():
             f"PITCH = {np.degrees(pitch):.2f}°\n"
             f"YAW   = {np.degrees(yaw):.2f}°"
         )
-    # =====================================================
+    
 
     def update_jacobian(theta1, theta2, theta3,
                     theta4, theta5, theta6,
@@ -1183,9 +1124,7 @@ def open_trajectory_page():
                 [0,0,0,1]
             ])
 
-        # ======================
-        # FK
-        # ======================
+       
         T01 = DH(theta1, d1, 0, np.pi/2)
         T12 = DH(theta2, 0, a2, 0)
         T23 = DH(theta3, 0, a3, 0)
@@ -1200,9 +1139,7 @@ def open_trajectory_page():
         T05 = T04 @ T45
         T06 = T05 @ T56
 
-        # ======================
-        # positions
-        # ======================
+     
         p0 = np.array([0,0,0])
         p1 = T01[:3,3]
         p2 = T02[:3,3]
@@ -1211,9 +1148,6 @@ def open_trajectory_page():
         p5 = T05[:3,3]
         p6 = T06[:3,3]
 
-        # ======================
-        # z axes
-        # ======================
         z0 = np.array([0,0,1])
         z1 = T01[:3,2]
         z2 = T02[:3,2]
@@ -1221,12 +1155,10 @@ def open_trajectory_page():
         z4 = T04[:3,2]
         z5 = T05[:3,2]
 
-        # ======================
-        # Jacobian
-        # ======================
+       
         J = np.zeros((6,6))
 
-        # linear and angular
+        # linear and angular 3l4an tb2a s7
         
 
         J[0:3,0] = np.cross(z0, p6 - p0)
@@ -1255,8 +1187,7 @@ def open_trajectory_page():
        
         
         return J
-    # =====================================================
-
+    
     def draw_robot(theta1, theta2, theta3,
                theta4, theta5, theta6,
                d1, a2, a3,
@@ -1270,46 +1201,35 @@ def open_trajectory_page():
 
         draw_workspace(d1, a2, a3)
 
-        # =========================
-        # JOINT 0 (BASE)
-        # fixed base at origin
-        # =========================
+       
+        
+        # JOINT 0 (BASE) elhowa fe elard
         p0 = np.array([0, 0, 0])
 
-        # =========================
-        # JOINT 1 (BASE ROTATION - theta1)
-        # rotates arm around Z axis
-        # gives LEFT/RIGHT direction (yaw of whole arm)
-        # =========================
+    
+        # JOINT 1 (BASE ROTATION - theta1) 
         p1 = np.array([0, 0, d1])
 
-        # =========================
+        
         # JOINT 2 (SHOULDER - theta2)
-        # moves arm up/down in vertical plane
-        # controls elevation of link a2
-        # =========================
         p2 = p1 + np.array([
             a2*np.cos(theta2)*np.cos(theta1),
             a2*np.cos(theta2)*np.sin(theta1),
             a2*np.sin(theta2)
         ])
 
-        # =========================
+       
         # JOINT 3 (ELBOW - theta3)
-        # extends second link a3
-        # also affects vertical + reach
-        # =========================
+    
         p3 = p2 + np.array([
             a3*np.cos(theta2 + theta3)*np.cos(theta1),
             a3*np.cos(theta2 + theta3)*np.sin(theta1),
             a3*np.sin(theta2 + theta3)
         ])
 
-        # =========================
+      
         # TOOL DIRECTION (end-effector axis)
-        # direction of arm after elbow
-        # used to orient wrist joints
-        # =========================
+    
         tool_dir = np.array([
             np.cos(theta1)*np.cos(theta2 + theta3),
             np.sin(theta1)*np.cos(theta2 + theta3),
@@ -1318,8 +1238,7 @@ def open_trajectory_page():
 
       
         # SIDE AXIS (perpendicular to arm)
-        # used for yaw rotation at wrist
-        
+
         side = np.array([
             -np.sin(theta1),
             np.cos(theta1),
@@ -1327,25 +1246,21 @@ def open_trajectory_page():
         ])
 
        
-        # UP AXIS (completes 3D orientation frame)
-        # used for pitch/roll coupling
-       
+        # UP AXIS 
         up = np.cross(side, tool_dir)
 
-        # tool link lengths (wrist + gripper)
+        # tool link lengths (wrist + gripper) a5r t7disat mina 
         L4 = 74.17   # joint 4 (yaw link)
         L5 = 71.09   # joint 5 (pitch/roll link)
         L6 = 40      # gripper
 
         
         # JOINT 4 (WRIST YAW - theta4)
-        # rotates tool around tool axis sideways
        
         p4 = p3 + L4 * (np.cos(theta4)*tool_dir + np.sin(theta4)*side)
-
       
         # JOINT 5 (WRIST PITCH - theta5)
-        # tilts gripper up/down
+        #gripper up/down
       
         p5 = p4 + L5 * (
             np.cos(theta5)*tool_dir +
@@ -1353,30 +1268,28 @@ def open_trajectory_page():
         )
 
     
-        # JOINT 6 (GRIPPER - theta6)
-        # final extension / tool endpoint
-       
+        # JOINT 6 (GRIPPER - theta6) zi el TPT
+        # final extension 
         p6 = p5 + L6 * tool_dir
 
       
-        # ALL JOINT POINTS
-   
+    
         pts = [p0, p1, p2, p3, p4, p5, p6]
 
         colors = ['#34495e', '#3498db', '#9b59b6',
                 '#f39c12', '#1abc9c', '#e67e22']
 
-        # draw each link between joints
+        
         for i in range(len(pts) - 1):
             draw_cylinder(pts[i], pts[i+1], radius=7, color=colors[i])
 
-        # gripper visualization
+      
         draw_gripper(p6, theta1, theta2, theta3, grip_open)
 
         ax.scatter(p6[0], p6[1], p6[2], color='yellow', s=160)
 
        
-        # TRAIL (trajectory path)
+       
      
         if len(trail) > 1:
             xs = [p[0] for p in trail]
@@ -1385,7 +1298,7 @@ def open_trajectory_page():
             ax.plot3D(xs, ys, zs, color=color, linewidth=3)
 
        
-        # OBJECT (if pick & place)
+       
      
         if obj is not None:
             ax.scatter(obj[0], obj[1], obj[2], color='black', s=250)
@@ -1413,7 +1326,6 @@ def open_trajectory_page():
     
     # EXPERIMENTS
    
-
     def run_pick_and_place():
 
         sx = float(sx_entry.get())
@@ -1554,7 +1466,7 @@ def open_trajectory_page():
         d6 = 40   # gripper 
 
       
-        # VARIABLE LINKS (USER CONTROLLED)
+        # VARIABLE LINKS 
        
         a2 = float(link_entries[0].get())
         a3 = float(link_entries[1].get())
@@ -1571,7 +1483,7 @@ def open_trajectory_page():
             return
 
         
-        # ROBOT REACH MODEL
+        # ROBOT REACH MODEL 7asa fe 7aga m7tagh ttzwd m7tagen ns2l mina
      
         reach = a2 + a3
 
@@ -1580,14 +1492,14 @@ def open_trajectory_page():
         center_y = 0
         z = d1 + 80
 
-        # safety clamp
+       
         if center_x + radius > reach:
             radius = reach * 0.20
 
         trail = []
 
         
-        # MOTION LOOP
+      
         
         for ang in np.linspace(0, 2*np.pi, 150):
 
@@ -1661,7 +1573,7 @@ def open_trajectory_page():
             window.update()
             time.sleep(0.02)
 
-    # =====================================================
+   
 
     def run_ptp_motion():
 
@@ -1688,7 +1600,7 @@ def open_trajectory_page():
         a3 = float(link_entries[1].get())
 
         
-        # LIMITS (STEP 10 mm allowed)
+        # LIMITS 
       
         if not (150 <= a2 <= 180):
             messagebox.showerror("Error", "Shoulder must be 150–180 mm")
@@ -1699,7 +1611,7 @@ def open_trajectory_page():
             return
 
        
-        # WORKSPACE CHECK
+       
        
         reach = a2 + a3
 
@@ -1711,7 +1623,7 @@ def open_trajectory_page():
             return
 
       
-        # TRAJECTORY
+      
       
         trail = []
 
@@ -1798,7 +1710,7 @@ def open_trajectory_page():
 
             window.update()
             time.sleep(0.02)
-    # =====================================================
+   
 
     def run_experiment():
 
@@ -1817,7 +1729,7 @@ def open_trajectory_page():
             run_pick_and_place()
 
   
-    # DYNAMIC UI
+   
     
 
     def update_experiment_ui(event=None):
@@ -1829,10 +1741,9 @@ def open_trajectory_page():
         global ex_entry, ey_entry, ez_entry
         global link_entries
 
-     
+        #INPUTS FOR THE SYSTEM M7TAGEN 3LA ASASHA NZABT REACH W TOL Z AXIS K MAXIMUM RANGE
         # START POSITION
         
-
         start_frame = LabelFrame(
             dynamic_left_frame,
             text=" START POSITION ",
@@ -1859,7 +1770,6 @@ def open_trajectory_page():
 
         # TARGET POSITION
         
-
         end_frame = LabelFrame(
             dynamic_left_frame,
             text=" TARGET POSITION ",
@@ -1945,7 +1855,7 @@ def open_trajectory_page():
             command=run_experiment
         ).pack(fill=X,pady=15)
 
-    # =====================================================
+    
     combo.bind("<<ComboboxSelected>>", update_experiment_ui)
     update_experiment_ui()
     draw_robot(
@@ -2045,7 +1955,7 @@ def open_ik_intro_page():
 
 
 
-# yarb IK t5ls b2aaaaaaaaaa
+# yarb IK t5ls b2aaaaaaaaaa ma4oft4 22rf mn keda 
 
 def open_ik_page():
 
@@ -2235,17 +2145,13 @@ def open_ik_page():
 
         global SAVED_A_MATRICES, SAVED_T06
 
-        # =========================
-        # CLEAR ONLY ONCE
-        # =========================
+       
         ax.clear()
 
         ax.set_facecolor("#081b4b")
         ax.grid(True, color="#1f2d4d")
 
-        # =========================
-        # DH FUNCTION
-        # =========================
+       
         def DH(theta, d, a, alpha):
             return np.array([
                 [np.cos(theta), -np.sin(theta)*np.cos(alpha), np.sin(theta)*np.sin(alpha), a*np.cos(theta)],
@@ -2254,9 +2160,7 @@ def open_ik_page():
                 [0, 0, 0, 1]
             ])
 
-        # =========================
-        # FK (6DOF STANDARD)
-        # =========================
+     
         T01 = DH(theta1, d1, 0, np.pi/2)
         T12 = DH(theta2, 0, a2, 0)
         T23 = DH(theta3, 0, a3, 0)
@@ -2271,15 +2175,11 @@ def open_ik_page():
         T05 = T04 @ T45
         T06 = T05 @ T56
 
-        # =========================
-        # SAVE FOR MATRIX UI
-        # =========================
+        
         SAVED_A_MATRICES = [T01, T12, T23, T34, T45, T56]
         SAVED_T06 = T06
 
-        # =========================
-        # JOINT POSITIONS
-        # =========================
+     
         p0 = np.array([0, 0, 0])
         p1 = T01[:3, 3]
         p2 = T02[:3, 3]
@@ -2295,9 +2195,6 @@ def open_ik_page():
             '#e67e22', '#1abc9c', '#f1c40f'
         ]
 
-        # =========================
-        # DRAW LINKS
-        # =========================
         for i in range(len(pts)-1):
             draw_3d_cylinder(ax, pts[i], pts[i+1], radius=7, color=colors[i])
 
@@ -2306,9 +2203,7 @@ def open_ik_page():
                 color='#e74c3c', s=80
             )
 
-        # =========================
-        # END EFFECTOR
-        # =========================
+       
         ax.scatter(
             p6[0], p6[1], p6[2],
             color='yellow', s=150
@@ -2322,9 +2217,7 @@ def open_ik_page():
             math.degrees(theta3)
         )
 
-        # =========================
-        # PROJECTION
-        # =========================
+       
         if projection:
             ax.plot([p6[0], p6[0]], [p6[1], p6[1]], [0, p6[2]],
                     '--', color='#00ffff')
@@ -2332,14 +2225,9 @@ def open_ik_page():
             ax.plot([0, p6[0]], [0, p6[1]], [0, 0],
                     '--', color='#ff00ff')
 
-        # =========================
-        # WORKSPACE (ONCE ONLY)
-        # =========================
         draw_workspace(ax, d1, a2, a3)
 
-        # =========================
-        # AXES FIX (IMPORTANT)
-        # =========================
+    
         max_range = d1 + a2 + a3 + d4 + 200
 
         ax.set_xlim([-max_range, max_range])
@@ -2354,9 +2242,6 @@ def open_ik_page():
 
         ax.view_init(elev=28, azim=40)
 
-        # =========================
-        # LABEL
-        # =========================
         ax.text(
             p6[0], p6[1], p6[2] + 20,
             f"EE\nX={p6[0]:.1f}\nY={p6[1]:.1f}\nZ={p6[2]:.1f}",
@@ -2396,9 +2281,7 @@ def open_ik_page():
         try:
             IK_STARTED = True
 
-            # =====================
-            # INPUTS
-            # =====================
+           
             x = float(x_entry.get())
             y = float(y_entry.get())
             z = float(z_entry.get())
@@ -2413,9 +2296,8 @@ def open_ik_page():
             pitch = math.radians(float(pitch_entry.get()))
             yaw   = math.radians(float(yaw_entry.get()))
 
-            # =====================
-            # ROTATION MATRIX (RPY)
-            # =====================
+           
+
             cr, sr = math.cos(roll), math.sin(roll)
             cp, sp = math.cos(pitch), math.sin(pitch)
             cy, sy = math.cos(yaw), math.sin(yaw)
@@ -2426,16 +2308,12 @@ def open_ik_page():
                 [-sp,   cp*sr,            cp*cr]
             ])
 
-            # =====================
-            # WRIST CENTER (IMPORTANT FIX)
-            # =====================
+           
             wc_x = x - a4 * R06[0, 2]
             wc_y = y - a4 * R06[1, 2]
             wc_z = z - a4 * R06[2, 2]
 
-            # =====================
-            # POSITION IK (3DOF)
-            # =====================
+            
 
             theta1 = math.atan2(wc_y, wc_x)
 
@@ -2456,9 +2334,7 @@ def open_ik_page():
                 a2 + a3 * math.cos(theta3)
             )
 
-            # =====================
-            # DH MATRICES (CONSISTENT)
-            # =====================
+            
 
             def DH(theta, d, a, alpha):
                 return np.array([
@@ -2472,15 +2348,10 @@ def open_ik_page():
             A2 = DH(theta2, 0, a2, 0)
             A3 = DH(theta3, 0, a3, 0)
 
-            # =====================
-            # FORWARD KINEMATICS UP TO WRIST
-            # =====================
+          
             T03 = A1 @ A2 @ A3
             R03 = T03[:3, :3]
 
-            # =====================
-            # WRIST ORIENTATION
-            # =====================
             R36 = R03.T @ R06
 
             theta5 = math.atan2(
@@ -2495,9 +2366,7 @@ def open_ik_page():
                 theta4 = math.atan2(R36[1,2], R36[0,2])
                 theta6 = math.atan2(R36[2,1], -R36[2,2])
 
-            # =====================
-            # FULL FK MATRICES
-            # =====================
+           
             A4 = DH(theta4, 0, 0, math.pi/2)
             A5 = DH(theta5, 0, 0, -math.pi/2)
             A6 = DH(theta6, a4, 0, 0)
@@ -2505,9 +2374,7 @@ def open_ik_page():
             SAVED_A_MATRICES = [A1, A2, A3, A4, A5, A6]
             SAVED_T06 = A1 @ A2 @ A3 @ A4 @ A5 @ A6
 
-            # =====================
-            # UPDATE UI ANGLES
-            # =====================
+          
             angles = [theta1, theta2, theta3, theta4, theta5, theta6]
 
             for i in range(6):
@@ -2515,9 +2382,7 @@ def open_ik_page():
                     text=f"{math.degrees(angles[i]):.2f}°"
                 )
 
-            # =====================
-            # POSITION ERROR
-            # =====================
+          
             ee_pos = SAVED_T06[:3, 3]
             target = np.array([x, y, z])
 
@@ -2527,9 +2392,7 @@ def open_ik_page():
                 text=f"Position Error: {error:.5f}"
             )
 
-            # =====================
-            # SINGULARITY CHECK
-            # =====================
+           
             if abs(math.sin(theta3)) < 0.05:
                 singularity_lbl.config(text="SINGULARITY ⚠", fg="orange")
             else:
@@ -2537,9 +2400,7 @@ def open_ik_page():
 
             update_matrix_view()
 
-            # =====================
-            # ANIMATION (SMOOTH FIX)
-            # =====================
+            
             prev = getattr(solve_inverse_kinematics, "last_angles",
                         [0,0,0,0,0,0])
 
@@ -2676,7 +2537,7 @@ def open_ik_page():
 
         link_entries.append(e)
     
-# ORIENTATION INPUT (RPY)
+
 
     rpy_frame = LabelFrame(
     left,
@@ -3111,7 +2972,7 @@ def open_fk_page():
         global SAVED_A_MATRICES, SAVED_T06, is_sim_started
         
         try:
-       
+            # m7tagen n3dlhom 3la a5r 7aga 3nd mina
             joint_limits = [
                 (-135.0, 135.0), # Base
                 (0.0, 180.0),    # Shoulder
@@ -3122,7 +2983,7 @@ def open_fk_page():
                 (0.0, 90.0),     #Gripper
             ]
             
-        # limits bt3t mina kolo mm
+        # limits bt3t mina kolo mm a5r update 
             dim_limits = [
                 (150.0, 180.0),  # a2
                 (130.0, 150.0)  # a3    
@@ -3489,7 +3350,7 @@ def open_fk_page():
     for i, d_entry in enumerate(link_dims):
         d_entry.bind("<KeyRelease>", lambda event: run_fk_calculations(from_button=False))
         d_entry.bind("<FocusOut>", lambda event: run_fk_calculations(from_button=False))
-        
+     # 7aagt mina b default   
     dim_configs = [
     ("Link 2 Length a2 (150-180 mm)", "150.0"),
     ("Link 3 Length a3 (130-150 mm)", "130.0")
@@ -3613,7 +3474,8 @@ def open_fk_page():
         val_lbl.pack(side=LEFT, padx=2)
         ee_coords[axis] = val_lbl
         
-    try:
+    # seif grb hna     
+    try:          # 8yr com bs 3la 7sb htwasl fen 
         esp = serial.Serial('COM5', 115200, timeout=1)
         print("ESP connected ")
     except:
@@ -3630,7 +3492,7 @@ def open_fk_page():
                 74.17, # yaw
                 71.09, #roll
                 40.0  # gripper ay 7aga l7d ma n3rf el tol
-            ]
+            ] 
             payload = {
                 "angles": angles,
                 "links": link_vals
