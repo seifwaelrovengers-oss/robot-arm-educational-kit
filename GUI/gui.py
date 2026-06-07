@@ -28,8 +28,12 @@ import math
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import Frame, Label, Entry, Button, ttk, messagebox, SUNKEN, FLAT, LEFT, X, BOTH, Y, RIGHT, BOTTOM, SOLID, RIDGE, TOP
-
-
+import time
+from collections import deque
+import threading
+from tkinter import Frame, Label, Button, Entry, X, Y, BOTH, LEFT, RIGHT
+import serial
+import json
 
 #3l4an a create window 
 window = Tk()
@@ -60,151 +64,1908 @@ def run_pybullet_sim():
                 
     except Exception as e:
         messagebox.showerror("Error", f"Ma3reftsh afta7 el simulation: {str(e)}")
+        
+        
+        
+def open_dynamics_intro_page():
+
+    for widget in window.winfo_children():
+        widget.destroy()
+
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    header_frame = Frame(window, bg=BG_COLOR)
+    header_frame.pack(fill=X)
+
+    Button(
+        header_frame,
+        text="← Back to Experiments",
+        font=("Arial", 12, "bold"),
+        fg="#099da5",
+        bg=BG_COLOR,
+        bd=0,
+        borderwidth=10,
+        command=open_experiments_page
+    ).pack(side=LEFT, padx=20, pady=10)
+
+    Label(
+        header_frame,
+        text="Torques & Dynamics Analysis",
+        font=("Helvetica", 22, "bold"),
+        fg="white",
+        bg=BG_COLOR,
+        anchor=W
+    ).pack(pady=20)
+
+
+    def play_dyn_video():
+
+        video_name = "torque.mp4"
+        video_full_path = os.path.join(base_path, video_name)
+
+        if os.path.exists(video_full_path):
+            os.startfile(video_full_path)
+        else:
+            messagebox.showerror(
+                "Error",
+                f"Video not found at: {video_full_path}"
+            )
+
+    video_frame = Frame(window, bg="#0a1e4d", bd=3, relief=RIDGE)
+    video_frame.pack(pady=10, padx=50, fill=BOTH, expand=True)
+
+    Label(
+        video_frame,
+        text="WATCH DYNAMICS & TORQUE TUTORIAL",
+        font=("Arial", 18, "bold"),
+        fg="#f1c40f",
+        bg="#0a1e4d"
+    ).pack(pady=(20, 10))
+
+    preview_container = Frame(video_frame, bg="#0a1e4d")
+    preview_container.pack(expand=True)
+
+
+    dyn_image_path = os.path.join(base_path, "Torque_video_preview.png")
+
+    try:
+        img = Image.open(dyn_image_path)
+        img = img.resize((750, 420), Image.Resampling.LANCZOS)
+        photo = ImageTk.PhotoImage(img)
+
+        img_label = Label(
+            preview_container,
+            image=photo,
+            bg="#0a1e4d",
+            cursor="hand2"
+        )
+        img_label.image = photo
+        img_label.pack(pady=10)
+
+        img_label.bind("<Button-1>", lambda e: play_dyn_video())
+
+        Label(
+            preview_container,
+            text="Click image to play Dynamics tutorial",
+            font=("Arial", 10, "italic"),
+            fg="white",
+            bg="#0a1e4d"
+        ).pack()
+
+    except Exception as e:
+        print(f"DEBUG: Dynamics Image not found. Error: {e}")
+
+        Button(
+            preview_container,
+            text="▶ Watch Dynamics Tutorial",
+            font=("Arial", 16, "bold"),
+            bg="#f1c40f",
+            fg="black",
+            padx=30,
+            pady=15,
+            command=play_dyn_video,
+            cursor="hand2"
+        ).pack(pady=50)
+
+
+    btn_container = Frame(window, bg=BG_COLOR)
+    btn_container.pack(side=BOTTOM, fill=X, pady=40, padx=80)
+
+    Button(
+        btn_container,
+        text="Simulation & Torque Analysis →",
+        font=("Arial", 13, "bold"),
+        bg="#e67e22",
+        fg="white",
+        width=25,
+        height=2,
+        command=open_dynamics_page
+    ).pack(side=RIGHT)
+
+    Button(
+        btn_container,
+        text=" ← 3D Robot Simulation",
+        font=("Arial", 13, "bold"),
+        bg="#2980b9",
+        fg="white",
+        width=25,
+        height=2,
+        command=run_pybullet_sim
+    ).pack(side=LEFT)
+    show_university_logo()
+
+
+
+
+def open_dynamics_page():
+    for widget in window.winfo_children():
+        widget.destroy()
+
+    # ================= THEME =================
+    BG = "#0b1a3a"
+    PANEL = "#102a5c"
+    ACCENT = "#00d2ff"
+    GREEN = "#2ecc71"
+    RED = "#e74c3c"
+
+    sim = {"run": True}
+
+    # ================= HEADER =================
+    header = tk.Frame(window, bg=BG)
+    header.pack(fill=tk.X)
+
+    tk.Button(header,
+              text="← Back to Experiments",
+              fg="#099da5",
+              bg=BG,
+              bd=0,
+              font=("Arial", 12, "bold"),
+              command=open_experiments_page).pack(side=tk.LEFT, padx=15, pady=10)
+
+    tk.Button(header,
+              text="← Kinematics",
+              fg=ACCENT,
+              bg=BG,
+              bd=0,
+              font=("Arial", 12, "bold"),
+              command=open_trajectory_page).pack(side=tk.LEFT)
+
+    tk.Label(header,
+             text="6DOF DYNAMICS | LAGRANGE + JACOBIAN",
+             bg=BG,
+             fg=ACCENT,
+             font=("Arial", 18, "bold")).pack(side=tk.LEFT, padx=25)
+
+    # ================= MAIN =================
+    main = tk.Frame(window, bg=BG)
+    main.pack(fill=tk.BOTH, expand=True)
+
+    left = tk.Frame(main, bg=BG, width=300)
+    left.pack(side=tk.LEFT, fill=tk.Y)
+
+    center = tk.Frame(main, bg=PANEL)
+    center.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+    right = tk.Frame(main, bg=BG, width=350)
+    right.pack(side=tk.RIGHT, fill=tk.Y)
+
+    # ================= INPUTS =================
+    def make_input(label, default):
+        tk.Label(left, text=label, fg="white", bg=BG).pack(anchor="w")
+        e = tk.Entry(left, bg=PANEL, fg=ACCENT, insertbackground="white")
+        e.insert(0, str(default))
+        e.pack(fill=tk.X, pady=3)
+        return e
+
+    tk.Label(left, text="SYSTEM INPUTS",
+             fg=ACCENT, bg=BG,
+             font=("Arial", 12, "bold")).pack(pady=10)
+
+    mass = make_input("Mass (kg)", 2)
+
+    theta = [make_input(f"θ{i+1} (deg)", 20*(i+1)) for i in range(6)]
+    links = [make_input(f"Link L{i+1} (cm)", 10+i*2) for i in range(6)]
+
+    # ================= OUTPUT =================
+    status = tk.Label(right, text="READY", fg=GREEN, bg=BG,
+                      font=("Arial", 12, "bold"))
+    status.pack(pady=10)
+
+    torque_labels = []
+    for i in range(6):
+        lb = tk.Label(right, text=f"τ{i+1} = 0",
+                      fg="white", bg=BG)
+        lb.pack()
+        torque_labels.append(lb)
+
+    lagrange_lbl = tk.Label(right,
+                            text="Lagrange: ---",
+                            fg="white", bg=BG,
+                            justify="left",
+                            font=("Consolas", 9))
+    lagrange_lbl.pack(pady=10)
+
+    jacobian_lbl = tk.Label(right,
+                            text="Jacobian: ---",
+                            fg="white", bg=BG,
+                            font=("Consolas", 8))
+    jacobian_lbl.pack()
+
+    # ================= GRAPH =================
+    fig, ax = plt.subplots()
+    fig.patch.set_facecolor(PANEL)
+    ax.set_facecolor(PANEL)
+
+    canvas = FigureCanvasTkAgg(fig, master=center)
+    canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+
+    t_data = []
+    tau = [[] for _ in range(6)]
+
+    # ================= TORQUE MODEL =================
+    def torque_model(m, th, L, t):
+
+        g = 9.81
+        out = []
+
+        for i in range(6):
+            θ = np.radians(float(th[i]) + t*(i+1)*0.3)
+            Li = float(L[i]) / 100
+
+            τ = m * g * Li * np.cos(θ)
+            out.append(τ)
+
+        return out
+
+    # ================= LAGRANGE =================
+    def lagrange(m, th, L):
+
+        g = 9.81
+        T = 0
+        V = 0
+
+        for i in range(6):
+            Li = float(L[i]) / 100
+            wi = np.radians(float(th[i]))
+
+            v = Li * wi
+            T += 0.5 * m * v**2
+            V += m * g * Li * np.sin(wi)
+
+        return T, V, T - V
+
+    # ================= 6x6 JACOBIAN =================
+    def jacobian(th, L):
+
+        J = np.zeros((6,6))
+
+        for i in range(6):
+            for j in range(6):
+
+                Li = float(L[j]) / 100
+                θ = np.radians(float(th[j]))
+
+                if j <= i:
+                    J[i][j] = Li * np.cos(θ)
+                else:
+                    J[i][j] = 0
+
+        return J
+
+    # ================= RUN =================
+    def run():
+
+        m = float(mass.get())
+
+        th = [float(x.get()) for x in theta]
+        L = [float(x.get()) for x in links]
+
+        for i in range(80):
+
+            if not sim["run"]:
+                break
+
+            t = i * 0.1
+
+            τ = torque_model(m, th, L, t)
+            T, V, Lg = lagrange(m, th, L)
+            J = jacobian(th, L)
+
+            t_data.append(t)
+
+            for j in range(6):
+                tau[j].append(τ[j])
+
+            # ================= GRAPH =================
+            ax.clear()
+
+            for j in range(6):
+                ax.plot(t_data, tau[j], label=f"τ{j+1}")
+
+            ax.set_title("6DOF Torque vs Time", color="white")
+            ax.legend()
+
+            canvas.draw()
+
+            # ================= OUTPUT =================
+            for j in range(6):
+                torque_labels[j].config(text=f"τ{j+1} = {τ[j]:.2f}")
+
+            lagrange_lbl.config(
+                text=f"T = {T:.2f}\nV = {V:.2f}\nL = {Lg:.2f}"
+            )
+
+            jacobian_lbl.config(text=str(np.round(J, 2)))
+
+            if max(abs(x) for x in τ) > 80:
+                status.config(text="OVERLOAD", fg=RED)
+            else:
+                status.config(text="SAFE", fg=GREEN)
+
+            window.update()
+            window.after(50)
+
+    # ================= BUTTONS =================
+    tk.Button(left, text="▶ START",
+              bg=GREEN, fg="white",
+              command=run).pack(fill=tk.X, pady=5)
+
+    tk.Button(left, text="⛔ STOP",
+              bg=RED, fg="white",
+              command=lambda: sim.update({"run": False})
+              ).pack(fill=tk.X, pady=5)
+
+    tk.Button(left, text="🔄 RESET",
+              bg="gray", fg="white",
+              command=lambda: (
+                  t_data.clear(),
+                  [x.clear() for x in tau],
+                  ax.clear(),
+                  canvas.draw()
+              )
+              ).pack(fill=tk.X, pady=5)
+
+    canvas.draw()
+    show_university_logo()
+
+
+
+
+
+def open_trajectory_intro_page():
+    for widget in window.winfo_children(): 
+        widget.destroy()
+
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    
+  
+    header_frame = Frame(window, bg=BG_COLOR)
+    header_frame.pack(fill=X)
+    
+    Button(header_frame, text="← Back to Experiments", font=("Arial", 12, "bold"), 
+           fg="#099da5", bg=BG_COLOR, bd=0, command=open_experiments_page, borderwidth=10).pack(side=LEFT, padx=20, pady=10)
+    
+    Label(header_frame, text="Trajectory & Pick-and-Place", font=("Helvetica", 22, "bold"), 
+          fg="white", bg=BG_COLOR, anchor=W).pack(pady=20)
+    
+    
+    def play_traj_video():
+        video_name = "trajectory_mp4_video.mp4" 
+        video_full_path = os.path.join(base_path, video_name)
+        if os.path.exists(video_full_path): 
+            os.startfile(video_full_path)
+        else:
+            messagebox.showerror("Error", f"Video not found at: {video_full_path}")
+
+    
+    video_frame = Frame(window, bg="#0a1e4d", bd=3, relief=RIDGE)
+    video_frame.pack(pady=10, padx=50, fill=BOTH, expand=True)
+    
+    Label(video_frame, text="WATCHING TUTORIAL", font=("Arial", 18, "bold"), 
+          fg="#2ecc71", bg="#0a1e4d").pack(pady=(20, 10))
+
+    preview_container = Frame(video_frame, bg="#0a1e4d")
+    preview_container.pack(expand=True)
+
+   
+    traj_image_path = os.path.join(base_path, "Trajectory_video_preview.png") 
+    
+    try:
+        img = Image.open(traj_image_path) 
+        img = img.resize((750, 420), Image.Resampling.LANCZOS)
+        photo = ImageTk.PhotoImage(img)
+        
+        img_label = Label(preview_container, image=photo, bg="#0a1e4d", cursor="hand2")
+        img_label.image = photo
+        img_label.pack(pady=10)
+        
+        img_label.bind("<Button-1>", lambda e: play_traj_video())
+        Label(preview_container, text="Click image to play Trajectory Planning tutorial", 
+              font=("Arial", 10, "italic"), fg="white", bg="#0a1e4d").pack()
+
+    except Exception as e:
+        print(f"DEBUG: Trajectory Image not found. Error: {e}")
+        Button(preview_container, text="▶ Watch Trajectory Tutorial", font=("Arial", 16, "bold"),
+                bg="#2ecc71", fg="white", padx=30, pady=15,
+                command=play_traj_video, cursor="hand2").pack(pady=50)
+
+    
+    btn_container = Frame(window, bg=BG_COLOR)
+    btn_container.pack(side=BOTTOM, fill=X, pady=40, padx=80)
+    
+    Button(btn_container, text="Simulation & Calculations →", font=("Arial", 13, "bold"), 
+           bg="#f36412", fg="white", width=25, height=2, command=open_trajectory_page).pack(side=RIGHT)
+
+    Button(btn_container, text=" ← 3D Visualization (PyBullet)", font=("Arial", 13, "bold"), 
+           bg="#2980b9", fg="white", width=25, height=2, command=run_pybullet_sim).pack(side=LEFT)
+    show_university_logo()
+    
+    
+  
+  
+    
+    
+
+
+def open_trajectory_intro_page():
+    for widget in window.winfo_children(): 
+        widget.destroy()
+
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    
+  
+    header_frame = Frame(window, bg=BG_COLOR)
+    header_frame.pack(fill=X)
+    
+    Button(header_frame, text="← Back to Experiments", font=("Arial", 12, "bold"), 
+           fg="#099da5", bg=BG_COLOR, bd=0, command=open_experiments_page, borderwidth=10).pack(side=LEFT, padx=20, pady=10)
+    
+    Label(header_frame, text="Trajectory & Pick-and-Place", font=("Helvetica", 22, "bold"), 
+          fg="white", bg=BG_COLOR, anchor=W).pack(pady=20)
+    
+    
+    def play_traj_video():
+        video_name = "trajectory_mp4_video.mp4" 
+        video_full_path = os.path.join(base_path, video_name)
+        if os.path.exists(video_full_path): 
+            os.startfile(video_full_path)
+        else:
+            messagebox.showerror("Error", f"Video not found at: {video_full_path}")
+
+    
+    video_frame = Frame(window, bg="#0a1e4d", bd=3, relief=RIDGE)
+    video_frame.pack(pady=10, padx=50, fill=BOTH, expand=True)
+    
+    Label(video_frame, text="WATCHING TUTORIAL", font=("Arial", 18, "bold"), 
+          fg="#2ecc71", bg="#0a1e4d").pack(pady=(20, 10))
+
+    preview_container = Frame(video_frame, bg="#0a1e4d")
+    preview_container.pack(expand=True)
+
+   
+    traj_image_path = os.path.join(base_path, "Trajectory_video_preview.png") 
+    
+    try:
+        img = Image.open(traj_image_path) 
+        img = img.resize((750, 420), Image.Resampling.LANCZOS)
+        photo = ImageTk.PhotoImage(img)
+        
+        img_label = Label(preview_container, image=photo, bg="#0a1e4d", cursor="hand2")
+        img_label.image = photo
+        img_label.pack(pady=10)
+        
+        img_label.bind("<Button-1>", lambda e: play_traj_video())
+        Label(preview_container, text="Click image to play Trajectory Planning tutorial", 
+              font=("Arial", 10, "italic"), fg="white", bg="#0a1e4d").pack()
+
+    except Exception as e:
+        print(f"DEBUG: Trajectory Image not found. Error: {e}")
+        Button(preview_container, text="▶ Watch Trajectory Tutorial", font=("Arial", 16, "bold"),
+                bg="#2ecc71", fg="white", padx=30, pady=15,
+                command=play_traj_video, cursor="hand2").pack(pady=50)
+
+    
+    btn_container = Frame(window, bg=BG_COLOR)
+    btn_container.pack(side=BOTTOM, fill=X, pady=40, padx=80)
+    
+    Button(btn_container, text="Simulation & Calculations →", font=("Arial", 13, "bold"), 
+           bg="#f36412", fg="white", width=25, height=2, command=open_trajectory_page).pack(side=RIGHT)
+
+    Button(btn_container, text=" ← 3D Visualization (PyBullet)", font=("Arial", 13, "bold"), 
+           bg="#2980b9", fg="white", width=25, height=2, command=run_pybullet_sim).pack(side=LEFT)
+    show_university_logo()
+    
+    
+  
+    
+
+
+def open_trajectory_page():
+
+    for widget in window.winfo_children():
+        widget.destroy()
+
+    BG = "#04153B"
+    PANEL = "#081b4b"
+    EXPERIMENT_TYPE = StringVar(value="Pick and Place")
+
+    # =====================================================
+    # HEADER
+    # =====================================================
+
+    header = Frame(window, bg=BG)
+    header.pack(fill=X)
+
+    Button(
+        header,
+        text="← Back to Video Intro",
+        font=("Arial", 11, "bold"),
+        fg="#099da5",
+        bg=BG_COLOR,
+        bd=0,
+        borderwidth=10,
+        activebackground=BG_COLOR,
+        activeforeground="#00d2ff",
+        cursor="hand2",
+        command=open_trajectory_intro_page
+    ).pack(side=LEFT, padx=20, pady=5)
+
+    Label(
+        header,
+        text="ADVANCED ROBOTICS TRAJECTORY LAB",
+        bg=BG,
+        fg="#00d2ff",
+        font=("Helvetica",18,"bold")
+    ).pack(side=LEFT,padx=25)
+
+    # =====================================================
+    # MAIN
+    # =====================================================
+
+    main = Frame(window,bg=BG)
+    main.pack(fill=BOTH,expand=True)
+
+    # =====================================================
+    # LEFT PANEL
+    # =====================================================
+
+    left = Frame(main,bg=BG,width=280)
+    left.pack(side=LEFT,fill=Y,padx=10,pady=10)
+
+    # =====================================================
+    # EXPERIMENT SELECTION
+    # =====================================================
+
+    selection_frame = LabelFrame(
+        left,
+        text=" EXPERIMENT TYPE ",
+        bg=BG,
+        fg="#ffcc00",
+        font=("Arial",10,"bold")
+    )
+    selection_frame.pack(fill=X,pady=5)
+
+    experiments = [
+        "Pick and Place",
+        "Trajectory Planning",
+        "Circular Path",
+        "Point to Point"
+    ]
+
+    combo = ttk.Combobox(
+        selection_frame,
+        values=experiments,
+        textvariable=EXPERIMENT_TYPE,
+        state="readonly",
+        font=("Arial",10)
+    )
+
+    combo.pack(fill=X,padx=5,pady=10)
+    
+    def sync_to_hardware():
+        print("Sending angles to hardware...")
+      
+    sync_btn = Button(
+        selection_frame,
+        text="SYNC TO HARDWARE",
+        bg="#00ff77",
+        fg="black",
+        font=("Arial", 10, "bold"),
+        command=sync_to_hardware
+    )
+
+    sync_btn.pack(fill=X, padx=5, pady=5)
+
+    # =====================================================
+    # DYNAMIC LEFT
+    # =====================================================
+
+    dynamic_left_frame = Frame(left,bg=BG)
+    dynamic_left_frame.pack(fill=BOTH,expand=True)
+
+    # =====================================================
+    # CENTER
+    # =====================================================
+
+    center = Frame(main,bg=PANEL)
+    center.pack(side=LEFT,fill=BOTH,expand=True,padx=10,pady=10)
+
+    fig = plt.figure(figsize=(7,7))
+    fig.patch.set_facecolor(PANEL)
+
+    ax = fig.add_subplot(111,projection='3d')
+
+    canvas = FigureCanvasTkAgg(fig,master=center)
+    canvas.get_tk_widget().pack(fill=BOTH,expand=True)
+
+    # =====================================================
+    # RIGHT PANEL
+    # =====================================================
+
+    right = Frame(main,bg=BG,width=340)
+    right.pack(side=RIGHT,fill=Y,padx=10,pady=10)
+
+    dynamic_right_frame = Frame(right,bg=BG)
+    dynamic_right_frame.pack(fill=BOTH,expand=True)
+
+    # =====================================================
+    # STATUS
+    # =====================================================
+
+    status_frame=LabelFrame(
+        right,
+        text=" STATUS ",
+        bg=BG,
+        fg="#ff4d4d",
+        font=("Arial",10,"bold")
+    )
+    status_frame.pack(fill=X,pady=5)
+
+    status_lbl=Label(
+        status_frame,
+        text="READY",
+        bg="#081b4b",
+        fg="#2ecc71",
+        font=("Arial",11,"bold"),
+        pady=10
+    )
+    status_lbl.pack(fill=X)
+
+    # =====================================================
+    # MATRIX
+    # =====================================================
+
+    matrix_frame=LabelFrame(
+        right,
+        text=" T06 MATRIX ",
+        bg=BG,
+        fg="#00d2ff",
+        font=("Arial",10,"bold")
+    )
+    matrix_frame.pack(fill=BOTH,expand=True,pady=5)
+
+    matrix_lbl=Label(
+        matrix_frame,
+        text="NO MATRIX",
+        bg="#050c1f",
+        fg="#2ecc71",
+        justify=LEFT,
+        font=("Consolas",8),
+        padx=10,
+        pady=10
+    )
+    matrix_lbl.pack(fill=BOTH,expand=True)
+
+    # =====================================================
+    # JACOBIAN
+    # =====================================================
+
+    jacobian_frame=LabelFrame(
+        right,
+        text=" JACOBIAN MATRIX ",
+        bg=BG,
+        fg="#f39c12",
+        font=("Arial",10,"bold")
+    )
+    jacobian_frame.pack(fill=BOTH,expand=True,pady=5)
+
+    jacobian_lbl=Label(
+        jacobian_frame,
+        text="NO JACOBIAN",
+        bg="#050c1f",
+        fg="#2ecc71",
+        justify=LEFT,
+        font=("Consolas",8),
+        padx=10,
+        pady=10
+    )
+    jacobian_lbl.pack(fill=BOTH,expand=True)
+
+    # =====================================================
+    # EULER
+    # =====================================================
+
+    euler_frame=LabelFrame(
+        right,
+        text=" EULER ANGLES ",
+        bg=BG,
+        fg="#9b59b6",
+        font=("Arial",10,"bold")
+    )
+    euler_frame.pack(fill=X,pady=5)
+
+    euler_lbl=Label(
+        euler_frame,
+        text="ROLL = 0\nPITCH = 0\nYAW = 0",
+        bg="#081b4b",
+        fg="white",
+        justify=LEFT,
+        font=("Consolas",9),
+        padx=10,
+        pady=10
+    )
+    euler_lbl.pack(fill=X)
+
+    # =====================================================
+    # MOTION
+    # =====================================================
+
+    motion_frame=LabelFrame(
+        right,
+        text=" MOTION ANALYSIS ",
+        bg=BG,
+        fg="#2ecc71",
+        font=("Arial",10,"bold")
+    )
+    motion_frame.pack(fill=X,pady=5)
+
+    motion_lbl=Label(
+        motion_frame,
+        text="Velocity = 0\nAcceleration = 0",
+        bg="#081b4b",
+        fg="white",
+        justify=LEFT,
+        font=("Consolas",9),
+        padx=10,
+        pady=10
+    )
+    motion_lbl.pack(fill=X)
+
+    # =====================================================
+    # ANALYSIS
+    # =====================================================
+
+    analysis_frame=LabelFrame(
+        right,
+        text=" ANALYSIS ",
+        bg=BG,
+        fg="#1abc9c",
+        font=("Arial",10,"bold")
+    )
+    analysis_frame.pack(fill=X,pady=5)
+
+    analysis_lbl=Label(
+        analysis_frame,
+        text="WAITING...",
+        bg="#061743",
+        fg="white",
+        justify=LEFT,
+        font=("Consolas",9),
+        padx=10,
+        pady=10
+    )
+    analysis_lbl.pack(fill=X)
+    
+    # =====================================================
+    # ROBOT FUNCTIONS
+    # =====================================================
+
+    def draw_workspace(d1,a2,a3):
+
+        reach=a2+a3+190
+
+        u=np.linspace(0,2*np.pi,30)
+        v=np.linspace(0,np.pi/2,20)
+
+        x=reach*np.outer(np.cos(u),np.sin(v))
+        y=reach*np.outer(np.sin(u),np.sin(v))
+        z=reach*np.outer(np.ones(np.size(u)),np.cos(v))
+
+        z+=d1
+
+        ax.plot_wireframe(
+            x,y,z,
+            color="#00ffff",
+            alpha=0.05
+        )
+
+    # =====================================================
+
+    def draw_cylinder(p1,p2,radius=7,color='#3498db'):
+
+        v=p2-p1
+        mag=np.linalg.norm(v)
+
+        if mag<1e-5:
+            return
+
+        v=v/mag
+
+        not_v=np.array([1,0,0])
+
+        if abs(v[0])>0.9:
+            not_v=np.array([0,1,0])
+
+        n1=np.cross(v,not_v)
+        n1/=np.linalg.norm(n1)
+
+        n2=np.cross(v,n1)
+
+        t=np.linspace(0,2*np.pi,20)
+
+        X=[]
+        Y=[]
+        Z=[]
+
+        for s in [0,1]:
+
+            circle=p1+(p2-p1)*s
+
+            x=circle[0]+radius*np.cos(t)*n1[0]+radius*np.sin(t)*n2[0]
+            y=circle[1]+radius*np.cos(t)*n1[1]+radius*np.sin(t)*n2[1]
+            z=circle[2]+radius*np.cos(t)*n1[2]+radius*np.sin(t)*n2[2]
+
+            X.append(x)
+            Y.append(y)
+            Z.append(z)
+
+        ax.plot_surface(
+            np.array(X),
+            np.array(Y),
+            np.array(Z),
+            color=color,
+            alpha=0.95
+        )
+
+    # =====================================================
+
+    def draw_gripper(p3,theta1,theta2,theta3,open_amount=15):
+
+        alpha=theta2+theta3
+
+        forward=np.array([
+            np.cos(alpha)*np.cos(theta1),
+            np.cos(alpha)*np.sin(theta1),
+            np.sin(alpha)
+        ])
+
+        side=np.array([
+            -np.sin(theta1),
+            np.cos(theta1),
+            0
+        ])
+
+        length=30
+
+        s1=p3+side*open_amount
+        e1=s1+forward*length
+
+        s2=p3-side*open_amount
+        e2=s2+forward*length
+
+        ax.plot3D(
+            [s1[0],e1[0]],
+            [s1[1],e1[1]],
+            [s1[2],e1[2]],
+            color='yellow',
+            linewidth=4
+        )
+
+        ax.plot3D(
+            [s2[0],e2[0]],
+            [s2[1],e2[1]],
+            [s2[2],e2[2]],
+            color='yellow',
+            linewidth=4
+        )
+
+    # =====================================================
+
+    def IK(x, y, z,
+       roll, pitch, yaw,
+       d1,
+       a2, a3,
+       d4, d5, d6):
+
+        # =========================
+        # ROTATION MATRIX (RPY)
+        # =========================
+        cr, sr = np.cos(roll), np.sin(roll)
+        cp, sp = np.cos(pitch), np.sin(pitch)
+        cy, sy = np.cos(yaw), np.sin(yaw)
+
+        R06 = np.array([
+            [cy*cp, cy*sp*sr - sy*cr, cy*sp*cr + sy*sr],
+            [sy*cp, sy*sp*sr + cy*cr, sy*sp*cr - cy*sr],
+            [-sp,   cp*sr,            cp*cr]
+        ])
+
+        # =========================
+        # WRIST CENTER (IMPORTANT)
+        # d4 + d5 = fixed offsets
+        # =========================
+        tool_offset =  d6
+        wc = np.array([x, y, z]) - tool_offset * R06[:, 2]
+
+        wc_x, wc_y, wc_z = wc
+
+        # =========================
+        # BASE ANGLE
+        # =========================
+        theta1 = np.arctan2(wc_y, wc_x)
+
+        # =========================
+        # PLANAR IK (2 LINKS)
+        # =========================
+        r = np.sqrt(wc_x**2 + wc_y**2)
+        s = wc_z - d1
+
+        D = (r**2 + s**2 - a2**2 - a3**2) / (2 * a2 * a3)
+
+        if abs(D) > 1:
+            return None
+
+        theta3 = np.arctan2(np.sqrt(1 - D**2), D)
+
+        theta2 = np.arctan2(s, r) - np.arctan2(
+            a3 * np.sin(theta3),
+            a2 + a3 * np.cos(theta3)
+        )
+
+        # =========================
+        # FORWARD KINEMATICS (R03)
+        # =========================
+        def DH(theta, d, a, alpha):
+            return np.array([
+                [np.cos(theta), -np.sin(theta)*np.cos(alpha),
+                np.sin(theta)*np.sin(alpha), a*np.cos(theta)],
+
+                [np.sin(theta), np.cos(theta)*np.cos(alpha),
+                -np.cos(theta)*np.sin(alpha), a*np.sin(theta)],
+
+                [0, np.sin(alpha), np.cos(alpha), d],
+                [0, 0, 0, 1]
+            ])
+
+        T01 = DH(theta1, d1, 0, np.pi/2)
+        T12 = DH(theta2, 0, a2, 0)
+        T23 = DH(theta3, 0, a3, 0)
+
+        T03 = T01 @ T12 @ T23
+        R03 = T03[:3, :3]
+
+        # =========================
+        # WRIST ORIENTATION
+        # =========================
+        R36 = R03.T @ R06
+
+        theta5 = np.arctan2(
+            np.sqrt(R36[0,2]**2 + R36[1,2]**2),
+            R36[2,2]
+        )
+
+        if abs(np.sin(theta5)) < 1e-6:
+            theta4 = 0
+            theta6 = np.arctan2(-R36[1,0], R36[0,0])
+        else:
+            theta4 = np.arctan2(R36[1,2], R36[0,2])
+            theta6 = np.arctan2(R36[2,1], -R36[2,0])
+
+        return theta1, theta2, theta3, theta4, theta5, theta6
+    # =====================================================
+
+    def update_matrix(theta1, theta2, theta3,
+                  theta4, theta5, theta6,
+                  d1, a2, a3, d4, d5, d6):
+
+        def DH(theta, d, a, alpha):
+            return np.array([
+                [np.cos(theta), -np.sin(theta)*np.cos(alpha),
+                np.sin(theta)*np.sin(alpha), a*np.cos(theta)],
+
+                [np.sin(theta), np.cos(theta)*np.cos(alpha),
+                -np.cos(theta)*np.sin(alpha), a*np.sin(theta)],
+
+                [0, np.sin(alpha),
+                np.cos(alpha), d],
+
+                [0,0,0,1]
+            ])
+
+        # =====================
+        # ARM (3 DOF position)
+        # =====================
+        T01 = DH(theta1, d1, 0, np.pi/2)
+        T12 = DH(theta2, 0, a2, 0)
+        T23 = DH(theta3, 0, a3, 0)
+
+        # =====================
+        # WRIST (3 DOF orientation)
+        # =====================
+        T34 = DH(theta4, d4, 0, np.pi/2)   # yaw link
+        T45 = DH(theta5, d5, 0, -np.pi/2)  # roll link
+        T56 = DH(theta6, d6, 0, 0)         # gripper
+
+        # =====================
+        # FULL TRANSFORM
+        # =====================
+        T06 = T01 @ T12 @ T23 @ T34 @ T45 @ T56
+
+        txt = (
+            f"[ {T06[0,0]:>8.3f} {T06[0,1]:>8.3f} {T06[0,2]:>8.3f} {T06[0,3]:>8.3f} ]\n"
+            f"[ {T06[1,0]:>8.3f} {T06[1,1]:>8.3f} {T06[1,2]:>8.3f} {T06[1,3]:>8.3f} ]\n"
+            f"[ {T06[2,0]:>8.3f} {T06[2,1]:>8.3f} {T06[2,2]:>8.3f} {T06[2,3]:>8.3f} ]\n"
+            f"[ {T06[3,0]:>8.3f} {T06[3,1]:>8.3f} {T06[3,2]:>8.3f} {T06[3,3]:>8.3f} ]"
+        )
+
+        matrix_lbl.config(text=txt)
+
+        return T06
+
+    # =====================================================
+
+    def update_euler(theta1, theta2, theta3,
+                 theta4, theta5, theta6,
+                 d1, a2, a3, d4, d5, d6):
+
+        def DH(theta, d, a, alpha):
+            return np.array([
+                [np.cos(theta), -np.sin(theta)*np.cos(alpha),
+                np.sin(theta)*np.sin(alpha), a*np.cos(theta)],
+
+                [np.sin(theta), np.cos(theta)*np.cos(alpha),
+                -np.cos(theta)*np.sin(alpha), a*np.sin(theta)],
+
+                [0, np.sin(alpha),
+                np.cos(alpha), d],
+
+                [0,0,0,1]
+            ])
+
+        # base + arm
+        T01 = DH(theta1, d1, 0, np.pi/2)
+        T12 = DH(theta2, 0, a2, 0)
+        T23 = DH(theta3, 0, a3, 0)
+
+        # wrist (FIXED LENGTHS HERE)
+        T34 = DH(theta4, d4, 0, np.pi/2)
+        T45 = DH(theta5, d5, 0, -np.pi/2)
+        T56 = DH(theta6, d6, 0, 0)
+
+        T06 = T01 @ T12 @ T23 @ T34 @ T45 @ T56
+        R = T06[:3, :3]
+
+        sy = np.sqrt(R[0,0]**2 + R[1,0]**2)
+        singular = sy < 1e-6
+
+        if not singular:
+            roll  = np.arctan2(R[2,1], R[2,2])
+            pitch = np.arctan2(-R[2,0], sy)
+            yaw   = np.arctan2(R[1,0], R[0,0])
+        else:
+            roll  = np.arctan2(-R[1,2], R[1,1])
+            pitch = np.arctan2(-R[2,0], sy)
+            yaw   = 0
+
+        euler_lbl.config(
+            text=
+            f"ROLL  = {np.degrees(roll):.2f}°\n"
+            f"PITCH = {np.degrees(pitch):.2f}°\n"
+            f"YAW   = {np.degrees(yaw):.2f}°"
+        )
+    # =====================================================
+
+    def update_jacobian(theta1, theta2, theta3,
+                    theta4, theta5, theta6,
+                    d1, a2, a3,
+                    d4=74.17, d5=71.09, d6=40):
+
+        def DH(theta, d, a, alpha):
+            return np.array([
+                [np.cos(theta), -np.sin(theta)*np.cos(alpha),
+                np.sin(theta)*np.sin(alpha), a*np.cos(theta)],
+
+                [np.sin(theta), np.cos(theta)*np.cos(alpha),
+                -np.cos(theta)*np.sin(alpha), a*np.sin(theta)],
+
+                [0, np.sin(alpha),
+                np.cos(alpha), d],
+
+                [0,0,0,1]
+            ])
+
+        # ======================
+        # FK
+        # ======================
+        T01 = DH(theta1, d1, 0, np.pi/2)
+        T12 = DH(theta2, 0, a2, 0)
+        T23 = DH(theta3, 0, a3, 0)
+
+        T34 = DH(theta4, d4, 0, np.pi/2)
+        T45 = DH(theta5, 0, 0, -np.pi/2)
+        T56 = DH(theta6, d6, 0, 0)
+
+        T02 = T01 @ T12
+        T03 = T02 @ T23
+        T04 = T03 @ T34
+        T05 = T04 @ T45
+        T06 = T05 @ T56
+
+        # ======================
+        # positions
+        # ======================
+        p0 = np.array([0,0,0])
+        p1 = T01[:3,3]
+        p2 = T02[:3,3]
+        p3 = T03[:3,3]
+        p4 = T04[:3,3]
+        p5 = T05[:3,3]
+        p6 = T06[:3,3]
+
+        # ======================
+        # z axes
+        # ======================
+        z0 = np.array([0,0,1])
+        z1 = T01[:3,2]
+        z2 = T02[:3,2]
+        z3 = T03[:3,2]
+        z4 = T04[:3,2]
+        z5 = T05[:3,2]
+
+        # ======================
+        # Jacobian
+        # ======================
+        J = np.zeros((6,6))
+
+        # linear and angular
+        
+
+        J[0:3,0] = np.cross(z0, p6 - p0)
+        J[3:6,0] = z0
+
+        J[0:3,1] = np.cross(z1, p6 - p1)
+        J[3:6,1] = z1
+
+        J[0:3,2] = np.cross(z2, p6 - p2)
+        J[3:6,2] = z2
+
+        J[0:3,3] = np.cross(z3, p6 - p3)
+        J[3:6,3] = z3
+
+        J[0:3,4] = np.cross(z4, p6 - p4)
+        J[3:6,4] = z4
+
+        J[0:3,5] = np.cross(z5, p6 - p5)
+        J[3:6,5] = z5
+
+        txt = ""
+        for i in range(6):
+            txt += "[ " + " ".join(f"{x:7.2f}" for x in J[i]) + " ]\n"
+
+        jacobian_lbl.config(text=txt)
+       
+        
+        return J
+    # =====================================================
+
+    def draw_robot(theta1, theta2, theta3,
+               theta4, theta5, theta6,
+               d1, a2, a3,
+               trail=[],
+               obj=None,
+               color="#00ff99",
+               grip_open=15):
+
+        ax.clear()
+        ax.set_facecolor(PANEL)
+
+        draw_workspace(d1, a2, a3)
+
+        # =========================
+        # JOINT 0 (BASE)
+        # fixed base at origin
+        # =========================
+        p0 = np.array([0, 0, 0])
+
+        # =========================
+        # JOINT 1 (BASE ROTATION - theta1)
+        # rotates arm around Z axis
+        # gives LEFT/RIGHT direction (yaw of whole arm)
+        # =========================
+        p1 = np.array([0, 0, d1])
+
+        # =========================
+        # JOINT 2 (SHOULDER - theta2)
+        # moves arm up/down in vertical plane
+        # controls elevation of link a2
+        # =========================
+        p2 = p1 + np.array([
+            a2*np.cos(theta2)*np.cos(theta1),
+            a2*np.cos(theta2)*np.sin(theta1),
+            a2*np.sin(theta2)
+        ])
+
+        # =========================
+        # JOINT 3 (ELBOW - theta3)
+        # extends second link a3
+        # also affects vertical + reach
+        # =========================
+        p3 = p2 + np.array([
+            a3*np.cos(theta2 + theta3)*np.cos(theta1),
+            a3*np.cos(theta2 + theta3)*np.sin(theta1),
+            a3*np.sin(theta2 + theta3)
+        ])
+
+        # =========================
+        # TOOL DIRECTION (end-effector axis)
+        # direction of arm after elbow
+        # used to orient wrist joints
+        # =========================
+        tool_dir = np.array([
+            np.cos(theta1)*np.cos(theta2 + theta3),
+            np.sin(theta1)*np.cos(theta2 + theta3),
+            np.sin(theta2 + theta3)
+        ])
+
+      
+        # SIDE AXIS (perpendicular to arm)
+        # used for yaw rotation at wrist
+        
+        side = np.array([
+            -np.sin(theta1),
+            np.cos(theta1),
+            0
+        ])
+
+       
+        # UP AXIS (completes 3D orientation frame)
+        # used for pitch/roll coupling
+       
+        up = np.cross(side, tool_dir)
+
+        # tool link lengths (wrist + gripper)
+        L4 = 74.17   # joint 4 (yaw link)
+        L5 = 71.09   # joint 5 (pitch/roll link)
+        L6 = 40      # gripper
+
+        
+        # JOINT 4 (WRIST YAW - theta4)
+        # rotates tool around tool axis sideways
+       
+        p4 = p3 + L4 * (np.cos(theta4)*tool_dir + np.sin(theta4)*side)
+
+      
+        # JOINT 5 (WRIST PITCH - theta5)
+        # tilts gripper up/down
+      
+        p5 = p4 + L5 * (
+            np.cos(theta5)*tool_dir +
+            np.sin(theta5)*up
+        )
+
+    
+        # JOINT 6 (GRIPPER - theta6)
+        # final extension / tool endpoint
+       
+        p6 = p5 + L6 * tool_dir
+
+      
+        # ALL JOINT POINTS
+   
+        pts = [p0, p1, p2, p3, p4, p5, p6]
+
+        colors = ['#34495e', '#3498db', '#9b59b6',
+                '#f39c12', '#1abc9c', '#e67e22']
+
+        # draw each link between joints
+        for i in range(len(pts) - 1):
+            draw_cylinder(pts[i], pts[i+1], radius=7, color=colors[i])
+
+        # gripper visualization
+        draw_gripper(p6, theta1, theta2, theta3, grip_open)
+
+        ax.scatter(p6[0], p6[1], p6[2], color='yellow', s=160)
+
+       
+        # TRAIL (trajectory path)
+     
+        if len(trail) > 1:
+            xs = [p[0] for p in trail]
+            ys = [p[1] for p in trail]
+            zs = [p[2] for p in trail]
+            ax.plot3D(xs, ys, zs, color=color, linewidth=3)
+
+       
+        # OBJECT (if pick & place)
+     
+        if obj is not None:
+            ax.scatter(obj[0], obj[1], obj[2], color='black', s=250)
+
+
+        # VIEW LIMITS
+        
+        max_range = d1 + a2 + a3 + 200
+
+        ax.set_xlim([-max_range, max_range])
+        ax.set_ylim([-max_range, max_range])
+        ax.set_zlim([0, max_range])
+
+        ax.set_xlabel("X", color='white')
+        ax.set_ylabel("Y", color='white')
+        ax.set_zlabel("Z", color='white')
+
+        ax.tick_params(colors='white')
+        ax.view_init(elev=28, azim=40)
+
+        canvas.draw()
+
+        return p6
+
+    
+    # EXPERIMENTS
+   
+
+    def run_pick_and_place():
+
+        sx = float(sx_entry.get())
+        sy = float(sy_entry.get())
+        sz = float(sz_entry.get())
+
+        ex = float(ex_entry.get())
+        ey = float(ey_entry.get())
+        ez = float(ez_entry.get())
+
+       
+        # FIXED LINKS
+       
+        d1 = 100
+        d4 = 74.17
+        d5 = 71.09
+        d6 = 40   # gripper offset 
+        
+      
+        # VARIABLE LINKS sabt atwalhom yarbbbbbbbbbb
+       
+        a2 = float(link_entries[0].get()) # de keda shoulder
+        a3 = float(link_entries[1].get()) # de keda elbowww
+
+        
+        # LIMIT CHECK
+       
+        if not (150 <= a2 <= 180):
+            messagebox.showerror(
+                "Invalid Shoulder",
+                "a2 must be 150 → 180 mm (step 10)"
+            )
+            return
+
+        if not (130 <= a3 <= 150):
+            messagebox.showerror(
+                "Invalid Elbow",
+                "a3 must be 130 → 150 mm (step 10)"
+            )
+            return
+
+        trail = []
+        steps = 80
+
+        for i in range(steps):
+
+            tau = i / steps
+            t = 3*(tau**2) - 2*(tau**3)   
+
+            x = sx + (ex - sx) * t
+            y = sy + (ey - sy) * t
+            z = sz + (ez - sz) * t + 30*np.sin(np.pi*t)
+
+            ik = IK(x, y, z,
+                        0, 0, 0,
+                        d1, a2, a3,
+                        d4, d5, d6)
+
+            if ik is None:
+                continue
+
+            theta1, theta2, theta3, theta4, theta5, theta6 = ik
+
+
+            trail.append([x, y, z])
+
+            draw_robot(
+                theta1, theta2, theta3,
+                theta4, theta5, theta6,
+                d1, a2, a3, 
+                trail,
+                [x, y, z],
+                "#00ff99",
+                5
+            )
+
+            update_matrix(
+                theta1, theta2, theta3,
+                theta4, theta5, theta6,
+                d1, a2, a3,
+                d4, d5, d6
+            )
+
+            update_euler(
+                theta1, theta2, theta3,
+                theta4, theta5, theta6,
+                d1, a2, a3,
+                d4, d5, d6
+            )
+
+            jac = update_jacobian(
+                theta1, theta2, theta3,
+                theta4, theta5, theta6,
+                d1, a2, a3,
+                d4, d5, d6
+            )
+            
+            jac_rank = np.linalg.matrix_rank(jac)
+
+            velocity = np.sqrt(
+                (ex - sx)**2 +
+                (ey - sy)**2 +
+                (ez - sz)**2
+            ) / steps
+
+            accel = velocity / steps
+
+            motion_lbl.config(
+                text=f"Velocity = {velocity:.2f}\nAcceleration = {accel:.4f}"
+            )
+
+            analysis_lbl.config(
+                text=
+                f"MODE: PICK & PLACE\n"
+                f"X={x:.2f}\n"
+                f"Y={y:.2f}\n"
+                f"Z={z:.2f}\n\n"
+                f"JACOBIAN:\n{np.array2string(jac, precision=2)}"
+            )
+
+            if jac_rank < 6:
+                status_lbl.config(text="SINGULARITY", fg="orange")
+            else:
+                status_lbl.config(text="SAFE", fg="#2ecc71")
+
+            window.update()
+            time.sleep(0.02)
+    
+
+    def run_circular_motion():
+
+       
+        # FIXED LINKS
+      
+        d1 = 100
+        d4 = 74.17
+        d5 = 71.09
+        d6 = 40   # gripper 
+
+      
+        # VARIABLE LINKS (USER CONTROLLED)
+       
+        a2 = float(link_entries[0].get())
+        a3 = float(link_entries[1].get())
+
+        
+        # LIMITS
+        
+        if not (150 <= a2 <= 180):
+            messagebox.showerror("Error", "Shoulder must be 150–180 mm")
+            return
+
+        if not (130 <= a3 <= 150):
+            messagebox.showerror("Error", "Elbow must be 130–150 mm")
+            return
+
+        
+        # ROBOT REACH MODEL
+     
+        reach = a2 + a3
+
+        radius = reach * 0.30
+        center_x = reach * 0.40
+        center_y = 0
+        z = d1 + 80
+
+        # safety clamp
+        if center_x + radius > reach:
+            radius = reach * 0.20
+
+        trail = []
+
+        
+        # MOTION LOOP
+        
+        for ang in np.linspace(0, 2*np.pi, 150):
+
+            x = center_x + radius * np.cos(ang)
+            y = center_y + radius * np.sin(ang)
+
+            ik = IK(x, y, z,
+                0, 0, 0,
+                d1, a2, a3,
+                d4, d5, d6)
+
+            if ik is None:
+                continue
+
+            theta1, theta2, theta3, theta4, theta5, theta6 = ik
+
+          
+            trail.append([x, y, z])
+
+            draw_robot(
+                theta1, theta2, theta3,
+                theta4, theta5, theta6,
+                d1, a2, a3,
+                trail,
+                [x, y, z],
+                color="#00ff99",
+                grip_open=5
+            )
+
+            update_matrix(
+                theta1, theta2, theta3,
+                theta4, theta5, theta6,
+                d1, a2, a3,
+                d4, d5, d6
+            )
+
+            update_euler(
+                theta1, theta2, theta3,
+                theta4, theta5, theta6,
+                d1, a2, a3,
+                d4, d5, d6
+            )
+
+            jac = update_jacobian(
+                theta1, theta2, theta3,
+                theta4, theta5, theta6,
+                d1, a2, a3,
+                d4, d5, d6
+            )
+            
+            jac_rank = np.linalg.matrix_rank(jac)
+            
+            analysis_lbl.config(
+                text=
+                f"CIRCULAR TRAJECTORY\n\n"
+                f"Reach  = {reach:.1f} mm\n"
+                f"Radius = {radius:.1f} mm\n"
+                f"Angle  = {np.degrees(ang):.1f}°\n"
+                f"Jacobian:\n{np.array2string(jac, precision=2)}"
+            )
+            if jac_rank < 6:
+                status_lbl.config(text="SINGULARITY", fg="orange")
+            else:
+                status_lbl.config(text="SAFE", fg="#2ecc71")
+                
+            status_lbl.config(
+                text="CIRCULAR MOTION",
+                fg="#f39c12"
+            )
+
+            window.update()
+            time.sleep(0.02)
+
+    # =====================================================
+
+    def run_ptp_motion():
+
+        sx = float(sx_entry.get())
+        sy = float(sy_entry.get())
+        sz = float(sz_entry.get())
+
+        ex = float(ex_entry.get())
+        ey = float(ey_entry.get())
+        ez = float(ez_entry.get())
+
+      
+        # FIXED LINKS (6 DOF)
+        
+        d1 = 100
+        d4 = 74.17
+        d5 = 71.09
+        d6 = 40   # gripper
+
+       
+        # VARIABLE LINKS
+       
+        a2 = float(link_entries[0].get())
+        a3 = float(link_entries[1].get())
+
+        
+        # LIMITS (STEP 10 mm allowed)
+      
+        if not (150 <= a2 <= 180):
+            messagebox.showerror("Error", "Shoulder must be 150–180 mm")
+            return
+
+        if not (130 <= a3 <= 150):
+            messagebox.showerror("Error", "Elbow must be 130–150 mm")
+            return
+
+       
+        # WORKSPACE CHECK
+       
+        reach = a2 + a3
+
+        start_dist = np.sqrt(sx**2 + sy**2 + (sz - d1)**2)
+        end_dist   = np.sqrt(ex**2 + ey**2 + (ez - d1)**2)
+
+        if start_dist > reach or end_dist > reach:
+            messagebox.showerror("Workspace Error", "Point outside workspace")
+            return
+
+      
+        # TRAJECTORY
+      
+        trail = []
+
+        steps = 80
+
+        for i in range(steps + 1):
+
+            t = i / steps
+
+            x = sx + (ex - sx) * t
+            y = sy + (ey - sy) * t
+            z = sz + (ez - sz) * t
+
+            ik = IK(x, y, z,
+                0,0,0,
+                d1,a2,a3,
+                d4,d5,d6)
+
+            if ik is None:
+                continue
+
+            theta1, theta2, theta3, theta4, theta5, theta6 = ik
+
+           
+
+            trail.append([x, y, z])
+
+          
+            # DRAW
+          
+            draw_robot(
+                theta1, theta2, theta3,
+                theta4, theta5, theta6,
+                d1, a2, a3,
+                trail,
+                [x, y, z],
+                color="#00ff99",
+                grip_open=5
+            )
+
+           
+            # MATRIX (FULL 6 DOF)
+        
+            update_matrix(
+                theta1, theta2, theta3,
+                theta4, theta5, theta6,
+                d1, a2, a3,
+                d4, d5, d6
+            )
+
+           
+            # EULER
+          
+            update_euler(
+                theta1, theta2, theta3,
+                theta4, theta5, theta6,
+                d1, a2, a3,
+                d4, d5, d6
+            )
+
+           
+            # JACOBIAN 
+            
+            jac = update_jacobian(
+                theta1, theta2, theta3,
+                theta4, theta5, theta6,
+                d1, a2, a3,
+                d4, d5, d6
+            )
+            
+            jac_rank = np.linalg.matrix_rank(jac)
+            
+            analysis_lbl.config(
+                text=
+                f"POINT TO POINT (6 DOF)\n\n"
+                f"X = {x:.1f}\nY = {y:.1f}\nZ = {z:.1f}\n\n"
+                 f"Jacobian:\n{np.array2string(jac, precision=2)}"
+            )
+
+            if jac_rank < 6:
+                status_lbl.config(text="SINGULARITY", fg="orange")
+            else:
+                status_lbl.config(text="SAFE MOTION", fg="#9b59b6")
+
+            window.update()
+            time.sleep(0.02)
+    # =====================================================
+
+    def run_experiment():
+
+        exp=EXPERIMENT_TYPE.get()
+
+        if exp=="Pick and Place":
+            run_pick_and_place()
+
+        elif exp=="Circular Path":
+            run_circular_motion()
+
+        elif exp=="Point to Point":
+            run_ptp_motion()
+
+        else:
+            run_pick_and_place()
 
   
-# bayza lsa 
-# trajectory page 
-def open_trajectory_page():
-    for widget in window.winfo_children(): widget.destroy()
+    # DYNAMIC UI
     
-    traj_theory = (
-        "TRAJECTORY PLANNING THEORY:\n\n"
-        "1. OBJECTIVE:\n"
-        "Moving the end-effector from Point A to Point B smoothly.\n\n"
-        "2. MATHEMATICAL ACCURACY:\n"
-        "Monitoring Euclidean Distance and Position Error to ensure precision.\n\n"
-        "3. PERFORMANCE METRICS:\n"
-        "- Path Smoothness (Cubic Spline).\n"
-        "- Accuracy (Difference between desired and reached XYZ)."
-    )
-    show_fancy_manual("Trajectory Planning Module", traj_theory)
 
-    # Navigation Button
-    Button(window, text="Back to Experiments", font=("Arial", 12, "bold"), 
-           fg="#f36412", bg=BG_COLOR, bd=0, command=open_experiments_page, borderwidth=10).pack(anchor=NW, padx=20, pady=10)
+    def update_experiment_ui(event=None):
+
+        for widget in dynamic_left_frame.winfo_children():
+            widget.destroy()
+
+        global sx_entry, sy_entry, sz_entry
+        global ex_entry, ey_entry, ez_entry
+        global link_entries
+
+     
+        # START POSITION
+        
+
+        start_frame = LabelFrame(
+            dynamic_left_frame,
+            text=" START POSITION ",
+            bg=BG,
+            fg="#2ecc71",
+            font=("Arial",10,"bold")
+        )
+        start_frame.pack(fill=X,pady=5)
+
+        start_entries = []
+
+        for txt, val in [("X",120), ("Y",40), ("Z",180)]:
+
+            Label(start_frame, text=f"{txt} (mm)", bg=BG, fg="white").pack()
+
+            e = Entry(start_frame, font=("Consolas",11))
+            e.insert(0, str(val))
+            e.pack(fill=X, pady=2)
+
+            start_entries.append(e)
+
+        sx_entry, sy_entry, sz_entry = start_entries
+
+
+        # TARGET POSITION
+        
+
+        end_frame = LabelFrame(
+            dynamic_left_frame,
+            text=" TARGET POSITION ",
+            bg=BG,
+            fg="#f1c40f",
+            font=("Arial",10,"bold")
+        )
+        end_frame.pack(fill=X,pady=5)
+
+        end_entries = []
+
+        for txt, val in [("X",220), ("Y",120), ("Z",140)]:
+
+            Label(end_frame, text=f"{txt} (mm)", bg=BG, fg="white").pack()
+
+            e = Entry(end_frame, font=("Consolas",11))
+            e.insert(0, str(val))
+            e.pack(fill=X, pady=2)
+
+            end_entries.append(e)
+
+        ex_entry, ey_entry, ez_entry = end_entries
+
+       
+        # LINK PARAMETERS (6 DOF)
     
-    container = Frame(window, bg=BG_COLOR)
-    container.pack(expand=True, fill=BOTH, padx=20)
 
+        links_frame = LabelFrame(
+            dynamic_left_frame,
+            text=" 6 DOF ROBOT LINKS ",
+            bg=BG,
+            fg="#00d2ff",
+            font=("Arial",10,"bold")
+        )
+        links_frame.pack(fill=X,pady=5)
 
-    left_p = Frame(container, bg=BG_COLOR)
-    left_p.pack(side=LEFT, fill=Y, padx=10, pady=10)
-    
-    Label(left_p, text="MISSION CONTROL", font=("Helvetica", 18, "bold"), fg="#1abc9c", bg=BG_COLOR).pack(pady=10)
+        link_entries = []
 
-    def play_traj_video():
-        webbrowser.open("https://youtu.be/HOfuDcTtVNs?si=qsuffP4wRIbYW7hm")
+        # fixed + variable links
+        link_data = [
 
-    Button(left_p, text=" WATCH TRAJECTORY TUTORIAL", font=("Arial", 10, "bold"), 
-           bg="#2ecc71", fg="white", pady=8, command=play_traj_video).pack(pady=5, fill=X)
+           
+            ("Shoulder a2 (150–180 step10)", 150),
+            ("Elbow a3 (130–150 step10)", 130),
 
-    current_start = {'X': 0.0, 'Y': 0.0, 'Z': 0.0}
-    start_coords = {}; end_coords = {}
+        ]
 
-    start_frame = LabelFrame(left_p, text=" START POINT (A) ", fg="white", bg="#03265b", font=("Arial", 10, "bold"), padx=10, pady=10)
-    start_frame.pack(fill=X, pady=5)
-    
-    for axis in ['X', 'Y', 'Z']:
-        f = Frame(start_frame, bg="#03265b")
-        f.pack(fill=X)
-        Label(f, text=f"{axis}:", fg="#00f2ff", bg="#03265b", font=("Consolas", 10)).pack(side=LEFT)
-        s = Entry(f, width=10, bg="#051c4d", fg="white", insertbackground="white", bd=0)
-        s.insert(0, "0.0")
-        s.pack(side=RIGHT, pady=2)
-        start_coords[axis] = s
+        for txt, val in link_data:
 
-    def apply_start_position():
-        try:
-            current_start['X'] = float(start_coords['X'].get().strip())
-            current_start['Y'] = float(start_coords['Y'].get().strip())
-            current_start['Z'] = float(start_coords['Z'].get().strip())
+            Label(
+                links_frame,
+                text=txt,
+                bg=BG,
+                fg="white"
+            ).pack()
+
+            e = Entry(
+                links_frame,
+                font=("Consolas",11)
+            )
+
+            e.insert(0, str(val))
+
             
-            angles = calculate_ik_angles(current_start['X'], current_start['Y'], current_start['Z'])
-            update_robot_plot(ax, canvas, angles, target_dot=(current_start['X'], current_start['Y'], current_start['Z']))
-        except ValueError:
-            messagebox.showerror("Input Error", "Enter valid numbers for START POINT.")
+            if "fixed" in txt:
+                e.config(state="disabled")
 
-    Button(start_frame, text="Run SImulation", bg="#3498db", fg="white", 
-           font=("Arial", 9, "bold"), command=apply_start_position).pack(pady=5, fill=X)
+            e.pack(fill=X,pady=2)
 
+            link_entries.append(e)
+
+      
+        # RUN BUTTON
+  
+
+        Button(
+            dynamic_left_frame,
+            text="RUN EXPERIMENT",
+            bg="#2ecc71",
+            fg="white",
+            font=("Arial",12,"bold"),
+            height=2,
+            command=run_experiment
+        ).pack(fill=X,pady=15)
+
+    # =====================================================
+    combo.bind("<<ComboboxSelected>>", update_experiment_ui)
+    update_experiment_ui()
+    draw_robot(
+        0, 0, 0, 0, 0, 0,
+        100, 150, 130,
+        [],
+        None,
+        "#00ff99",
+        15
+    )
+    show_university_logo()
+
+
+
+ 
     
-    target_frame = LabelFrame(left_p, text=" TARGET POINT (B) ", fg="white", bg="#0a1e4d", font=("Arial", 10, "bold"), padx=10, pady=10)
-    target_frame.pack(fill=X, pady=5)
     
-    for axis in ['X', 'Y', 'Z']:
-        f = Frame(target_frame, bg="#0a1e4d")
-        f.pack(fill=X)
-        Label(f, text=f"{axis}:", fg="#00f2ff", bg="#0a1e4d", font=("Consolas", 10)).pack(side=LEFT)
-        s = Entry(f, width=10, bg="#051c4d", fg="white", insertbackground="white", bd=0)
-        s.insert(0, "5.0")
-        s.pack(side=RIGHT, pady=2)
-        end_coords[axis] = s
-
     
-    out_frame = LabelFrame(left_p, text=" ANALYTICS DASHBOARD ", fg="#f1c40f", bg="#051c4d", font=("Arial", 10, "bold"), padx=10, pady=10)
-    out_frame.pack(fill=X, pady=10)
     
-    res_labels = {}
-    for item in ['Distance', 'Accuracy']:
-        f = Frame(out_frame, bg="#051c4d")
-        f.pack(fill=X)
-        Label(f, text=f"{item}:", fg="white", bg="#051c4d", font=("Arial", 9)).pack(side=LEFT)
-        l = Label(f, text="--", fg="#1abc9c", bg="#051c4d", font=("Consolas", 10, "bold"))
-        l.pack(side=RIGHT)
-        res_labels[item] = l
-
-    def run_simulation():
-        try:
-            bx = float(end_coords['X'].get().strip())
-            by = float(end_coords['Y'].get().strip())
-            bz = float(end_coords['Z'].get().strip())
-            ax_v, ay_v, az_v = current_start['X'], current_start['Y'], current_start['Z']
-
-            dist = ((bx - ax_v)**2 + (by - ay_v)**2 + (bz - az_v)**2)**0.5
-            res_labels['Distance'].config(text=f"{dist:.2f} units")
-            res_labels['Accuracy'].config(text=f"{max(0, 100-(dist*0.5)):.2f} %")
-
-            num_steps = 30
-            path = [(ax_v + (bx-ax_v)*i/num_steps, ay_v + (by-ay_v)*i/num_steps, az_v + (bz-az_v)*i/num_steps) for i in range(num_steps+1)]
-
-            def animate(step):
-                if step < len(path):
-                    curr = path[step]
-                    angles = calculate_ik_angles(curr[0], curr[1], curr[2])
-                    update_robot_plot(ax, canvas, angles, target_dot=(bx, by, bz))
-                    window.after(30, lambda: animate(step + 1))
-            animate(0)
-        except ValueError:
-            messagebox.showerror("Input Error", "Enter valid numbers for TARGET POINT.")
-
-    Button(left_p, text="RUN SIMULATION", bg="#f36412", fg="white", 
-           font=("Arial", 12, "bold"), pady=12, command=run_simulation).pack(pady=10, fill=X)
-
-    manual_frame = Frame(container, bg="#0a1e4d", bd=1, relief=SOLID)
-    manual_frame.pack(side=RIGHT, fill=Y, padx=10, pady=20)
     
-    Label(manual_frame, text="LAB MANUAL", font=("Helvetica", 14, "bold"), fg="#f39c12", bg="#0a1e4d").pack(pady=10, padx=20)
-    
-    steps = "1. Watch Tutorial\n2. Set Start/End Points\n3. Apply Start Position\n4. Run Simulation\n5. Observe Metrics\n6. Sync with Hardware"
-    msg = Message(manual_frame, text=steps, font=("Arial", 10), fg="#70afc2", bg="#0a1e4d", width=220, justify=LEFT)
-    msg.pack(pady=10, padx=10, anchor=NW)
-    
-    def upload_trajectory():
-        messagebox.showinfo("Hardware Sync", "Trajectory points streamed to ESP32 successfully!")
-
-    Label(manual_frame, text="Sync ESP32 for real motion.", font=("Arial", 8, "italic"), fg="white", bg="#0a1e4d").pack(side=BOTTOM, pady=(0, 2))
-    Button(manual_frame, text="UPLOAD TO HARDWARE", bg="#27ae60", fg="white", 
-           font=("Arial", 10, "bold"), pady=10, command=upload_trajectory).pack(side=BOTTOM, pady=10, padx=10, fill=X) 
-    right_p = Frame(container, bg="#081b4b", bd=2, relief=RIDGE)
-    right_p.pack(side=RIGHT, expand=True, fill=BOTH, padx=10, pady=20)
-    
-    fig = plt.figure(figsize=(9, 9))
-    fig.patch.set_facecolor('#081b4b')
-    ax = fig.add_subplot(111, projection='3d')
-    canvas = FigureCanvasTkAgg(fig, master=right_p)
-    canvas.get_tk_widget().pack(expand=True, fill=BOTH)
-    
-    update_robot_plot(ax, canvas, [0]*6)
     
 def open_ik_intro_page():
     
@@ -237,7 +1998,7 @@ def open_ik_intro_page():
     video_frame = Frame(window, bg="#0a1e4d", bd=3, relief=RIDGE)
     video_frame.pack(pady=10, padx=50, fill=BOTH, expand=True)
     
-    Label(video_frame, text="WATCHING TUTORIAL", font=("Arial", 18, "bold"), 
+    Label(video_frame, text="Watch IK Tutorial", font=("Arial", 18, "bold"), 
           fg="#2ecc71", bg="#0a1e4d").pack(pady=(20, 10))
 
     preview_container = Frame(video_frame, bg="#0a1e4d")
@@ -283,66 +2044,46 @@ def open_ik_intro_page():
 
 
 
+
 # yarb IK t5ls b2aaaaaaaaaa
 
 def open_ik_page():
 
-
-
     for widget in window.winfo_children():
         widget.destroy()
-
-    global SAVED_A_MATRICES, SAVED_T06
-
+    global SAVED_A_MATRICES, SAVED_T06,IK_STARTED
     SAVED_A_MATRICES = []
     SAVED_T06 = None
-
+    IK_STARTED = False
     BG_COLOR = "#0c1a30"
-
     IK_METHOD = StringVar(value="Geometric")
-
-   
-
+# simulation bt3t robot
     def draw_3d_cylinder(ax, p1, p2, radius=7, color='#3498db'):
 
         try:
-
             v = p2 - p1
             mag = np.linalg.norm(v)
-
             if mag < 1e-5:
                 return
-
             v = v / mag
-
             not_v = np.array([1,0,0])
-
             if abs(v[0]) > 0.9:
                 not_v = np.array([0,1,0])
-
             n1 = np.cross(v, not_v)
             n1 /= np.linalg.norm(n1)
-
             n2 = np.cross(v, n1)
-
             t = np.linspace(0, 2*np.pi, 25)
-
             X = []
             Y = []
             Z = []
-
             for s in [0,1]:
-
                 circle = p1 + (p2-p1)*s
-
                 x = circle[0] + radius*np.cos(t)*n1[0] + radius*np.sin(t)*n2[0]
                 y = circle[1] + radius*np.cos(t)*n1[1] + radius*np.sin(t)*n2[1]
                 z = circle[2] + radius*np.cos(t)*n1[2] + radius*np.sin(t)*n2[2]
-
                 X.append(x)
                 Y.append(y)
                 Z.append(z)
-
             ax.plot_surface(
                 np.array(X),
                 np.array(Y),
@@ -350,16 +2091,12 @@ def open_ik_page():
                 color=color,
                 alpha=0.95
             )
-
         except:
             pass
 
     
-
     def draw_gripper(ax, p6, t1, t2, t3):
-
         try:
-
             alpha = math.radians(t2+t3)
             beta = math.radians(t1)
 
@@ -368,7 +2105,6 @@ def open_ik_page():
                 math.cos(alpha)*math.sin(beta),
                 math.sin(alpha)
             ])
-
             side = np.array([
                 -math.sin(beta),
                 math.cos(beta),
@@ -377,13 +2113,10 @@ def open_ik_page():
 
             claw_length = 30
             claw_gap = 12
-
             claw1_start = p6 + side*claw_gap
             claw1_end = claw1_start + forward*claw_length
-
             claw2_start = p6 - side*claw_gap
             claw2_end = claw2_start + forward*claw_length
-
             ax.plot3D(
                 [claw1_start[0], claw1_end[0]],
                 [claw1_start[1], claw1_end[1]],
@@ -391,7 +2124,6 @@ def open_ik_page():
                 color='#f1c40f',
                 linewidth=4
             )
-
             ax.plot3D(
                 [claw2_start[0], claw2_end[0]],
                 [claw2_start[1], claw2_end[1]],
@@ -399,7 +2131,6 @@ def open_ik_page():
                 color='#f1c40f',
                 linewidth=4
             )
-
             ax.plot3D(
                 [claw1_start[0], claw2_start[0]],
                 [claw1_start[1], claw2_start[1]],
@@ -412,11 +2143,10 @@ def open_ik_page():
             pass
 
     
-
     def update_matrix_view(event=None):
 
-        if len(SAVED_A_MATRICES) == 0:
-            return
+        if len(SAVED_A_MATRICES) < 6 or SAVED_T06 is None:
+           return
 
         idx = matrix_selector.current()
 
@@ -424,6 +2154,9 @@ def open_ik_page():
             SAVED_A_MATRICES[0],
             SAVED_A_MATRICES[1],
             SAVED_A_MATRICES[2],
+            SAVED_A_MATRICES[3],
+            SAVED_A_MATRICES[4],
+            SAVED_A_MATRICES[5],
             SAVED_T06
         ]
 
@@ -431,20 +2164,26 @@ def open_ik_page():
             "A1 MATRIX",
             "A2 MATRIX",
             "A3 MATRIX",
+            "A4 MATRIX",
+            "A5 MATRIX",
+            "A6 MATRIX",
             "T06 MATRIX"
         ]
-
         descriptions = [
-
             "Base Rotation Matrix\nFrame0 → Frame1",
 
-            "Shoulder Transformation\nControls Link1",
+            "Shoulder Transformation\nFrame1 → Frame2",
 
-            "Elbow Transformation\nControls Link2",
+            "Elbow Transformation\nFrame2 → Frame3",
 
-            "Final End Effector Matrix\nT06 = A1 × A2 × A3"
+            "Wrist Pitch Matrix\nFrame3 → Frame4",
+
+            "Wrist Roll Matrix\nFrame4 → Frame5",
+
+            "Tool/Yaw Matrix\nFrame5 → Frame6",
+
+            "Final End Effector Matrix\nT06 = A1×A2×A3×A4×A5×A6"
         ]
-
         mat = matrices[idx]
 
         matrix_title.config(text=titles[idx])
@@ -456,98 +2195,123 @@ def open_ik_page():
             f"[ {mat[2,0]:>8.3f} {mat[2,1]:>8.3f} {mat[2,2]:>8.3f} {mat[2,3]:>8.3f} ]\n"
             f"[ {mat[3,0]:>8.3f} {mat[3,1]:>8.3f} {mat[3,2]:>8.3f} {mat[3,3]:>8.3f} ]"
         )
-
         matrix_lbl.config(text=txt)
 
   # workspace m4 kwisa 3andk 
 
-    def draw_workspace(ax, d1, a2, a3):
+    def draw_workspace(ax, d1, a2, a3, d6=40):
 
-        reach = a2 + a3
+        r_max = a2 + a3 + d6
+        r_min = abs(a2 - a3)
 
-        u = np.linspace(0, 2*np.pi, 50)
-        v = np.linspace(0, np.pi, 50)
+        theta = np.linspace(0, 2*np.pi, 60)
+        phi = np.linspace(-np.pi/2, np.pi/2, 35)
 
-        x = reach * np.outer(np.cos(u), np.sin(v))
-        y = reach * np.outer(np.sin(u), np.sin(v))
-        z = reach * np.outer(np.ones(np.size(u)), np.cos(v))
+        TH, PH = np.meshgrid(theta, phi)
 
-        z = z + d1
+        Xo = r_max * np.cos(PH) * np.cos(TH)
+        Yo = r_max * np.cos(PH) * np.sin(TH)
+        Zo = d1 + r_max * np.sin(PH)
 
-        ax.plot_wireframe(
-            x, y, z,
-            color='#1abc9c',
-            alpha=0.15
-        )
+        Xi = r_min * np.cos(PH) * np.cos(TH)
+        Yi = r_min * np.cos(PH) * np.sin(TH)
+        Zi = d1 + r_min * np.sin(PH)
+
+        ax.plot_wireframe(Xo, Yo, Zo, color='#00ffaa', alpha=0.12, linewidth=0.5)
+        ax.plot_wireframe(Xi, Yi, Zi, color='#ff5555', alpha=0.08, linewidth=0.5)
+
+        z_line = np.linspace(d1 - r_max, d1 + r_max, 30)
+        ax.plot(np.zeros_like(z_line), np.zeros_like(z_line), z_line,
+                '--', color='white', alpha=0.1)
 
   
 
-    def draw_robot(theta1, theta2, theta3,
-                   d1, a2, a3,
-                   projection=True):
+    def draw_robot(
+            theta1, theta2, theta3,
+            theta4, theta5, theta6,
+            d1=100, a2=160, a3=140,
+            a4=190, d6=40,
+            projection=True):
 
+        global SAVED_A_MATRICES, SAVED_T06
+
+        # =========================
+        # CLEAR ONLY ONCE
+        # =========================
         ax.clear()
 
         ax.set_facecolor("#081b4b")
-
         ax.grid(True, color="#1f2d4d")
 
-  
+        # =========================
+        # DH FUNCTION
+        # =========================
+        def DH(theta, d, a, alpha):
+            return np.array([
+                [np.cos(theta), -np.sin(theta)*np.cos(alpha), np.sin(theta)*np.sin(alpha), a*np.cos(theta)],
+                [np.sin(theta),  np.cos(theta)*np.cos(alpha), -np.cos(theta)*np.sin(alpha), a*np.sin(theta)],
+                [0,              np.sin(alpha),              np.cos(alpha),              d],
+                [0, 0, 0, 1]
+            ])
 
-        p0 = np.array([0,0,0])
+        # =========================
+        # FK (6DOF STANDARD)
+        # =========================
+        T01 = DH(theta1, d1, 0, np.pi/2)
+        T12 = DH(theta2, 0, a2, 0)
+        T23 = DH(theta3, 0, a3, 0)
 
-        p1 = np.array([0,0,d1])
+        T34 = DH(theta4, 0, 0, np.pi/2)
+        T45 = DH(theta5, 0, 0, -np.pi/2)
+        T56 = DH(theta6, d6, 0, 0)
 
-        p2 = p1 + np.array([
-            a2*np.cos(theta2)*np.cos(theta1),
-            a2*np.cos(theta2)*np.sin(theta1),
-            a2*np.sin(theta2)
-        ])
+        T02 = T01 @ T12
+        T03 = T02 @ T23
+        T04 = T03 @ T34
+        T05 = T04 @ T45
+        T06 = T05 @ T56
 
-        p3 = p2 + np.array([
-            a3*np.cos(theta2+theta3)*np.cos(theta1),
-            a3*np.cos(theta2+theta3)*np.sin(theta1),
-            a3*np.sin(theta2+theta3)
-        ])
+        # =========================
+        # SAVE FOR MATRIX UI
+        # =========================
+        SAVED_A_MATRICES = [T01, T12, T23, T34, T45, T56]
+        SAVED_T06 = T06
 
-        p6 = p3
+        # =========================
+        # JOINT POSITIONS
+        # =========================
+        p0 = np.array([0, 0, 0])
+        p1 = T01[:3, 3]
+        p2 = T02[:3, 3]
+        p3 = T03[:3, 3]
+        p4 = T04[:3, 3]
+        p5 = T05[:3, 3]
+        p6 = T06[:3, 3]
 
-        pts = [p0,p1,p2,p3]
+        pts = [p0, p1, p2, p3, p4, p5, p6]
 
         colors = [
-            '#34495e',
-            '#3498db',
-            '#9b59b6'
+            '#34495e', '#3498db', '#9b59b6',
+            '#e67e22', '#1abc9c', '#f1c40f'
         ]
 
-  
-
+        # =========================
+        # DRAW LINKS
+        # =========================
         for i in range(len(pts)-1):
-
-            draw_3d_cylinder(
-                ax,
-                pts[i],
-                pts[i+1],
-                radius=7,
-                color=colors[i]
-            )
+            draw_3d_cylinder(ax, pts[i], pts[i+1], radius=7, color=colors[i])
 
             ax.scatter(
-                pts[i][0],
-                pts[i][1],
-                pts[i][2],
-                color='#e74c3c',
-                s=90
+                pts[i][0], pts[i][1], pts[i][2],
+                color='#e74c3c', s=80
             )
 
-    
-
+        # =========================
+        # END EFFECTOR
+        # =========================
         ax.scatter(
-            p6[0],
-            p6[1],
-            p6[2],
-            color='yellow',
-            s=160
+            p6[0], p6[1], p6[2],
+            color='yellow', s=150
         )
 
         draw_gripper(
@@ -558,243 +2322,239 @@ def open_ik_page():
             math.degrees(theta3)
         )
 
-       
-
+        # =========================
+        # PROJECTION
+        # =========================
         if projection:
+            ax.plot([p6[0], p6[0]], [p6[1], p6[1]], [0, p6[2]],
+                    '--', color='#00ffff')
 
-            ax.plot(
-                [p6[0], p6[0]],
-                [p6[1], p6[1]],
-                [0, p6[2]],
-                '--',
-                color='#00ffff'
-            )
+            ax.plot([0, p6[0]], [0, p6[1]], [0, 0],
+                    '--', color='#ff00ff')
 
-            ax.plot(
-                [0, p6[0]],
-                [0, p6[1]],
-                [0, 0],
-                '--',
-                color='#ff00ff'
-            )
-
-# mo7awlaa m4 s7 
+        # =========================
+        # WORKSPACE (ONCE ONLY)
+        # =========================
         draw_workspace(ax, d1, a2, a3)
 
-        
+        # =========================
+        # AXES FIX (IMPORTANT)
+        # =========================
+        max_range = d1 + a2 + a3 + d4 + 200
 
-        max_range = d1+a2+a3+100
+        ax.set_xlim([-max_range, max_range])
+        ax.set_ylim([-max_range, max_range])
+        ax.set_zlim([0, max_range])
 
-        ax.set_xlim([-max_range,max_range])
-        ax.set_ylim([-max_range,max_range])
-        ax.set_zlim([0,max_range])
-
-        ax.set_xlabel("X Axis (mm)", color='white', fontsize=10)
-        ax.set_ylabel("Y Axis (mm)", color='white', fontsize=10)
-        ax.set_zlabel("Z Axis (mm)", color='white', fontsize=10)
+        ax.set_xlabel("X Axis (mm)", color='white')
+        ax.set_ylabel("Y Axis (mm)", color='white')
+        ax.set_zlabel("Z Axis (mm)", color='white')
 
         ax.tick_params(colors='white')
 
         ax.view_init(elev=28, azim=40)
 
-
-
+        # =========================
+        # LABEL
+        # =========================
         ax.text(
-            p6[0],
-            p6[1],
-            p6[2]+20,
+            p6[0], p6[1], p6[2] + 20,
             f"EE\nX={p6[0]:.1f}\nY={p6[1]:.1f}\nZ={p6[2]:.1f}",
             color='yellow'
         )
 
         canvas.draw()
-
     
 
-    def animate_robot(target_t1, target_t2, target_t3,
-                      d1, a2, a3):
+    def animate_robot(
+        current_t1, current_t2, current_t3,
+        current_t4, current_t5, current_t6,
+        target_t1, target_t2, target_t3,
+        target_t4, target_t5, target_t6,
+        d1, a2, a3, a4):
 
         steps = 40
 
-        for i in range(steps):
-
+        for i in range(steps + 1):
             r = i / steps
 
-            t1 = target_t1 * r
-            t2 = target_t2 * r
-            t3 = target_t3 * r
-
             draw_robot(
-                t1, t2, t3,
-                d1, a2, a3
+                current_t1 + (target_t1 - current_t1) * r,
+                current_t2 + (target_t2 - current_t2) * r,
+                current_t3 + (target_t3 - current_t3) * r,
+                current_t4 + (target_t4 - current_t4) * r,
+                current_t5 + (target_t5 - current_t5) * r,
+                current_t6 + (target_t6 - current_t6) * r,
+                d1, a2, a3, a4
             )
 
             window.update()
 
-    
-    
-
     def solve_inverse_kinematics():
+        global IK_STARTED, SAVED_A_MATRICES, SAVED_T06
 
         try:
+            IK_STARTED = True
 
+            # =====================
+            # INPUTS
+            # =====================
             x = float(x_entry.get())
             y = float(y_entry.get())
             z = float(z_entry.get())
 
-            d1 = float(link_entries[0].get())
-            a2 = float(link_entries[1].get())
-            a3 = float(link_entries[2].get())
+            d1 = 100
+            a2, a3 = [float(e.get()) for e in link_entries]
+            a4 = 190
+            # tool offset
+            z = z - a4
 
+            roll  = math.radians(float(roll_entry.get()))
+            pitch = math.radians(float(pitch_entry.get()))
+            yaw   = math.radians(float(yaw_entry.get()))
 
-            r = math.sqrt(x**2 + y**2)
+            # =====================
+            # ROTATION MATRIX (RPY)
+            # =====================
+            cr, sr = math.cos(roll), math.sin(roll)
+            cp, sp = math.cos(pitch), math.sin(pitch)
+            cy, sy = math.cos(yaw), math.sin(yaw)
 
-            s = z - d1
+            R06 = np.array([
+                [cy*cp, cy*sp*sr - sy*cr, cy*sp*cr + sy*sr],
+                [sy*cp, sy*sp*sr + cy*cr, sy*sp*cr - cy*sr],
+                [-sp,   cp*sr,            cp*cr]
+            ])
 
-            theta1 = math.atan2(y, x)
+            # =====================
+            # WRIST CENTER (IMPORTANT FIX)
+            # =====================
+            wc_x = x - a4 * R06[0, 2]
+            wc_y = y - a4 * R06[1, 2]
+            wc_z = z - a4 * R06[2, 2]
 
-            D = ((r**2 + s**2 - a2**2 - a3**2)/(2*a2*a3))
+            # =====================
+            # POSITION IK (3DOF)
+            # =====================
 
-            if abs(D) > 1:
+            theta1 = math.atan2(wc_y, wc_x)
 
-                singularity_lbl.config(
-                    text="UNREACHABLE POINT",
-                    fg="#ff4d4d"
-                )
+            r = math.sqrt(wc_x**2 + wc_y**2)
+            s = wc_z - d1
 
+            D = (r**2 + s**2 - a2**2 - a3**2) / (2 * a2 * a3)
+            D = max(min(D, 1.0), -1.0)
+
+            if abs(D) > 1.0:
+                singularity_lbl.config(text="UNREACHABLE ❌", fg="red")
                 return
-
-            theta3 = math.atan2(
-                math.sqrt(1-D**2),
-                D
-            )
+            
+            theta3 = math.atan2(math.sqrt(1 - D**2), D)
 
             theta2 = math.atan2(s, r) - math.atan2(
-                a3*math.sin(theta3),
-                a2+a3*math.cos(theta3)
+                a3 * math.sin(theta3),
+                a2 + a3 * math.cos(theta3)
             )
 
-            t1 = math.degrees(theta1)
-            t2 = math.degrees(theta2)
-            t3 = math.degrees(theta3)
+            # =====================
+            # DH MATRICES (CONSISTENT)
+            # =====================
 
-            
+            def DH(theta, d, a, alpha):
+                return np.array([
+                    [math.cos(theta), -math.sin(theta)*math.cos(alpha), math.sin(theta)*math.sin(alpha), a*math.cos(theta)],
+                    [math.sin(theta),  math.cos(theta)*math.cos(alpha), -math.cos(theta)*math.sin(alpha), a*math.sin(theta)],
+                    [0,               math.sin(alpha),                  math.cos(alpha),                 d],
+                    [0, 0, 0, 1]
+                ])
 
-            vals = [t1,t2,t3,0,0,0]
+            A1 = DH(theta1, d1, 0, math.pi/2)
+            A2 = DH(theta2, 0, a2, 0)
+            A3 = DH(theta3, 0, a3, 0)
+
+            # =====================
+            # FORWARD KINEMATICS UP TO WRIST
+            # =====================
+            T03 = A1 @ A2 @ A3
+            R03 = T03[:3, :3]
+
+            # =====================
+            # WRIST ORIENTATION
+            # =====================
+            R36 = R03.T @ R06
+
+            theta5 = math.atan2(
+                math.sqrt(R36[0,2]**2 + R36[1,2]**2),
+                R36[2,2]
+            )
+
+            if abs(math.sin(theta5)) < 1e-6:
+                theta4 = 0
+                theta6 = math.atan2(-R36[1,0], R36[0,0])
+            else:
+                theta4 = math.atan2(R36[1,2], R36[0,2])
+                theta6 = math.atan2(R36[2,1], -R36[2,2])
+
+            # =====================
+            # FULL FK MATRICES
+            # =====================
+            A4 = DH(theta4, 0, 0, math.pi/2)
+            A5 = DH(theta5, 0, 0, -math.pi/2)
+            A6 = DH(theta6, a4, 0, 0)
+
+            SAVED_A_MATRICES = [A1, A2, A3, A4, A5, A6]
+            SAVED_T06 = A1 @ A2 @ A3 @ A4 @ A5 @ A6
+
+            # =====================
+            # UPDATE UI ANGLES
+            # =====================
+            angles = [theta1, theta2, theta3, theta4, theta5, theta6]
 
             for i in range(6):
                 angle_labels[i].config(
-                    text=f"{vals[i]:.2f}°"
+                    text=f"{math.degrees(angles[i]):.2f}°"
                 )
 
+            # =====================
+            # POSITION ERROR
+            # =====================
+            ee_pos = SAVED_T06[:3, 3]
+            target = np.array([x, y, z])
 
-            c1,s1 = math.cos(theta1), math.sin(theta1)
-            c2,s2 = math.cos(theta2), math.sin(theta2)
-            c3,s3 = math.cos(theta3), math.sin(theta3)
+            error = np.linalg.norm(ee_pos - target)
 
-            A1 = np.array([
-                [c1,0,s1,0],
-                [s1,0,-c1,0],
-                [0,1,0,d1],
-                [0,0,0,1]
-            ])
-
-            A2 = np.array([
-                [c2,-s2,0,a2*c2],
-                [s2,c2,0,a2*s2],
-                [0,0,1,0],
-                [0,0,0,1]
-            ])
-
-            A3 = np.array([
-                [c3,-s3,0,a3*c3],
-                [s3,c3,0,a3*s3],
-                [0,0,1,0],
-                [0,0,0,1]
-            ])
-
-            SAVED_A_MATRICES.clear()
-
-            SAVED_A_MATRICES.extend([
-                A1,A2,A3
-            ])
-
-            global SAVED_T06
-
-            SAVED_T06 = np.dot(
-                np.dot(A1,A2),
-                A3
+            extra_info.config(
+                text=f"Position Error: {error:.5f}"
             )
+
+            # =====================
+            # SINGULARITY CHECK
+            # =====================
+            if abs(math.sin(theta3)) < 0.05:
+                singularity_lbl.config(text="SINGULARITY ⚠", fg="orange")
+            else:
+                singularity_lbl.config(text="SAFE ✔", fg="#2ecc71")
 
             update_matrix_view()
 
-    
+            # =====================
+            # ANIMATION (SMOOTH FIX)
+            # =====================
+            prev = getattr(solve_inverse_kinematics, "last_angles",
+                        [0,0,0,0,0,0])
 
-            reach = math.sqrt(x**2+y**2+z**2)
-
-            jacobian_det = abs(
-                a2*a3*math.sin(theta3)
-            )
-
-            extra_info.config(
-                text=
-                f"Reach Distance = {reach:.2f} mm\n"
-                f"Jacobian Determinant = {jacobian_det:.3f}\n"
-                f"Workspace Radius = {(a2+a3):.1f} mm"
-            )
-
-            
-           
-
-            theory = (
-                "GEOMETRIC IK METHOD\n\n"
-                "θ1 = atan2(y,x)\n"
-                "θ3 from cosine law\n"
-                "θ2 from triangle decomposition\n\n"
-                "T06 = A1 × A2 × A3\n"
-                "Uses Homogeneous Matrices.\n"
-                "Fast and stable."
-            )
-
-            theory_lbl.config(text=theory)
-
-        
-# animation bayzzz 
             animate_robot(
-                theta1,
-                theta2,
-                theta3,
-                d1,
-                a2,
-                a3
+                prev[0], prev[1], prev[2],
+                prev[3], prev[4], prev[5],
+                theta1, theta2, theta3,
+                theta4, theta5, theta6,
+                d1, a2, a3, a4
             )
 
-           # singularity bayzaaaaaaa 3andyyy rakzyy fe rule tany 
-
-            if abs(math.sin(theta3)) < 0.05:
-
-                singularity_lbl.config(
-                    text=
-                    "SINGULARITY DETECTED\n"
-                    "ELBOW FULLY EXTENDED",
-                    fg="orange"
-                )
-
-            else:
-
-                singularity_lbl.config(
-                    text="SAFE CONFIGURATION",
-                    fg="#2ecc71"
-                )
+            solve_inverse_kinematics.last_angles = angles
 
         except Exception as e:
-
-            messagebox.showerror(
-                "IK ERROR",
-                str(e)
-            )
-
-
+            messagebox.showerror("IK ERROR", str(e))
 
     header = Frame(window, bg=BG_COLOR)
     header.pack(fill=X)
@@ -885,16 +2645,18 @@ def open_ik_page():
     links_frame.pack(fill=X,pady=5)
 
     names = [
-        "Link1 : 100-220",
-        "Link2 : 100-200",
-        "Link3 : 50-150"
-    ]
+    
+    "Link2 Shoulder (160-200)",
+    "Link3 Elbow (140-160)",
+    
+   ]
 
-    defaults = [160,150,100]
+    defaults = [ 160, 140]
+
 
     link_entries = []
 
-    for i in range(3):
+    for i in range(2):
 
         Label(
             links_frame,
@@ -913,8 +2675,45 @@ def open_ik_page():
         e.pack(fill=X,pady=2)
 
         link_entries.append(e)
+    
+# ORIENTATION INPUT (RPY)
 
-    # BUTTON
+    rpy_frame = LabelFrame(
+    left,
+    text=" END-EFFECTOR ORIENTATION (RPY) ",
+    bg=BG_COLOR,
+    fg="#9b59b6",
+    font=("Arial",10,"bold")
+    )
+
+    rpy_frame.pack(fill=X, pady=5)
+
+    rpy_entries = []
+
+    for txt, val in [
+        ("Roll (deg)", 0),
+        ("Pitch (deg)", 0),
+        ("Yaw (deg)", 0)
+    ]:
+        Label(
+            rpy_frame,
+            text=txt,
+            bg=BG_COLOR,
+            fg="white"
+        ).pack()
+
+        e = Entry(
+            rpy_frame,
+            font=("Consolas",11)
+        )
+
+        e.insert(0, str(val))
+        e.pack(fill=X, pady=2)
+
+        rpy_entries.append(e)
+
+    roll_entry, pitch_entry, yaw_entry = rpy_entries
+        # BUTTON
 
     Button(
         left,
@@ -1084,14 +2883,17 @@ def open_ik_page():
     matrix_frame.pack(fill=BOTH,expand=True,pady=5)
 
     matrix_selector = ttk.Combobox(
-        matrix_frame,
-        values=[
+       matrix_frame,
+       values=[
             "A1 Matrix",
             "A2 Matrix",
             "A3 Matrix",
+            "A4 Matrix",
+            "A5 Matrix",
+            "A6 Matrix",
             "T06 Matrix"
-        ],
-        state="readonly"
+       ],
+       state="readonly"
     )
 
     matrix_selector.current(0)
@@ -1167,9 +2969,18 @@ def open_ik_page():
 
     singularity_lbl.pack(fill=X)
 
-  
-    solve_inverse_kinematics()
     show_university_logo()
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -1200,7 +3011,7 @@ def open_fk_intro_page():
     video_frame = Frame(window, bg="#0a1e4d", bd=3, relief=RIDGE)
     video_frame.pack(pady=10, padx=50, fill=BOTH, expand=True)
     
-    Label(video_frame, text="WATCHING TUTORIAL", font=("Arial", 18, "bold"), 
+    Label(video_frame, text="Watch FK Tutorial", font=("Arial", 18, "bold"), 
           fg="#2ecc71", bg="#0a1e4d").pack(pady=(20, 10))
 
     preview_container = Frame(video_frame, bg="#0a1e4d")
@@ -1238,8 +3049,20 @@ def open_fk_intro_page():
 
 
 
-# Fk PAGE 
 
+
+
+
+
+
+
+
+
+
+
+
+# Fk PAGE 
+current_angles = [0, 0, 0, 0, 0, 0]
 SAVED_A_MATRICES = [np.eye(4) for _ in range(6)]
 SAVED_T06 = np.eye(4)
 
@@ -1248,7 +3071,11 @@ is_sim_started = False
 def open_fk_page():
     for widget in window.winfo_children(): 
         widget.destroy()
-
+    global SAVED_A_MATRICES, SAVED_T06
+    if not isinstance(SAVED_A_MATRICES, list) or len(SAVED_A_MATRICES) < 6:
+        SAVED_A_MATRICES = [np.eye(4) for _ in range(6)]
+    if SAVED_T06 is None:
+        SAVED_T06 = np.eye(4)
    
     def draw_3d_cylinder(ax, p1, p2, radius=8, color='#2ecc71'):
         try:
@@ -1284,21 +3111,21 @@ def open_fk_page():
         global SAVED_A_MATRICES, SAVED_T06, is_sim_started
         
         try:
-       # gripper na2ss hna
+       
             joint_limits = [
                 (-135.0, 135.0), # Base
                 (0.0, 180.0),    # Shoulder
                 (-80.0, 90.0),   # Elbow
                 (-90.0, 90.0),   # Wrist Pitch / Rest
                 (-180.0, 180.0), # Wrist Roll / Roll
-                (0.0, 180.0)     # Yaw / Gripper
+                (0.0, 180.0),    # Yaw 
+                (0.0, 90.0),     #Gripper
             ]
             
         # limits bt3t mina kolo mm
             dim_limits = [
-                (100.0, 220.0),  # Link 1
-                (100.0, 200.0),  # Link 2
-                (50.0, 150.0)    # Link 3
+                (150.0, 180.0),  # a2
+                (130.0, 150.0)  # a3    
             ]
 
            
@@ -1323,8 +3150,13 @@ def open_fk_page():
                     return
                 link_vals.append(val)
 
-            d1_val, a2_val, a3_val = link_vals[0], link_vals[1], link_vals[2]
-            d6_val = 40.0  
+            d1_val = 100.0          # fixed base link
+            a2_val = link_vals[0]   # variable shoulder
+            a3_val = link_vals[1]   # variable elbow
+
+            d4_val = 74.17          # FIXED
+            d5_val = 71.09          # FIXED (wrist roll segment)
+            d6_val = 40.0           # gripper
             
             if from_button:
                 is_sim_started = True
@@ -1342,7 +3174,7 @@ def open_fk_page():
                 [ 0,       0,       0, 1]
             ])
             
-            # Link 2
+            # Link 2 shoulder 
             c2, s2 = math.cos(thetas[1]), math.sin(thetas[1])
             ca2, sa2 = math.cos(alphas[1]), math.sin(alphas[1])
             SAVED_A_MATRICES[1] = np.array([
@@ -1352,7 +3184,7 @@ def open_fk_page():
                 [ 0,       0,       0, 1]
             ])
             
-            # Link 3
+            # Link 3 elbow
             c3, s3 = math.cos(thetas[2]), math.sin(thetas[2])
             ca3, sa3 = math.cos(alphas[2]), math.sin(alphas[2])
             SAVED_A_MATRICES[2] = np.array([
@@ -1362,12 +3194,19 @@ def open_fk_page():
                 [ 0,       0,       0, 1]
             ])
             
-            # Links 4 to 6
+            # a3takd keda tmm m3a 4o8l mina elgdid
             for i in range(3, 6):
                 c, s = math.cos(thetas[i]), math.sin(thetas[i])
                 ca, sa = math.cos(alphas[i]), math.sin(alphas[i])
-                
-                d_val = d6_val if i == 5 else 0.0
+
+                if i == 3:
+                   d_val = d4_val
+
+                elif i == 5:
+                   d_val = d6_val
+
+                else:
+                   d_val = 0.0
                 
                 SAVED_A_MATRICES[i] = np.array([
                     [c, -s*ca,  s*sa, 0.0],
@@ -1386,7 +3225,7 @@ def open_fk_page():
             ax.set_facecolor('#081b4b')
             ax.grid(True, color='#1a2a5a', linestyle=':')
             
-            max_range = d1_val + a2_val + a3_val + d6_val
+            max_range = d1_val + a2_val + a3_val + d4_val + d6_val
             
            
             if is_sim_started:
@@ -1414,19 +3253,25 @@ def open_fk_page():
                     a3_val * math.sin(phi23)
                 ])
                 pts.append(p3)
-                
+                p4 = p3 + np.array([
+                     d4_val * math.cos(phi23) * math.cos(phi1),
+                     d4_val * math.cos(phi23) * math.sin(phi1),
+                     d4_val * math.sin(phi23)
+                ])
+
+                pts.append(p4)
                 ee_pos = SAVED_T06[0:3, 3]
                 
-                if all(t == 0 for t in thetas):
-                    p4 = p3 + np.array([20.0 * math.cos(phi1), 20.0 * math.sin(phi1), 0.0])
-                    p5 = p4 + np.array([20.0 * math.cos(phi1), 20.0 * math.sin(phi1), 0.0])
+                if all(abs(t) < 1e-6 for t in thetas):
+                    
+                    p5 = p4 + np.array([20.0 * math.cos(phi1),20.0 * math.sin(phi1),0.0])
                     p6 = p5 + np.array([d6_val * math.cos(phi1), d6_val * math.sin(phi1), 0.0])
-                    pts.extend([p4, p5, p6])
+                    pts.extend([ p5, p6])
                 else:
-                    p4 = p3 + (ee_pos - p3) * 0.33
-                    p5 = p3 + (ee_pos - p3) * 0.66
+                    p5 = p4 + (ee_pos - p4) * 0.5
                     p6 = ee_pos
-                    pts.extend([p4, p5, p6])
+
+                    pts.extend([p5, p6])
                     
                 colors_list = ['#34495e', '#3498db', '#9b59b6', '#e67e22', '#1abc9c', '#f1c40f']
                 for i in range(len(pts) - 1):
@@ -1446,7 +3291,9 @@ def open_fk_page():
                 if np.linalg.norm(ortho_v) < 1e-3: ortho_v = np.array([0, 1, 0])
                 ortho_v /= np.linalg.norm(ortho_v)
                 
-                gripper_span = 18.0
+        
+                gripper_val = float(joints[6].get()) 
+                gripper_span = 20.0 - (gripper_val * (15.0 / 90.0)) 
                 g_left_base = ee_actual + ortho_v * gripper_span
                 g_right_base = ee_actual - ortho_v * gripper_span
                 g_left_tip = g_left_base + dir_v * 15.0
@@ -1507,10 +3354,16 @@ def open_fk_page():
             
             for i in range(3, 6):
                 dh_labels[i]["theta"].config(text=f"{float(joints[i].get()):.1f}")
-                if i == 5:
+
+                if i == 3:
+                    dh_labels[i]["d"].config(text=f"{d4_val:.1f}")
+                elif i == 4:
+                    dh_labels[i]["d"].config(text=f"{d5_val:.1f}")
+                elif i == 5:
                     dh_labels[i]["d"].config(text=f"{d6_val:.1f}")
-                else:
+                else:              
                     dh_labels[i]["d"].config(text="0.0")
+
                 dh_labels[i]["a"].config(text="0.0")
                 
             on_link_select(None)
@@ -1612,10 +3465,10 @@ def open_fk_page():
     tabs.add(joints_tab, text=" Joint Angles (θ) ")
     joints = []
     
-    joint_names = ["Base (NEMA 23)", "Shoulder (Servo 35)", "Elbow (Servo 35)", "Rest (Servo 11/20)", "Roll (NEMA 17)", "Yaw (Servo 11)"]
-    joint_ranges_text = ["[-135° to 135°]", "[0° to 180°]", "[-80° to 90°]", "[-90° to 90°]", "[-180° to 180°]", "[0° to 180°]"]
+    joint_names = ["Base (NEMA 23)", "Shoulder (Servo 35)", "Elbow (Servo 35)", "Rest (Servo 11/20)", "Roll (NEMA 17)", "Yaw (Servo 11)","Gripper(Black Servo)"]
+    joint_ranges_text = ["[-135° to 135°]", "[0° to 180°]", "[-80° to 90°]", "[-90° to 90°]", "[-180° to 180°]", "[0° to 180°]","[0° to 90°]"]
     
-    for i in range(6):
+    for i in range(7):
         joint_card = Frame(joints_tab, bg=BG_COLOR, pady=1)
         joint_card.pack(fill=X)
         
@@ -1633,11 +3486,13 @@ def open_fk_page():
     dims_tab = Frame(tabs, bg=BG_COLOR, padx=10, pady=4)
     tabs.add(dims_tab, text=" Dimensions (a/d) ")
     link_dims = []
-    
+    for i, d_entry in enumerate(link_dims):
+        d_entry.bind("<KeyRelease>", lambda event: run_fk_calculations(from_button=False))
+        d_entry.bind("<FocusOut>", lambda event: run_fk_calculations(from_button=False))
+        
     dim_configs = [
-        ("Link 1 Length d1 (100-220 mm)", "160.0"),
-        ("Link 2 Length a2 (100-200 mm)", "150.0"),
-        ("Link 3 Length a3 (50-150 mm)", "100.0")
+    ("Link 2 Length a2 (150-180 mm)", "150.0"),
+    ("Link 3 Length a3 (130-150 mm)", "130.0")
     ]
     
     for label_text, default_val in dim_configs:
@@ -1727,7 +3582,7 @@ def open_fk_page():
         Label(dh_frame, text=h, fg="#099da5", bg=BG_COLOR, font=("Arial", 8, "bold")).grid(row=0, column=i, padx=6)
     
     dh_labels = [] 
-    my_robot_alphas = [90, 0, 0, 90, -90, 0]
+    my_robot_alphas = [90, 0, 0, 90, -90, 0] # keda keda l7d ma nzabta
     for i in range(6):
         Label(dh_frame, text=str(i+1), fg="white", bg=BG_COLOR, font=("Arial", 8)).grid(row=i+1, column=0, padx=6)
         
@@ -1757,11 +3612,63 @@ def open_fk_page():
         val_lbl = Label(container, text="0.00", font=("Consolas", 11, "bold"), fg="white", bg="#0a1e4d", width=8, relief=RIDGE)
         val_lbl.pack(side=LEFT, padx=2)
         ee_coords[axis] = val_lbl
+        
+    try:
+        esp = serial.Serial('COM5', 115200, timeout=1)
+        print("ESP connected ")
+    except:
+        esp = None
+        print("ESP not connected ")
+        
+    def sync_to_hardware():
+        try:
+            angles = [float(j.get()) for j in joints]
+            link_vals = [
+                100.0,      # d1 fixed base
+                float(link_dims[0].get()), # shoulder
+                float(link_dims[1].get()), #elbow
+                74.17, # yaw
+                71.09, #roll
+                40.0  # gripper ay 7aga l7d ma n3rf el tol
+            ]
+            payload = {
+                "angles": angles,
+                "links": link_vals
+            }
+            
+            msg = json.dumps(payload)
+            print("SENDING TO HARDWARE:")
+            print(msg)
 
+            if esp is not None:
+                esp.write((msg + "\n").encode())   
+                esp.flush()
+                print("Sent to ESP32 ")
+                messagebox.showinfo("SUCCESS", "Data sent to ESP32")
+            else:
+                print("No ESP connection")
+                messagebox.showwarning("WARNING", "ESP not connected")
+
+          
+
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+           
+
+       
+    
+    
+    
     sync_frame = Frame(right_p, bg="#0a1e4d", bd=1, relief=SOLID)
     sync_frame.pack(side=BOTTOM, fill=X, pady=4)
-    Button(sync_frame, text="UPLOAD TO HARDWARE", bg="#27ae60", fg="white", font=("Arial", 10, "bold"), command=lambda: messagebox.showinfo("Hardware Sync", "Uploading to ESP32")).pack(pady=4, padx=10, fill=X)
-    
+    Button(
+        sync_frame,
+        text="SYNC TO HARDWARE",
+        bg="#27ae60",
+        fg="white",
+        font=("Arial", 10, "bold"),
+        command=sync_to_hardware
+    ).pack(pady=4, padx=10, fill=X)
 
     run_fk_calculations(from_button=False)
     show_university_logo()
@@ -1782,8 +3689,8 @@ def open_experiments_page():
     Experiments = [
         ("1. Forward Kinematics (FK)", open_fk_intro_page), 
         ("2. Inverse Kinematics (IK)", open_ik_intro_page), 
-        ("3. Trajectory Planning", open_trajectory_page), 
-        ("4. Pick and Place Control", None)
+        ("3. Pick and Place Control", open_trajectory_intro_page), 
+        ("4. Torque & Forces", open_dynamics_intro_page)
     ]
 
     for text, cmd in Experiments:
@@ -1908,7 +3815,7 @@ def show_university_logo():
      
         l_lbl = Label(window, image=logo_photo, bg=BG_COLOR)
         l_lbl.image = logo_photo  
-        l_lbl.place(relx=0.92, rely=0.07, anchor=CENTER)
+        l_lbl.place(relx=0.99, rely=0.01, anchor="ne")
     except Exception as e:
         print(f"Logo error: {e}")
         pass
