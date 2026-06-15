@@ -17,8 +17,8 @@ import serial
 import time
 import math
 from tkinter import ttk
-import PIL.Image  
-from PIL import ImageTk
+#import PIL.Image  
+#from PIL import ImageTk
 import tkinter as tk  
 from tkinter import Frame, Label, Entry, Button, LabelFrame, ttk, messagebox
 import tkinter as tk
@@ -34,69 +34,93 @@ import threading
 from tkinter import Frame, Label, Button, Entry, X, Y, BOTH, LEFT, RIGHT
 import serial
 import json
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
+from datetime import datetime
+import platform
+import os
+from reportlab.platypus import (SimpleDocTemplate, Paragraph, Spacer, Table,TableStyle, PageBreak)
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
+from datetime import datetime
+import os, platform
+from PIL import Image as PILImage, ImageTk
+from reportlab.platypus import Image as RLImage
+from matplotlib.figure import Figure
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_CENTER
+import json
+import socket
+from datetime import datetime
+
+
+
 
 #3l4an a create window 
 window = Tk()
 window.title('Robotic Arm Virtual Lab App')
 window.state('zoomed') 
-BG_COLOR = "#04153B" 
+BG_COLOR = "#F3F5F8"
 window.configure(bg=BG_COLOR)
 
-# file seif 
 
-def run_pybullet_sim():
-    try:
-        # 1. 7ot asma2 el files kolaha hna f List wa7da
-        all_files = ["twin.py", "fk.py"] 
-        
-        base_path = os.path.dirname(os.path.abspath(__file__))
-        
-        # 2. Lef mara wa7da (Loop) 3la kol el files
-        for file_name in all_files:
-            file_path = os.path.join(base_path, file_name)
-            
-            if os.path.exists(file_path):
-                # Sha8al el file
-                subprocess.Popen(["python", file_path])
-            else:
-                # Law file na2es, talle3 error w kammel elly ba3do (aw emel break)
-                messagebox.showerror("File Error", f"El file '{file_name}' mesh mawgood!\nEt2aked eno fe nfs el folder.")
-                
-    except Exception as e:
-        messagebox.showerror("Error", f"Ma3reftsh afta7 el simulation: {str(e)}")
-        
-        
+              
         
 def open_dynamics_intro_page():
 
     for widget in window.winfo_children():
         widget.destroy()
 
-    base_path = os.path.dirname(os.path.abspath(__file__))
-    header_frame = Frame(window, bg=BG_COLOR)
-    header_frame.pack(fill=X)
-
-    Button(
-        header_frame,
-        text="← Back to Experiments",
-        font=("Arial", 12, "bold"),
-        fg="#099da5",
-        bg=BG_COLOR,
-        bd=0,
-        borderwidth=10,
-        command=open_experiments_page
-    ).pack(side=LEFT, padx=20, pady=10)
+    BG_COLOR = "#F3F5F8"   
+    main_frame = Frame(window, bg=BG_COLOR)
+    main_frame.pack(fill="both", expand=True) 
+    
+    header = Frame(main_frame, bg="white", height=90)
+    header.pack(fill=X)
 
     Label(
-        header_frame,
-        text="Torques & Dynamics Analysis",
-        font=("Helvetica", 22, "bold"),
-        fg="white",
-        bg=BG_COLOR,
-        anchor=W
-    ).pack(pady=20)
+        header,
+        text="6-DOF ROBOTIC ARM EDUCATIONAL KIT",
+        font=("Segoe UI", 24, "bold"),
+        fg="#005EB8",
+        bg="white"
+    ).place(relx=0.5, rely=0.45, anchor=CENTER)
 
+    Label(
+        header,
+        text="VIRTUAL LAB INTERFACE v1.0",
+        font=("Consolas", 11, "bold"),
+        fg="#4B5563",
+        bg="white"
+    ).place(relx=0.5, rely=0.9, anchor=CENTER)
+   
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    dyn_image_path = os.path.join(base_path, "Torque_video_preview.PNG")
+    
+    back_frame = Frame(
+        header,
+        bg="#005EB8",
+        width=120,
+        height=90
+        )
 
+    back_frame.pack(side=LEFT, fill=Y)
+
+    Button(
+            back_frame,
+            text="🔙",
+            font=("Segoe UI Symbol", 24),
+            fg="white",
+            bg="#005EB8",
+            command=open_experiments_page,
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
+       
+    Label(main_frame, text="LEARN MORE ABOUT TORQUE & FORCES", font=("Helvetica", 20, "bold"), 
+          fg="#005EB8", bg=BG_COLOR , anchor=W).pack(pady=10)
+  
+   
     def play_dyn_video():
 
         video_name = "torque.mp4"
@@ -110,23 +134,13 @@ def open_dynamics_intro_page():
                 f"Video not found at: {video_full_path}"
             )
 
-    video_frame = Frame(window, bg="#0a1e4d", bd=3, relief=RIDGE)
-    video_frame.pack(pady=10, padx=50, fill=BOTH, expand=True)
+    video_frame = Frame(main_frame, bg="white", bd=3, relief=RIDGE)
+    video_frame.pack(pady=20, padx=200, fill=BOTH, expand=True)
 
-    Label(
-        video_frame,
-        text="WATCH DYNAMICS & TORQUE TUTORIAL",
-        font=("Arial", 18, "bold"),
-        fg="#f1c40f",
-        bg="#0a1e4d"
-    ).pack(pady=(20, 10))
-
-    preview_container = Frame(video_frame, bg="#0a1e4d")
+    preview_container = Frame(video_frame, bg="white")
     preview_container.pack(expand=True)
 
-
-    dyn_image_path = os.path.join(base_path, "Torque_video_preview.png")
-
+    image_path = r"C:\Users\Bassant\robot-arm-educational-kit\GUI\Torque_video_preview.png"
     try:
         img = Image.open(dyn_image_path)
         img = img.resize((750, 420), Image.Resampling.LANCZOS)
@@ -142,55 +156,100 @@ def open_dynamics_intro_page():
         img_label.pack(pady=10)
 
         img_label.bind("<Button-1>", lambda e: play_dyn_video())
-
-        Label(
-            preview_container,
-            text="Click image to play Dynamics tutorial",
-            font=("Arial", 10, "italic"),
-            fg="white",
-            bg="#0a1e4d"
-        ).pack()
-
     except Exception as e:
         print(f"DEBUG: Dynamics Image not found. Error: {e}")
 
-        Button(
-            preview_container,
-            text="▶ Watch Dynamics Tutorial",
-            font=("Arial", 16, "bold"),
-            bg="#f1c40f",
-            fg="black",
-            padx=30,
-            pady=15,
-            command=play_dyn_video,
-            cursor="hand2"
-        ).pack(pady=50)
 
+    status_bar = Frame(
+        main_frame,
+        bg="white",
+        height=60,
+        highlightbackground="#D6DEE8",
+        highlightthickness=1
+    )
 
-    btn_container = Frame(window, bg=BG_COLOR)
-    btn_container.pack(side=BOTTOM, fill=X, pady=40, padx=80)
+    status_bar.pack(side=BOTTOM, fill=X)
+
+    home_frame = Frame(
+    status_bar,
+    bg="#005EB8",
+    width=120,
+    height=55
+    )
+
+    home_frame.pack(side=LEFT, fill=Y)
 
     Button(
-        btn_container,
-        text="Simulation & Torque Analysis →",
-        font=("Arial", 13, "bold"),
-        bg="#e67e22",
+        home_frame,
+        text="⌂",
+        font=("Segoe UI Symbol", 24),
         fg="white",
-        width=25,
-        height=2,
+        bg="#005EB8",
+        command=show_welcome_page,
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
+    status_bar.pack(side=BOTTOM, fill=X)
+
+    PYBULLET_frame = Frame(
+    status_bar,
+    bg="#005EB8",
+    width=220,
+    height=55
+    )
+
+    PYBULLET_frame.pack(side=LEFT, fill=Y)
+
+    Button(
+        PYBULLET_frame,
+        text="← 3D Visualization (PyBullet)",
+        font=("Segoe UI Symbol", 10,"bold"),
+        fg="white",
+        bg="#06853b",
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
+    
+    
+    time_label = Label(
+        status_bar,
+        bg="white",
+        fg="#1F2937",
+        font=("Segoe UI",11)
+    )
+
+    time_label.pack(side=RIGHT, padx=25)
+
+    def update_time():
+        now = datetime.now()
+
+        time_label.config(
+            text=now.strftime("%d/%m/%Y\n%I:%M:%S %p")
+        )
+
+        window.after(1000, update_time)
+
+    update_time()    
+    
+    
+    status_bar.pack(side=BOTTOM, fill=X)
+
+    simulation_frame = Frame(
+    status_bar,
+    bg="#005EB8",
+    width=220,
+    height=55
+    )
+
+    simulation_frame.pack(side=RIGHT, fill=Y)
+
+    Button(
+        simulation_frame,
+        text="Simulation & Calculations →",
+        font=("Segoe UI Symbol", 10,"bold"),
+        fg="white",
+        bg="#06853b",
         command=open_dynamics_page
-    ).pack(side=RIGHT)
-
-    Button(
-        btn_container,
-        text=" ← 3D Robot Simulation",
-        font=("Arial", 13, "bold"),
-        bg="#2980b9",
-        fg="white",
-        width=25,
-        height=2,
-        command=run_pybullet_sim
-    ).pack(side=LEFT)
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
     show_university_logo()
 
 
@@ -201,230 +260,316 @@ def open_dynamics_page():
         widget.destroy()
 
    
-    BG = "#0b1a3a"
-    PANEL = "#102a5c"
-    ACCENT = "#00d2ff"
-    GREEN = "#2ecc71"
-    RED = "#e74c3c"
+    BG_COLOR = "#F3F5F8"   
+    RANGES = {
+        "Base": (-90, 90),
+        "Shoulder": (30, 150),
+        "Elbow": (-45, 120),
+        "Wrist": (-45, 90),
+        "Roll": (-180, 180),
+        "Yaw": (0, 180),
+        "Payload": (0, 50)
+    }
 
-    sim = {"run": True}
-
-  
-    header = tk.Frame(window, bg=BG)
-    header.pack(fill=tk.X)
-
-    tk.Button(header,
-              text="← Back to Experiments",
-              fg="#099da5",
-              bg=BG,
-              bd=0,
-              font=("Arial", 12, "bold"),
-              command=open_experiments_page).pack(side=tk.LEFT, padx=15, pady=10)
-
-    tk.Button(header,
-              text="← Kinematics",
-              fg=ACCENT,
-              bg=BG,
-              bd=0,
-              font=("Arial", 12, "bold"),
-              command=open_trajectory_page).pack(side=tk.LEFT)
-
-    tk.Label(header,
-             text="6DOF DYNAMICS | LAGRANGE + JACOBIAN",
-             bg=BG,
-             fg=ACCENT,
-             font=("Arial", 18, "bold")).pack(side=tk.LEFT, padx=25)
-
-  
-    main = tk.Frame(window, bg=BG)
-    main.pack(fill=tk.BOTH, expand=True)
-
-    left = tk.Frame(main, bg=BG, width=300)
-    left.pack(side=tk.LEFT, fill=tk.Y)
-
-    center = tk.Frame(main, bg=PANEL)
-    center.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-
-    right = tk.Frame(main, bg=BG, width=350)
-    right.pack(side=tk.RIGHT, fill=tk.Y)
-
+    main_frame = Frame(window, bg="#F4F8FC")
+    main_frame.pack(fill="both", expand=True)
     
-    def make_input(label, default):
-        tk.Label(left, text=label, fg="white", bg=BG).pack(anchor="w")
-        e = tk.Entry(left, bg=PANEL, fg=ACCENT, insertbackground="white")
-        e.insert(0, str(default))
-        e.pack(fill=tk.X, pady=3)
-        return e
+    header = Frame(window, bg="#0D5BCF", height=90)
+    header.pack(fill="x")
 
-    tk.Label(left, text="SYSTEM INPUTS",
-             fg=ACCENT, bg=BG,
-             font=("Arial", 12, "bold")).pack(pady=10)
-
-    mass = make_input("Mass (kg)", 2)
-
-    theta = [make_input(f"θ{i+1} (deg)", 20*(i+1)) for i in range(6)]
-    links = [make_input(f"Link L{i+1} (cm)", 10+i*2) for i in range(6)]
-
-   
-    status = tk.Label(right, text="READY", fg=GREEN, bg=BG,
-                      font=("Arial", 12, "bold"))
-    status.pack(pady=10)
-
-    torque_labels = []
-    for i in range(6):
-        lb = tk.Label(right, text=f"τ{i+1} = 0",
-                      fg="white", bg=BG)
-        lb.pack()
-        torque_labels.append(lb)
-
-    lagrange_lbl = tk.Label(right,
-                            text="Lagrange: ---",
-                            fg="white", bg=BG,
-                            justify="left",
-                            font=("Consolas", 9))
-    lagrange_lbl.pack(pady=10)
-
-    jacobian_lbl = tk.Label(right,
-                            text="Jacobian: ---",
-                            fg="white", bg=BG,
-                            font=("Consolas", 8))
-    jacobian_lbl.pack()
+    Label(
+        header,
+        text="6-DOF ROBOTIC ARM EDUCATIONAL KIT",
+        bg="#0D5BCF",
+        fg="white",
+        font=("Arial", 18, "bold")
+    ).pack(pady=15)
 
 
-    fig, ax = plt.subplots()
-    fig.patch.set_facecolor(PANEL)
-    ax.set_facecolor(PANEL)
+    left = tk.LabelFrame(main_frame, text="LIFT FRAME", font=("Arial", 13, "bold"))
+    left.place(relx=0.01, rely=0.02, relwidth=0.23, relheight=0.95)
+
+    center = tk.LabelFrame(main, text="ANALYSIS CHARTS", font=("Arial", 13, "bold"))
+    center.place(relx=0.25, rely=0.02, relwidth=0.45, relheight=0.95)
+
+    right = tk.LabelFrame(main, text="RESULTS", font=("Arial", 13, "bold"))
+    right.place(relx=0.71, rely=0.02, relwidth=0.28, relheight=0.95)
+
+    entries = {}
+
+    for name in ["Base","Shoulder","Elbow","Wrist","Roll","Yaw"]:
+        mn,mx = RANGES[name]
+
+        tk.Label(left,text=f"θ {name}").pack(anchor="w",padx=10,pady=(8,0))
+
+        e=tk.Entry(left,font=("Arial",11))
+        e.pack(fill="x",padx=10)
+
+        tk.Label(left,text=f"Range: {mn} → {mx}",fg="gray").pack(anchor="w",padx=10)
+
+        entries[name]=e
+
+    tk.Label(left,text="Payload (g)").pack(anchor="w",padx=10,pady=(8,0))
+
+    payload=tk.Entry(left,font=("Arial",11))
+    payload.pack(fill="x",padx=10)
+
+    tk.Label(left,text="Range: 0 → 50",fg="gray").pack(anchor="w",padx=10)
+
+    fig = Figure(figsize=(6,7), dpi=100)
+
+    ax1 = fig.add_subplot(211)
+    ax2 = fig.add_subplot(212)
+
+    joints = ["Base","Shoulder","Elbow","Wrist","Roll","Yaw"]
+
+    ax1.set_title("Torque Analysis")
+    ax1.set_ylim(0,100)
+
+    ax2.set_title("Force Analysis")
+    ax2.set_ylim(0,100)
 
     canvas = FigureCanvasTkAgg(fig, master=center)
-    canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+    canvas.draw()
+    canvas.get_tk_widget().pack(fill="both", expand=True, padx=10, pady=10)
 
-    t_data = []
-    tau = [[] for _ in range(6)]
+    cols=("Joint","Torque","Force","Load %")
 
-  
-    def torque_model(m, th, L, t):
+    table=ttk.Treeview(right,columns=cols,show="headings",height=8)
 
-        g = 9.81
-        out = []
+    for c in cols:
+        table.heading(c,text=c)
+        table.column(c,width=90,anchor="center")
+
+    table.pack(fill="x",padx=10,pady=10)
+
+    guide=tk.LabelFrame(right,text="Status Guide")
+    guide.pack(fill="x",padx=10,pady=10)
+
+    tk.Label(guide,text="🟢 Safe 0-40%").pack(anchor="w")
+    tk.Label(guide,text="🟡 Medium 40-75%").pack(anchor="w")
+    tk.Label(guide,text="🔴 High 75-100%").pack(anchor="w")
+
+    summary=tk.Text(right,height=15)
+    summary.pack(fill="both",expand=True,padx=10,pady=10)
+
+    def calculate():
+        values=[]
+
+        try:
+            for n in ["Base","Shoulder","Elbow","Wrist","Roll","Yaw"]:
+                v=float(entries[n].get())
+                mn,mx=RANGES[n]
+
+                if not (mn <= v <= mx):
+                    raise ValueError(f"{n} must be between {mn} and {mx}")
+
+                values.append(v)
+
+            p=float(payload.get())
+
+            if not (0 <= p <= 50):
+                raise ValueError("Payload must be between 0 and 50 g")
+
+        except Exception as e:
+            messagebox.showerror("Input Error",str(e))
+            return
+
+        torque=[abs(v)/2 + p for v in values]
+        force=[abs(v)/3 + p/2 for v in values]
+        load=[min(100,t) for t in torque]
+
+        for row in table.get_children():
+            table.delete(row)
+
+        for i,j in enumerate(joints):
+            table.insert("", "end",
+                        values=(j,
+                                round(torque[i],2),
+                                round(force[i],2),
+                                round(load[i],1)))
+
+        ax1.clear()
+        ax1.plot(joints,torque,marker="o")
+        ax1.set_title("Torque Analysis")
+        ax1.set_ylim(0,100)
+
+        ax2.clear()
+        ax2.plot(joints,force,marker="o")
+        ax2.set_title("Force Analysis")
+        ax2.set_ylim(0,100)
+
+        canvas.draw()
+
+        summary.delete("1.0","end")
+        summary.insert("end",f"Payload = {p} g\n\n")
+
+        for i,n in enumerate(joints):
+            summary.insert("end",f"{n}: {values[i]}°\n")
+
+    tk.Button(
+        left,
+        text="CALCULATE",
+        command=calculate,
+        bg="#0D5BCF",
+        fg="white",
+        font=("Arial",12,"bold")
+    ).pack(fill="x",padx=10,pady=20)
+
+    root.mainloop()
+
+
+
+    DH_TABLE = [
+        [100, 0, 0, 90],
+        [0, 50, 0, 0],
+        [0, 130, 0, 0],
+        [74.2, 0, 0, 90],
+        [71.1, 0, 0, -90],
+        [40, 0, 0, 0]
+    ]
+
+    def dh_matrix(theta, d, a, alpha):
+        theta = np.radians(theta)
+        alpha = np.radians(alpha)
+
+        return np.array([
+            [np.cos(theta), -np.sin(theta)*np.cos(alpha), np.sin(theta)*np.sin(alpha), a*np.cos(theta)],
+            [np.sin(theta),  np.cos(theta)*np.cos(alpha),-np.cos(theta)*np.sin(alpha), a*np.sin(theta)],
+            [0, np.sin(alpha), np.cos(alpha), d],
+            [0,0,0,1]
+        ])
+
+    def forward_kinematics(angles):
+        T = np.eye(4)
+        transforms = [T]
 
         for i in range(6):
-            θ = np.radians(float(th[i]) + t*(i+1)*0.3)
-            Li = float(L[i]) / 100
+            d,a,_,alpha = DH_TABLE[i]
+            T = T @ dh_matrix(angles[i], d, a, alpha)
+            transforms.append(T)
 
-            τ = m * g * Li * np.cos(θ)
-            out.append(τ)
+        return transforms
 
-        return out
+    def jacobian_6dof(angles):
 
-    
-    def lagrange(m, th, L):
+        T = forward_kinematics(angles)
 
-        g = 9.81
-        T = 0
-        V = 0
+        O = []
+        Z = []
 
-        for i in range(6):
-            Li = float(L[i]) / 100
-            wi = np.radians(float(th[i]))
+        for Ti in T:
+            O.append(Ti[:3,3])
+            Z.append(Ti[:3,2])
 
-            v = Li * wi
-            T += 0.5 * m * v**2
-            V += m * g * Li * np.sin(wi)
-
-        return T, V, T - V
-
-   
-    def jacobian(th, L):
+        On = O[-1]
 
         J = np.zeros((6,6))
 
         for i in range(6):
-            for j in range(6):
+            Jv = np.cross(Z[i], On - O[i])
+            Jw = Z[i]
 
-                Li = float(L[j]) / 100
-                θ = np.radians(float(th[j]))
-
-                if j <= i:
-                    J[i][j] = Li * np.cos(θ)
-                else:
-                    J[i][j] = 0
+            J[:3,i] = Jv
+            J[3:,i] = Jw
 
         return J
 
-   
-    def run():
+    print("Stage 2 Ready")
+    print("FK + Jacobian Added")
 
-        m = float(mass.get())
+    import numpy as np
 
-        th = [float(x.get()) for x in theta]
-        L = [float(x.get()) for x in links]
+    # Link masses (kg)
+    link_mass = np.array([
+        0.065156,
+        0.28405,
+        0.15919,
+        0.06182,
+        0.08059,
+        0.07000
+    ])
 
-        for i in range(80):
+    # Motor masses (kg)
+    motor_mass = np.array([
+        0.200,
+        0.200,
+        0.200,
+        0.060,
+        0.055,
+        0.055
+    ])
 
-            if not sim["run"]:
-                break
+    # COM (mm)
+    com = np.array([
+        42.26,
+        120,
+        96,
+        54.86,
+        59.27,
+        50
+    ])
 
-            t = i * 0.1
+    # Motor capacity (N.m)
+    motor_capacity = np.array([
+        5.884,
+        5.884,
+        5.884,
+        3.432,
+        1.079,
+        1.079
+    ])
 
-            τ = torque_model(m, th, L, t)
-            T, V, Lg = lagrange(m, th, L)
-            J = jacobian(th, L)
+    g = 9.81
 
-            t_data.append(t)
+    def total_mass(payload_g):
 
-            for j in range(6):
-                tau[j].append(τ[j])
+        payload = payload_g / 1000
 
-           
-            ax.clear()
+        return (
+            link_mass +
+            motor_mass +
+            np.array([0,0,0,0,0,payload])
+        )
 
-            for j in range(6):
-                ax.plot(t_data, tau[j], label=f"τ{j+1}")
+    def gravity_forces(payload_g):
 
-            ax.set_title("6DOF Torque vs Time", color="white")
-            ax.legend()
+        m = total_mass(payload_g)
 
-            canvas.draw()
+        return m * g
 
-          
-            for j in range(6):
-                torque_labels[j].config(text=f"τ{j+1} = {τ[j]:.2f}")
+    def estimate_torque(forces):
 
-            lagrange_lbl.config(
-                text=f"T = {T:.2f}\nV = {V:.2f}\nL = {Lg:.2f}"
-            )
+        com_m = com / 1000
 
-            jacobian_lbl.config(text=str(np.round(J, 2)))
+        torque = forces * com_m
 
-            if max(abs(x) for x in τ) > 80:
-                status.config(text="OVERLOAD", fg=RED)
-            else:
-                status.config(text="SAFE", fg=GREEN)
+        return torque
 
-            window.update()
-            window.after(50)
+    def load_percentage(torque):
 
-  
-    tk.Button(left, text="▶ START",
-              bg=GREEN, fg="white",
-              command=run).pack(fill=tk.X, pady=5)
+        return (torque / motor_capacity) * 100
 
-    tk.Button(left, text="⛔ STOP",
-              bg=RED, fg="white",
-              command=lambda: sim.update({"run": False})
-              ).pack(fill=tk.X, pady=5)
+    # Example
 
-    tk.Button(left, text="🔄 RESET",
-              bg="gray", fg="white",
-              command=lambda: (
-                  t_data.clear(),
-                  [x.clear() for x in tau],
-                  ax.clear(),
-                  canvas.draw()
-              )
-              ).pack(fill=tk.X, pady=5)
+    payload = 50
 
-    canvas.draw()
+    forces = gravity_forces(payload)
+
+    torque = estimate_torque(forces)
+
+    load = load_percentage(torque)
+
+    print("FORCES")
+    print(forces)
+
+    print("\nTORQUE")
+    print(torque)
+
+    print("\nLOAD %")
+    print(load)
+
+    print("\nStage 3 Ready")
     show_university_logo()
 
 
@@ -435,17 +580,56 @@ def open_trajectory_intro_page():
     for widget in window.winfo_children(): 
         widget.destroy()
 
+    
+    BG_COLOR = "#F3F5F8"   
+    main_frame = Frame(window, bg=BG_COLOR)
+    main_frame.pack(fill="both", expand=True) 
+    
+    header = Frame(main_frame, bg="white", height=90)
+    header.pack(fill=X)
+
+    Label(
+        header,
+        text="6-DOF ROBOTIC ARM EDUCATIONAL KIT",
+        font=("Segoe UI", 24, "bold"),
+        fg="#005EB8",
+        bg="white"
+    ).place(relx=0.5, rely=0.45, anchor=CENTER)
+
+    Label(
+        header,
+        text="VIRTUAL LAB INTERFACE v1.0",
+        font=("Consolas", 11, "bold"),
+        fg="#4B5563",
+        bg="white"
+    ).place(relx=0.5, rely=0.9, anchor=CENTER)
+   
     base_path = os.path.dirname(os.path.abspath(__file__))
+    ik_image_path = os.path.join(base_path, "Trajectory_video_preview.png") 
     
+    back_frame = Frame(
+        header,
+        bg="#005EB8",
+        width=120,
+        height=90
+        )
+
+    back_frame.pack(side=LEFT, fill=Y)
+
+    Button(
+            back_frame,
+            text="🔙",
+            font=("Segoe UI Symbol", 24),
+            fg="white",
+            bg="#005EB8",
+            command=open_experiments_page,
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
+       
+    Label(main_frame, text="LEARN MORE ABOUT TRAJECTORY PLANNING", font=("Helvetica", 20, "bold"), 
+          fg="#005EB8", bg=BG_COLOR , anchor=W).pack(pady=10)
   
-    header_frame = Frame(window, bg=BG_COLOR)
-    header_frame.pack(fill=X)
-    
-    Button(header_frame, text="← Back to Experiments", font=("Arial", 12, "bold"), 
-           fg="#099da5", bg=BG_COLOR, bd=0, command=open_experiments_page, borderwidth=10).pack(side=LEFT, padx=20, pady=10)
-    
-    Label(header_frame, text="Trajectory & Pick-and-Place", font=("Helvetica", 22, "bold"), 
-          fg="white", bg=BG_COLOR, anchor=W).pack(pady=20)
+ 
     
     
     def play_traj_video():
@@ -457,17 +641,14 @@ def open_trajectory_intro_page():
             messagebox.showerror("Error", f"Video not found at: {video_full_path}")
 
     
-    video_frame = Frame(window, bg="#0a1e4d", bd=3, relief=RIDGE)
-    video_frame.pack(pady=10, padx=50, fill=BOTH, expand=True)
+    video_frame = Frame(main_frame, bg="white", bd=3, relief=RIDGE)
+    video_frame.pack(pady=20, padx=200, fill=BOTH, expand=True)
     
-    Label(video_frame, text="WATCHING TUTORIAL", font=("Arial", 18, "bold"), 
-          fg="#2ecc71", bg="#0a1e4d").pack(pady=(20, 10))
-
-    preview_container = Frame(video_frame, bg="#0a1e4d")
+    preview_container = Frame(video_frame, bg="white")
     preview_container.pack(expand=True)
-
    
     traj_image_path = os.path.join(base_path, "Trajectory_video_preview.png") 
+    image_path = r"C:\Users\Bassant\robot-arm-educational-kit\GUI\Trajectory_video_preview.png"
     
     try:
         img = Image.open(traj_image_path) 
@@ -479,156 +660,175 @@ def open_trajectory_intro_page():
         img_label.pack(pady=10)
         
         img_label.bind("<Button-1>", lambda e: play_traj_video())
-        Label(preview_container, text="Click image to play Trajectory Planning tutorial", 
-              font=("Arial", 10, "italic"), fg="white", bg="#0a1e4d").pack()
+        Label(preview_container, text="Click image to play video", 
+               font=("Arial", 15, "bold"), fg="#005EB8", bg="white").pack()
 
     except Exception as e:
         print(f"DEBUG: Trajectory Image not found. Error: {e}")
-        Button(preview_container, text="▶ Watch Trajectory Tutorial", font=("Arial", 16, "bold"),
-                bg="#2ecc71", fg="white", padx=30, pady=15,
-                command=play_traj_video, cursor="hand2").pack(pady=50)
-
     
-    btn_container = Frame(window, bg=BG_COLOR)
-    btn_container.pack(side=BOTTOM, fill=X, pady=40, padx=80)
-    
-    Button(btn_container, text="Simulation & Calculations →", font=("Arial", 13, "bold"), 
-           bg="#f36412", fg="white", width=25, height=2, command=open_trajectory_page).pack(side=RIGHT)
+    status_bar = Frame(
+        main_frame,
+        bg="white",
+        height=60,
+        highlightbackground="#D6DEE8",
+        highlightthickness=1
+    )
 
-    Button(btn_container, text=" ← 3D Visualization (PyBullet)", font=("Arial", 13, "bold"), 
-           bg="#2980b9", fg="white", width=25, height=2, command=run_pybullet_sim).pack(side=LEFT)
+    status_bar.pack(side=BOTTOM, fill=X)
+
+    home_frame = Frame(
+    status_bar,
+    bg="#005EB8",
+    width=120,
+    height=55
+    )
+
+    home_frame.pack(side=LEFT, fill=Y)
+
+    Button(
+        home_frame,
+        text="⌂",
+        font=("Segoe UI Symbol", 24),
+        fg="white",
+        bg="#005EB8",
+        command=show_welcome_page,
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
+    
+    
+    status_bar.pack(side=BOTTOM, fill=X)
+
+    PYBULLET_frame = Frame(
+    status_bar,
+    bg="#005EB8",
+    width=220,
+    height=55
+    )
+
+    PYBULLET_frame.pack(side=LEFT, fill=Y)
+
+    Button(
+        PYBULLET_frame,
+        text="← 3D Visualization (PyBullet)",
+        font=("Segoe UI Symbol", 10,"bold"),
+        fg="white",
+        bg="#06853b",
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
+    
+    
+    time_label = Label(
+        status_bar,
+        bg="white",
+        fg="#1F2937",
+        font=("Segoe UI",11)
+    )
+
+    time_label.pack(side=RIGHT, padx=25)
+
+    def update_time():
+        now = datetime.now()
+
+        time_label.config(
+            text=now.strftime("%d/%m/%Y\n%I:%M:%S %p")
+        )
+
+        window.after(1000, update_time)
+
+    update_time()    
+    
+    
+    status_bar.pack(side=BOTTOM, fill=X)
+
+    simulation_frame = Frame(
+    status_bar,
+    bg="#005EB8",
+    width=220,
+    height=55
+    )
+
+    simulation_frame.pack(side=RIGHT, fill=Y)
+
+    Button(
+        simulation_frame,
+        text="Simulation & Calculations →",
+        font=("Segoe UI Symbol", 10,"bold"),
+        fg="white",
+        bg="#06853b",
+        command=open_trajectory_page
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
     show_university_logo()
     
     
   
-  
-    
-    
-
-
-def open_trajectory_intro_page():
-    for widget in window.winfo_children(): 
-        widget.destroy()
-
-    base_path = os.path.dirname(os.path.abspath(__file__))
-    
-  
-    header_frame = Frame(window, bg=BG_COLOR)
-    header_frame.pack(fill=X)
-    
-    Button(header_frame, text="← Back to Experiments", font=("Arial", 12, "bold"), 
-           fg="#099da5", bg=BG_COLOR, bd=0, command=open_experiments_page, borderwidth=10).pack(side=LEFT, padx=20, pady=10)
-    
-    Label(header_frame, text="Trajectory & Pick-and-Place", font=("Helvetica", 22, "bold"), 
-          fg="white", bg=BG_COLOR, anchor=W).pack(pady=20)
-    
-    
-    def play_traj_video():
-        video_name = "trajectory_mp4_video.mp4" 
-        video_full_path = os.path.join(base_path, video_name)
-        if os.path.exists(video_full_path): 
-            os.startfile(video_full_path)
-        else:
-            messagebox.showerror("Error", f"Video not found at: {video_full_path}")
-
-    
-    video_frame = Frame(window, bg="#0a1e4d", bd=3, relief=RIDGE)
-    video_frame.pack(pady=10, padx=50, fill=BOTH, expand=True)
-    
-    Label(video_frame, text="WATCHING TUTORIAL", font=("Arial", 18, "bold"), 
-          fg="#2ecc71", bg="#0a1e4d").pack(pady=(20, 10))
-
-    preview_container = Frame(video_frame, bg="#0a1e4d")
-    preview_container.pack(expand=True)
-
-   
-    traj_image_path = os.path.join(base_path, "Trajectory_video_preview.png") 
-    
-    try:
-        img = Image.open(traj_image_path) 
-        img = img.resize((750, 420), Image.Resampling.LANCZOS)
-        photo = ImageTk.PhotoImage(img)
-        
-        img_label = Label(preview_container, image=photo, bg="#0a1e4d", cursor="hand2")
-        img_label.image = photo
-        img_label.pack(pady=10)
-        
-        img_label.bind("<Button-1>", lambda e: play_traj_video())
-        Label(preview_container, text="Click image to play Trajectory Planning tutorial", 
-              font=("Arial", 10, "italic"), fg="white", bg="#0a1e4d").pack()
-
-    except Exception as e:
-        print(f"DEBUG: Trajectory Image not found. Error: {e}")
-        Button(preview_container, text="▶ Watch Trajectory Tutorial", font=("Arial", 16, "bold"),
-                bg="#2ecc71", fg="white", padx=30, pady=15,
-                command=play_traj_video, cursor="hand2").pack(pady=50)
-
-    
-    btn_container = Frame(window, bg=BG_COLOR)
-    btn_container.pack(side=BOTTOM, fill=X, pady=40, padx=80)
-    
-    Button(btn_container, text="Simulation & Calculations →", font=("Arial", 13, "bold"), 
-           bg="#f36412", fg="white", width=25, height=2, command=open_trajectory_page).pack(side=RIGHT)
-
-    Button(btn_container, text=" ← 3D Visualization (PyBullet)", font=("Arial", 13, "bold"), 
-           bg="#2980b9", fg="white", width=25, height=2, command=run_pybullet_sim).pack(side=LEFT)
-    show_university_logo()
-    
-    
-  
-    
-
+EXPERIMENT_LOG = {
+    "type": None,
+    "inputs": {},
+    "trajectory": [],
+    "outputs": [],
+    "jacobian": [],
+    "euler": [],
+    "matrices": []
+}
 
 def open_trajectory_page():
 
     for widget in window.winfo_children():
         widget.destroy()
 
-    BG = "#04153B"
-    PANEL = "#081b4b"
-    EXPERIMENT_TYPE = StringVar(value="Pick and Place")
-
-   
-
-    header = Frame(window, bg=BG)
+    BG_COLOR = "#F3F5F8"   
+    main_frame = Frame(window, bg=BG_COLOR)
+    main_frame.pack(fill="both", expand=True) 
+    
+    header = Frame(main_frame, bg="white", height=90)
     header.pack(fill=X)
-
-    Button(
-        header,
-        text="← Back to Video Intro",
-        font=("Arial", 11, "bold"),
-        fg="#099da5",
-        bg=BG_COLOR,
-        bd=0,
-        borderwidth=10,
-        activebackground=BG_COLOR,
-        activeforeground="#00d2ff",
-        cursor="hand2",
-        command=open_trajectory_intro_page
-    ).pack(side=LEFT, padx=20, pady=5)
 
     Label(
         header,
-        text="ADVANCED ROBOTICS TRAJECTORY LAB",
-        bg=BG,
-        fg="#00d2ff",
-        font=("Helvetica",18,"bold")
-    ).pack(side=LEFT,padx=25)
+        text="6-DOF ROBOTIC ARM EDUCATIONAL KIT",
+        font=("Segoe UI", 24, "bold"),
+        fg="#005EB8",
+        bg="white"
+    ).place(relx=0.5, rely=0.45, anchor=CENTER)
 
+    Label(
+        header,
+        text="VIRTUAL LAB INTERFACE v1.0",
+        font=("Consolas", 11, "bold"),
+        fg="#4B5563",
+        bg="white"
+    ).place(relx=0.5, rely=0.9, anchor=CENTER)
+    
+    EXPERIMENT_TYPE = StringVar(value="Pick and Place")
 
+    back_frame = Frame(
+        header,
+        bg="#005EB8",
+        width=120,
+        height=90
+        )
 
-    main = Frame(window,bg=BG)
-    main.pack(fill=BOTH,expand=True)
+    back_frame.pack(side=LEFT, fill=Y)
 
-    left = Frame(main,bg=BG,width=280)
+    Button(
+            back_frame,
+            text="🔙",
+            font=("Segoe UI Symbol", 24),
+            fg="white",
+            bg="#005EB8",
+            command=open_experiments_page,
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
+
+    left = Frame(main_frame,bg=BG_COLOR,width=280)
     left.pack(side=LEFT,fill=Y,padx=10,pady=10)
-
 
     selection_frame = LabelFrame(
         left,
         text=" EXPERIMENT TYPE ",
-        bg=BG,
-        fg="#ffcc00",
+        bg=BG_COLOR,
+        fg="#005EB8",
         font=("Arial",10,"bold")
     )
     selection_frame.pack(fill=X,pady=5)
@@ -647,7 +847,6 @@ def open_trajectory_page():
         state="readonly",
         font=("Arial",10)
     )
-
     combo.pack(fill=X,padx=5,pady=10)
     
     def sync_to_hardware():
@@ -657,41 +856,142 @@ def open_trajectory_page():
         selection_frame,
         text="SYNC TO HARDWARE",
         bg="#00ff77",
-        fg="black",
+        fg="white",
         font=("Arial", 10, "bold"),
         command=sync_to_hardware
     )
 
     sync_btn.pack(fill=X, padx=5, pady=5)
 
-   
-    dynamic_left_frame = Frame(left,bg=BG)
+    dynamic_left_frame = Frame(left,bg=BG_COLOR)
     dynamic_left_frame.pack(fill=BOTH,expand=True)
+    
 
-    center = Frame(main,bg=PANEL)
-    center.pack(side=LEFT,fill=BOTH,expand=True,padx=10,pady=10)
+    center_frame = Frame(main_frame, bg="#D6DEE8") 
+    center_frame.pack(side=LEFT, fill=BOTH, expand=True)
+    fig = Figure(figsize=(5, 5), dpi=100) 
+    fig.patch.set_facecolor('white')
+    ax = fig.add_subplot(111, projection='3d')
+    ax.set_facecolor('white') 
 
-    fig = plt.figure(figsize=(7,7))
-    fig.patch.set_facecolor(PANEL)
+    def setup_axes(ax):
+        ax.clear()
+        ax.set_facecolor('white')
+       
+        ax.set_xlabel('X (mm)', color='black', fontsize=10)
+        ax.set_ylabel('Y (mm)', color='black', fontsize=10)
+        ax.set_zlabel('Z (mm)', color='black', fontsize=10)
+        ax.tick_params(axis='x', colors='black')
+        ax.tick_params(axis='y', colors='black')
+        ax.tick_params(axis='z', colors='black')
+    
+        ax.set_xlim([-500, 500])
+        ax.set_ylim([-500, 500])
+        ax.set_zlim([0, 500])
+        
+    
+        ax.xaxis.pane.fill = False
+        ax.yaxis.pane.fill = False
+        ax.zaxis.pane.fill = False
+        ax.grid(True)
 
-    ax = fig.add_subplot(111,projection='3d')
+    setup_axes(ax) 
 
-    canvas = FigureCanvasTkAgg(fig,master=center)
-    canvas.get_tk_widget().pack(fill=BOTH,expand=True)
+    canvas = FigureCanvasTkAgg(fig, master=center_frame)
+    canvas.get_tk_widget().pack(expand=True, fill=BOTH)
+    status_bar = Frame(
+        center_frame,
+        bg="white",
+        height=70,
+        highlightbackground="#D6DEE8",
+        highlightthickness=1
+    )
 
+    status_bar.pack(side=BOTTOM, fill=X)
 
-    right = Frame(main,bg=BG,width=340)
+    home_frame = Frame(
+    status_bar,
+    bg="#005EB8",
+    width=120,
+    height=65
+    )
+
+    home_frame.pack(side=LEFT, fill=Y)
+    Button(
+        home_frame,
+        text="⌂",
+        font=("Segoe UI Symbol", 24),
+        fg="white",
+        bg="#005EB8",
+        command=show_welcome_page,
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
+    status4 = Frame(
+    status_bar,
+    bg="white",
+    width=220,
+    height=65,
+    highlightbackground="#D6DEE8",
+    highlightthickness=1
+    )
+
+    status4.pack(side=LEFT)
+
+    Label(
+        status4,
+        text="🔔 ALARMS",
+        font=("Segoe UI",9),
+        fg="#1F2937",
+        bg="white"
+    ).place(x=15,y=10)
+
+    Label(
+        status4,
+        text="0 ACTIVE",
+        font=("Segoe UI",10,"bold"),
+        fg="#DC2626",
+        bg="white"
+    ).place(x=15,y=35)
+    
+    time_label = Label(
+        status_bar,
+        bg="white",
+        fg="#1F2937",
+        font=("Segoe UI",11)
+    )
+    
+    time_label = Label(
+        status_bar,
+        bg="white",
+        fg="#1F2937",
+        font=("Segoe UI",11)
+    )
+
+    time_label.pack(side=RIGHT, padx=25)
+
+    def update_time():
+        now = datetime.now()
+
+        time_label.config(
+            text=now.strftime("%d/%m/%Y\n%I:%M:%S %p")
+        )
+
+        window.after(1000, update_time)
+
+    update_time()
+
+    right = Frame(main_frame,bg=BG_COLOR,width=340)
     right.pack(side=RIGHT,fill=Y,padx=10,pady=10)
 
-    dynamic_right_frame = Frame(right,bg=BG)
+    dynamic_right_frame = Frame(right,bg=BG_COLOR)
     dynamic_right_frame.pack(fill=BOTH,expand=True)
 
 
     status_frame=LabelFrame(
         right,
         text=" STATUS ",
-        bg=BG,
-        fg="#ff4d4d",
+        bg=BG_COLOR,
+        fg="#005EB8",
         font=("Arial",10,"bold")
     )
     status_frame.pack(fill=X,pady=5)
@@ -699,8 +999,8 @@ def open_trajectory_page():
     status_lbl=Label(
         status_frame,
         text="READY",
-        bg="#081b4b",
-        fg="#2ecc71",
+        bg="white",
+        fg="#005EB8",
         font=("Arial",11,"bold"),
         pady=10
     )
@@ -710,8 +1010,8 @@ def open_trajectory_page():
     matrix_frame=LabelFrame(
         right,
         text=" T06 MATRIX ",
-        bg=BG,
-        fg="#00d2ff",
+        bg=BG_COLOR,
+        fg="#005EB8",
         font=("Arial",10,"bold")
     )
     matrix_frame.pack(fill=BOTH,expand=True,pady=5)
@@ -719,10 +1019,10 @@ def open_trajectory_page():
     matrix_lbl=Label(
         matrix_frame,
         text="NO MATRIX",
-        bg="#050c1f",
-        fg="#2ecc71",
+        bg="white",
+        fg="#005EB8",
         justify=LEFT,
-        font=("Consolas",8),
+        font=("Consolas",10,"bold"),
         padx=10,
         pady=10
     )
@@ -733,8 +1033,8 @@ def open_trajectory_page():
     jacobian_frame=LabelFrame(
         right,
         text=" JACOBIAN MATRIX ",
-        bg=BG,
-        fg="#f39c12",
+        bg=BG_COLOR,
+        fg="#005EB8",
         font=("Arial",10,"bold")
     )
     jacobian_frame.pack(fill=BOTH,expand=True,pady=5)
@@ -742,12 +1042,12 @@ def open_trajectory_page():
     jacobian_lbl=Label(
         jacobian_frame,
         text="NO JACOBIAN",
-        bg="#050c1f",
-        fg="#2ecc71",
+        bg=BG_COLOR,
+        fg="#005EB8",
         justify=LEFT,
-        font=("Consolas",8),
-        padx=10,
-        pady=10
+        font=("Consolas",10,"bold"),
+        padx=8,
+        pady=8
     )
     jacobian_lbl.pack(fill=BOTH,expand=True)
 
@@ -755,8 +1055,8 @@ def open_trajectory_page():
     euler_frame=LabelFrame(
         right,
         text=" EULER ANGLES ",
-        bg=BG,
-        fg="#9b59b6",
+        bg=BG_COLOR,
+        fg="#005EB8",
         font=("Arial",10,"bold")
     )
     euler_frame.pack(fill=X,pady=5)
@@ -764,12 +1064,12 @@ def open_trajectory_page():
     euler_lbl=Label(
         euler_frame,
         text="ROLL = 0\nPITCH = 0\nYAW = 0",
-        bg="#081b4b",
-        fg="white",
+        bg="white",
+        fg="#005EB8",
         justify=LEFT,
         font=("Consolas",9),
-        padx=10,
-        pady=10
+        padx=8,
+        pady=18
     )
     euler_lbl.pack(fill=X)
 
@@ -778,7 +1078,7 @@ def open_trajectory_page():
     motion_frame=LabelFrame(
         right,
         text=" MOTION ANALYSIS ",
-        bg=BG,
+        bg=BG_COLOR,
         fg="#2ecc71",
         font=("Arial",10,"bold")
     )
@@ -787,12 +1087,12 @@ def open_trajectory_page():
     motion_lbl=Label(
         motion_frame,
         text="Velocity = 0\nAcceleration = 0",
-        bg="#081b4b",
-        fg="white",
+        bg="white",
+        fg="#005EB8",
         justify=LEFT,
-        font=("Consolas",9),
-        padx=10,
-        pady=10
+        font=("Consolas",10,"bold"),
+        padx=8,
+        pady=8
     )
     motion_lbl.pack(fill=X)
 
@@ -800,7 +1100,7 @@ def open_trajectory_page():
     analysis_frame=LabelFrame(
         right,
         text=" ANALYSIS ",
-        bg=BG,
+        bg=BG_COLOR,
         fg="#1abc9c",
         font=("Arial",10,"bold")
     )
@@ -812,16 +1112,14 @@ def open_trajectory_page():
         bg="#061743",
         fg="white",
         justify=LEFT,
-        font=("Consolas",9),
-        padx=10,
-        pady=10
+        font=("Consolas",10,"bold"),
+        padx=8,
+        pady=8
     )
     analysis_lbl.pack(fill=X)
     
-
     def draw_workspace(d1,a2,a3):
-
-        reach=a2+a3+190
+        reach=a2+a3+74.19+71.09
 
         u=np.linspace(0,2*np.pi,30)
         v=np.linspace(0,np.pi/2,20)
@@ -838,16 +1136,12 @@ def open_trajectory_page():
             alpha=0.05
         )
 
-   
-
-    def draw_cylinder(p1,p2,radius=7,color='#3498db'):
-
+    def draw_cylinder(p1,p2,radius=10,color='#3498db'):
         v=p2-p1
         mag=np.linalg.norm(v)
 
         if mag<1e-5:
             return
-
         v=v/mag
 
         not_v=np.array([1,0,0])
@@ -887,8 +1181,7 @@ def open_trajectory_page():
         )
 
    
-
-    def draw_gripper(p3,theta1,theta2,theta3,open_amount=15):
+    def draw_gripper(p3,theta1,theta2,theta3,open_amount=20):
 
         alpha=theta2+theta3
 
@@ -929,14 +1222,13 @@ def open_trajectory_page():
         )
 
     
+    def IK_6DOF(x, y, z,
+                roll, pitch, yaw,
+                d1,
+                a2, a3,
+                d4, d5, d6):
 
-    def IK(x, y, z,
-       roll, pitch, yaw,
-       d1,
-       a2, a3,
-       d4, d5, d6):
-
-      
+       
         cr, sr = np.cos(roll), np.sin(roll)
         cp, sp = np.cos(pitch), np.sin(pitch)
         cy, sy = np.cos(yaw), np.sin(yaw)
@@ -947,32 +1239,28 @@ def open_trajectory_page():
             [-sp,   cp*sr,            cp*cr]
         ])
 
-
-        tool_offset =  d6
-        wc = np.array([x, y, z]) - tool_offset * R06[:, 2]
-
-        wc_x, wc_y, wc_z = wc
+       
+        wc = np.array([x, y, z]) - d6 * R06[:, 2]
+        wx, wy, wz = wc
 
       
-        theta1 = np.arctan2(wc_y, wc_x)
-
-       
-        r = np.sqrt(wc_x**2 + wc_y**2)
-        s = wc_z - d1
+        theta1 = np.arctan2(wy, wx)
+        r = np.sqrt(wx**2 + wy**2)
+        s = wz - d1
 
         D = (r**2 + s**2 - a2**2 - a3**2) / (2 * a2 * a3)
 
         if abs(D) > 1:
-            return None
+            return None  # unreachable point
 
-        theta3 = np.arctan2(np.sqrt(1 - D**2), D)
+        theta3 = np.arctan2(np.sqrt(1 - D**2), D)   # elbow-up solution
 
         theta2 = np.arctan2(s, r) - np.arctan2(
             a3 * np.sin(theta3),
             a2 + a3 * np.cos(theta3)
         )
 
-       
+      
         def DH(theta, d, a, alpha):
             return np.array([
                 [np.cos(theta), -np.sin(theta)*np.cos(alpha),
@@ -982,6 +1270,7 @@ def open_trajectory_page():
                 -np.cos(theta)*np.sin(alpha), a*np.sin(theta)],
 
                 [0, np.sin(alpha), np.cos(alpha), d],
+
                 [0, 0, 0, 1]
             ])
 
@@ -992,22 +1281,25 @@ def open_trajectory_page():
         T03 = T01 @ T12 @ T23
         R03 = T03[:3, :3]
 
-        
+       
         R36 = R03.T @ R06
 
+      
         theta5 = np.arctan2(
-            np.sqrt(R36[0,2]**2 + R36[1,2]**2),
-            R36[2,2]
+            np.sqrt(R36[0, 2]**2 + R36[1, 2]**2),
+            R36[2, 2]
         )
 
         if abs(np.sin(theta5)) < 1e-6:
+            # singularity case
             theta4 = 0
-            theta6 = np.arctan2(-R36[1,0], R36[0,0])
+            theta6 = np.arctan2(-R36[1, 0], R36[0, 0])
         else:
-            theta4 = np.arctan2(R36[1,2], R36[0,2])
-            theta6 = np.arctan2(R36[2,1], -R36[2,0])
-
-        return theta1, theta2, theta3, theta4, theta5, theta6
+            theta4 = np.arctan2(R36[1, 2], R36[0, 2])
+            theta6 = np.arctan2(R36[2, 1], -R36[2, 0])
+    
+        return np.array([theta1, theta2, theta3,
+                        theta4, theta5, theta6])
   
 
     def update_matrix(theta1, theta2, theta3,
@@ -1049,11 +1341,9 @@ def open_trajectory_page():
         )
 
         matrix_lbl.config(text=txt)
-
         return T06
 
     
-
     def update_euler(theta1, theta2, theta3,
                  theta4, theta5, theta6,
                  d1, a2, a3, d4, d5, d6):
@@ -1104,7 +1394,6 @@ def open_trajectory_page():
             f"YAW   = {np.degrees(yaw):.2f}°"
         )
     
-
     def update_jacobian(theta1, theta2, theta3,
                     theta4, theta5, theta6,
                     d1, a2, a3,
@@ -1197,7 +1486,7 @@ def open_trajectory_page():
                grip_open=15):
 
         ax.clear()
-        ax.set_facecolor(PANEL)
+        #ax.set_facecolor("#D6DEE8")
 
         draw_workspace(d1, a2, a3)
 
@@ -1312,22 +1601,25 @@ def open_trajectory_page():
         ax.set_ylim([-max_range, max_range])
         ax.set_zlim([0, max_range])
 
-        ax.set_xlabel("X", color='white')
-        ax.set_ylabel("Y", color='white')
-        ax.set_zlabel("Z", color='white')
+        ax.set_xlabel("X", color='black')
+        ax.set_ylabel("Y", color='black')
+        ax.set_zlabel("Z", color='black')
 
-        ax.tick_params(colors='white')
+        ax.tick_params(colors='black')
         ax.view_init(elev=28, azim=40)
-
         canvas.draw()
-
         return p6
 
     
     # EXPERIMENTS
    
     def run_pick_and_place():
-
+        EXPERIMENT_LOG["trajectory"] = []
+        EXPERIMENT_LOG["outputs"] = []
+        EXPERIMENT_LOG["jacobian"] = []
+        EXPERIMENT_LOG["euler"] = []
+        EXPERIMENT_LOG["matrices"] = []
+        
         sx = float(sx_entry.get())
         sy = float(sy_entry.get())
         sz = float(sz_entry.get())
@@ -1379,7 +1671,7 @@ def open_trajectory_page():
             y = sy + (ey - sy) * t
             z = sz + (ez - sz) * t + 30*np.sin(np.pi*t)
 
-            ik = IK(x, y, z,
+            ik = IK_6DOF(x, y, z,
                         0, 0, 0,
                         d1, a2, a3,
                         d4, d5, d6)
@@ -1388,6 +1680,7 @@ def open_trajectory_page():
                 continue
 
             theta1, theta2, theta3, theta4, theta5, theta6 = ik
+            
 
 
             trail.append([x, y, z])
@@ -1424,6 +1717,24 @@ def open_trajectory_page():
             )
             
             jac_rank = np.linalg.matrix_rank(jac)
+            
+            EXPERIMENT_LOG["type"] = EXPERIMENT_TYPE.get()
+
+            EXPERIMENT_LOG["inputs"] = {
+                "start": [sx, sy, sz],
+                "end": [ex, ey, ez],
+                "a2": a2,
+                "a3": a3
+            }
+
+            EXPERIMENT_LOG["trajectory"].append([x, y, z])
+
+            EXPERIMENT_LOG["outputs"].append([
+                theta1, theta2, theta3,
+                theta4, theta5, theta6
+            ])
+
+            EXPERIMENT_LOG["jacobian"].append(jac)
 
             velocity = np.sqrt(
                 (ex - sx)**2 +
@@ -1443,20 +1754,25 @@ def open_trajectory_page():
                 f"X={x:.2f}\n"
                 f"Y={y:.2f}\n"
                 f"Z={z:.2f}\n\n"
-                f"JACOBIAN:\n{np.array2string(jac, precision=2)}"
+                #f"JACOBIAN:\n{np.array2string(jac, precision=2)}"
             )
 
             if jac_rank < 6:
                 status_lbl.config(text="SINGULARITY", fg="orange")
             else:
                 status_lbl.config(text="SAFE", fg="#2ecc71")
-
+            
             window.update()
             time.sleep(0.02)
     
 
     def run_circular_motion():
-
+        
+        EXPERIMENT_LOG["trajectory"] = []
+        EXPERIMENT_LOG["outputs"] = []
+        EXPERIMENT_LOG["jacobian"] = []
+        EXPERIMENT_LOG["euler"] = []
+        EXPERIMENT_LOG["matrices"] = []
        
         # FIXED LINKS
       
@@ -1485,7 +1801,7 @@ def open_trajectory_page():
         
         # ROBOT REACH MODEL 7asa fe 7aga m7tagh ttzwd m7tagen ns2l mina
      
-        reach = a2 + a3
+        reach = a2 + a3+74.17+71.09
 
         radius = reach * 0.30
         center_x = reach * 0.40
@@ -1506,16 +1822,33 @@ def open_trajectory_page():
             x = center_x + radius * np.cos(ang)
             y = center_y + radius * np.sin(ang)
 
-            ik = IK(x, y, z,
+            ik = IK_6DOF(x, y, z,
                 0, 0, 0,
                 d1, a2, a3,
                 d4, d5, d6)
 
             if ik is None:
                 continue
-
+    
             theta1, theta2, theta3, theta4, theta5, theta6 = ik
+            
+            EXPERIMENT_LOG["type"] = EXPERIMENT_TYPE.get()
 
+            EXPERIMENT_LOG["trajectory"] = []
+            EXPERIMENT_LOG["outputs"] = []
+            EXPERIMENT_LOG["jacobian"] = []
+            EXPERIMENT_LOG["euler"] = []
+            EXPERIMENT_LOG["matrices"] = []
+
+            EXPERIMENT_LOG["inputs"] = {
+                "type": "Circular",
+                "a2": a2,
+                "a3": a3,
+                "radius": radius,
+                "center_x": center_x,
+                "center_y": center_y,
+                "z": z
+}
           
             trail.append([x, y, z])
 
@@ -1558,7 +1891,7 @@ def open_trajectory_page():
                 f"Reach  = {reach:.1f} mm\n"
                 f"Radius = {radius:.1f} mm\n"
                 f"Angle  = {np.degrees(ang):.1f}°\n"
-                f"Jacobian:\n{np.array2string(jac, precision=2)}"
+                #f"Jacobian:\n{np.array2string(jac, precision=2)}"
             )
             if jac_rank < 6:
                 status_lbl.config(text="SINGULARITY", fg="orange")
@@ -1628,7 +1961,22 @@ def open_trajectory_page():
         trail = []
 
         steps = 80
+        EXPERIMENT_LOG["type"] = EXPERIMENT_TYPE.get()
 
+        EXPERIMENT_LOG["trajectory"] = []
+        EXPERIMENT_LOG["outputs"] = []
+        EXPERIMENT_LOG["jacobian"] = []
+        EXPERIMENT_LOG["euler"] = []
+        EXPERIMENT_LOG["matrices"] = []
+
+        EXPERIMENT_LOG["inputs"] = {
+            "type": "PTP",
+            "start": [sx, sy, sz],
+            "end": [ex, ey, ez],
+            "a2": a2,
+            "a3": a3,
+            "steps": steps
+}
         for i in range(steps + 1):
 
             t = i / steps
@@ -1637,7 +1985,7 @@ def open_trajectory_page():
             y = sy + (ey - sy) * t
             z = sz + (ez - sz) * t
 
-            ik = IK(x, y, z,
+            ik = IK_6DOF(x, y, z,
                 0,0,0,
                 d1,a2,a3,
                 d4,d5,d6)
@@ -1646,7 +1994,12 @@ def open_trajectory_page():
                 continue
 
             theta1, theta2, theta3, theta4, theta5, theta6 = ik
+            EXPERIMENT_LOG["trajectory"].append([x, y, z])
 
+            EXPERIMENT_LOG["outputs"].append([
+                theta1, theta2, theta3,
+                theta4, theta5, theta6
+])
            
 
             trail.append([x, y, z])
@@ -1700,7 +2053,7 @@ def open_trajectory_page():
                 text=
                 f"POINT TO POINT (6 DOF)\n\n"
                 f"X = {x:.1f}\nY = {y:.1f}\nZ = {z:.1f}\n\n"
-                 f"Jacobian:\n{np.array2string(jac, precision=2)}"
+                 #f"Jacobian:\n{np.array2string(jac, precision=2)}"
             )
 
             if jac_rank < 6:
@@ -1728,10 +2081,165 @@ def open_trajectory_page():
         else:
             run_pick_and_place()
 
-  
-   
-    
+    def clean(val):
+        if isinstance(val, (list, tuple)):
+            return [[float(round(x, 3)) for x in row] if isinstance(row, (list, tuple)) else float(round(row, 3)) for row in val]
 
+        try:
+            return float(round(val, 3))
+        except:
+            return str(val)
+
+    def generate_report():
+
+
+        try:
+            file_name = f"6DOF_REPORT_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+            doc = SimpleDocTemplate(file_name)
+
+            styles = getSampleStyleSheet()
+
+            # custom centered style
+            center_style = ParagraphStyle(
+                'center',
+                parent=styles['Title'],
+                alignment=TA_CENTER,
+                fontSize=18,
+                spaceAfter=10
+            )
+
+            normal_center = ParagraphStyle(
+                'center2',
+                parent=styles['Normal'],
+                alignment=TA_CENTER,
+                fontSize=12
+            )
+
+            content = []
+
+          
+            logo_path = r"C:\Users\Bassant\robot-arm-educational-kit\GUI\uni_logo.png"
+
+            if os.path.exists(logo_path):
+                img = RLImage(logo_path, width=100, height=90)
+                content.append(img)
+
+            content.append(Spacer(1, 10))
+
+            # =========================
+            # COVER PAGE (CENTER)
+            # =========================
+            content.append(Paragraph("BENHA NATIONAL UNIVERSITY", center_style))
+            content.append(Paragraph("MECHATRONICS ENGINEERING", center_style))
+            content.append(Spacer(1, 20))
+
+            content.append(Paragraph("6DOF ROBOT ARM", center_style))
+            content.append(Paragraph("TRAJECTORY PLANNING REPORT", center_style))
+
+            content.append(Spacer(1, 30))
+
+            content.append(Paragraph(
+                f"Experiment Type: {EXPERIMENT_LOG['type']}",
+                normal_center
+            ))
+
+            content.append(Paragraph(
+                f"Date: {datetime.now().strftime('%Y-%m-%d')}",
+                normal_center
+            ))
+
+            content.append(PageBreak())
+
+        
+            content.append(Paragraph("INPUT PARAMETERS", styles['Heading2']))
+
+            input_table = Table([
+                ["Start", str(EXPERIMENT_LOG["inputs"].get("start"))],
+                ["End", str(EXPERIMENT_LOG["inputs"].get("end"))],
+                ["a2", str(EXPERIMENT_LOG["inputs"].get("a2"))],
+                ["a3", str(EXPERIMENT_LOG["inputs"].get("a3"))],
+            ])
+
+            input_table.setStyle([
+                ('GRID', (0,0), (-1,-1), 1, colors.black),
+                ('BACKGROUND', (0,0), (-1,0), colors.lightgrey),
+                ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+                ('BOX', (0,0), (-1,-1), 2, colors.darkblue),
+            ])
+
+            content.append(input_table)
+            content.append(Spacer(1, 15))
+
+          
+            content.append(Paragraph("TRAJECTORY", styles['Heading2']))
+            content.append(Paragraph(f"Points: {len(EXPERIMENT_LOG['trajectory'])}", styles['Normal']))
+            content.append(Spacer(1, 10))
+
+            content.append(Paragraph(
+                str(EXPERIMENT_LOG["trajectory"][:5]),
+                styles['Normal']
+            ))
+
+            content.append(Spacer(1, 15))
+
+          
+            content.append(Paragraph("JOINT ANGLES (θ1 → θ6)", styles['Heading2']))
+            content.append(Paragraph(
+                str(EXPERIMENT_LOG["outputs"][:5]),
+                styles['Normal']
+            ))
+
+            content.append(Spacer(1, 15))
+
+            # =========================
+            # JACOBIAN
+            # =========================
+            content.append(Paragraph("JACOBIAN ANALYSIS", styles['Heading2']))
+            content.append(Paragraph(
+                f"Samples: {len(EXPERIMENT_LOG['jacobian'])}",
+                styles['Normal']
+            ))
+
+            if len(EXPERIMENT_LOG["jacobian"]) > 0:
+                content.append(Paragraph(
+                    str(EXPERIMENT_LOG["jacobian"][0]),
+                    styles['Normal']
+                ))
+
+            content.append(PageBreak())
+
+            # =========================
+            # SUMMARY BOX
+            # =========================
+            content.append(Paragraph("SUMMARY", styles['Heading2']))
+
+            summary = f"""
+            This report demonstrates trajectory planning for a 6DOF robotic arm.
+            It includes inverse kinematics, forward kinematics, and Jacobian analysis
+            for motion validation and singularity detection.
+            """
+
+            summary_table = Table([[summary]], colWidths=[450])
+
+            summary_table.setStyle([
+                ('BOX', (0,0), (-1,-1), 2, colors.green),
+                ('BACKGROUND', (0,0), (-1,-1), colors.whitesmoke),
+                ('PADDING', (0,0), (-1,-1), 10),
+            ])
+
+            content.append(summary_table)
+
+            doc.build(content)
+
+            messagebox.showinfo("Report", f"Generated:\n{file_name}")
+
+            if platform.system() == "Windows":
+                os.startfile(file_name)
+
+        except Exception as e:
+            messagebox.showerror("Report Error", str(e))
+  
+     
     def update_experiment_ui(event=None):
 
         for widget in dynamic_left_frame.winfo_children():
@@ -1747,7 +2255,7 @@ def open_trajectory_page():
         start_frame = LabelFrame(
             dynamic_left_frame,
             text=" START POSITION ",
-            bg=BG,
+            bg=BG_COLOR,
             fg="#2ecc71",
             font=("Arial",10,"bold")
         )
@@ -1757,7 +2265,7 @@ def open_trajectory_page():
 
         for txt, val in [("X",120), ("Y",40), ("Z",180)]:
 
-            Label(start_frame, text=f"{txt} (mm)", bg=BG, fg="white").pack()
+            Label(start_frame, text=f"{txt} (mm)", bg=BG_COLOR, fg="white").pack()
 
             e = Entry(start_frame, font=("Consolas",11))
             e.insert(0, str(val))
@@ -1773,7 +2281,7 @@ def open_trajectory_page():
         end_frame = LabelFrame(
             dynamic_left_frame,
             text=" TARGET POSITION ",
-            bg=BG,
+            bg=BG_COLOR,
             fg="#f1c40f",
             font=("Arial",10,"bold")
         )
@@ -1783,7 +2291,7 @@ def open_trajectory_page():
 
         for txt, val in [("X",220), ("Y",120), ("Z",140)]:
 
-            Label(end_frame, text=f"{txt} (mm)", bg=BG, fg="white").pack()
+            Label(end_frame, text=f"{txt} (mm)", bg=BG_COLOR, fg="white").pack()
 
             e = Entry(end_frame, font=("Consolas",11))
             e.insert(0, str(val))
@@ -1800,7 +2308,7 @@ def open_trajectory_page():
         links_frame = LabelFrame(
             dynamic_left_frame,
             text=" 6 DOF ROBOT LINKS ",
-            bg=BG,
+            bg=BG_COLOR,
             fg="#00d2ff",
             font=("Arial",10,"bold")
         )
@@ -1822,13 +2330,13 @@ def open_trajectory_page():
             Label(
                 links_frame,
                 text=txt,
-                bg=BG,
+                bg=BG_COLOR,
                 fg="white"
             ).pack()
 
             e = Entry(
                 links_frame,
-                font=("Consolas",11)
+                font=("Consolas",11,"bold")
             )
 
             e.insert(0, str(val))
@@ -1844,7 +2352,6 @@ def open_trajectory_page():
       
         # RUN BUTTON
   
-
         Button(
             dynamic_left_frame,
             text="RUN EXPERIMENT",
@@ -1855,7 +2362,15 @@ def open_trajectory_page():
             command=run_experiment
         ).pack(fill=X,pady=15)
 
-    
+        Button(
+            dynamic_left_frame,
+            text="GENERATE REPORT",
+            bg="#3498db",
+            fg="white",
+            font=("Arial",12,"bold"),
+            command=generate_report
+        ).pack(fill=X, pady=15)
+          
     combo.bind("<<ComboboxSelected>>", update_experiment_ui)
     update_experiment_ui()
     draw_robot(
@@ -1883,16 +2398,53 @@ def open_ik_intro_page():
         widget.destroy()
 
     base_path = os.path.dirname(os.path.abspath(__file__))
+    BG_COLOR = "#F3F5F8"   
+    main_frame = Frame(window, bg=BG_COLOR)
+    main_frame.pack(fill="both", expand=True) 
     
+    header = Frame(main_frame, bg="white", height=90)
+    header.pack(fill=X)
+
+    Label(
+        header,
+        text="6-DOF ROBOTIC ARM EDUCATIONAL KIT",
+        font=("Segoe UI", 24, "bold"),
+        fg="#005EB8",
+        bg="white"
+    ).place(relx=0.5, rely=0.45, anchor=CENTER)
+
+    Label(
+        header,
+        text="VIRTUAL LAB INTERFACE v1.0",
+        font=("Consolas", 11, "bold"),
+        fg="#4B5563",
+        bg="white"
+    ).place(relx=0.5, rely=0.9, anchor=CENTER)
    
-    header_frame = Frame(window, bg=BG_COLOR)
-    header_frame.pack(fill=X)
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    ik_image_path = os.path.join(base_path, "IK_video_preview.png") 
     
-    Button(header_frame, text="← Back to Experiments", font=("Arial", 12, "bold"), 
-           fg="#099da5", bg=BG_COLOR, bd=0, command=open_experiments_page, borderwidth=10).pack(side=LEFT, padx=20, pady=10)
+    back_frame = Frame(
+        header,
+        bg="#005EB8",
+        width=120,
+        height=90
+        )
+
+    back_frame.pack(side=LEFT, fill=Y)
+
+    Button(
+            back_frame,
+            text="🔙",
+            font=("Segoe UI Symbol", 24),
+            fg="white",
+            bg="#005EB8",
+            command=open_experiments_page,
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
     
-    Label(header_frame, text="Inverse Kinematics", font=("Helvetica", 22, "bold"), 
-          fg="white", bg=BG_COLOR, anchor=W).pack(pady=20)
+       
+    Label(main_frame, text="LEARN MORE ABOUT IK", font=("Helvetica", 20, "bold"), 
+          fg="#005EB8", bg=BG_COLOR , anchor=W).pack(pady=10)
 
     
     def play_ik_video():
@@ -1905,18 +2457,14 @@ def open_ik_intro_page():
             messagebox.showerror("Error", f"Video not found at: {video_full_path}")
 
     
-    video_frame = Frame(window, bg="#0a1e4d", bd=3, relief=RIDGE)
-    video_frame.pack(pady=10, padx=50, fill=BOTH, expand=True)
+    video_frame = Frame(main_frame, bg="white", bd=3, relief=RIDGE)
+    video_frame.pack(pady=20, padx=200, fill=BOTH, expand=True)
     
-    Label(video_frame, text="Watch IK Tutorial", font=("Arial", 18, "bold"), 
-          fg="#2ecc71", bg="#0a1e4d").pack(pady=(20, 10))
-
-    preview_container = Frame(video_frame, bg="#0a1e4d")
+    preview_container = Frame(video_frame, bg="white")
     preview_container.pack(expand=True)
 
    
-    ik_image_path = os.path.join(base_path, "IK_video_preview.png") 
-    
+    image_path = r"C:\Users\Bassant\robot-arm-educational-kit\GUI\IK_video_preview.png"
     try:
         img = Image.open(ik_image_path) 
         img = img.resize((750, 420), Image.Resampling.LANCZOS)
@@ -1927,48 +2475,177 @@ def open_ik_intro_page():
         img_label.pack(pady=10)
         
         img_label.bind("<Button-1>", lambda e: play_ik_video())
-        Label(preview_container, text="Click image to play Inverse Kinematics tutorial", 
-              font=("Arial", 10, "italic"), fg="white", bg="#0a1e4d").pack()
+        Label(preview_container, text="Click image to play video", 
+              font=("Arial", 15, "bold"), fg="#005EB8", bg="white").pack()
 
     except Exception as e:
         print(f"DEBUG: IK Image not found. Error: {e}")
-        Button(preview_container, text="▶ Watch IK Tutorial", font=("Arial", 16, "bold"),
-               bg="#2ecc71", fg="white", padx=30, pady=15,
-               command=play_ik_video, cursor="hand2").pack(pady=50)
+        
+  
+    status_bar = Frame(
+        main_frame,
+        bg="white",
+        height=60,
+        highlightbackground="#D6DEE8",
+        highlightthickness=1
+    )
 
-    
-    btn_container = Frame(window, bg=BG_COLOR)
-    btn_container.pack(side=BOTTOM, fill=X, pady=40, padx=80)
-    
-    
-    Button(btn_container, text="Simulation & Calculations →", font=("Arial", 13, "bold"), 
-           bg="#f36412", fg="white", width=25, height=2, command=open_ik_page).pack(side=RIGHT)
+    status_bar.pack(side=BOTTOM, fill=X)
 
-    Button(btn_container, text=" ← 3D Visualization (PyBullet)", font=("Arial", 13, "bold"), 
-           bg="#2980b9", fg="white", width=25, height=2, command=run_pybullet_sim).pack(side=LEFT)
-    show_university_logo()       
+    home_frame = Frame(
+    status_bar,
+    bg="#005EB8",
+    width=120,
+    height=55
+    )
+
+    home_frame.pack(side=LEFT, fill=Y)
+
+    Button(
+        home_frame,
+        text="⌂",
+        font=("Segoe UI Symbol", 24),
+        fg="white",
+        bg="#005EB8",
+        command=show_welcome_page,
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
+    status_bar.pack(side=BOTTOM, fill=X)
+
+    PYBULLET_frame = Frame(
+    status_bar,
+    bg="#005EB8",
+    width=220,
+    height=55
+    )
+
+    PYBULLET_frame.pack(side=LEFT, fill=Y)
+
+    Button(
+        PYBULLET_frame,
+        text="← 3D Visualization (PyBullet)",
+        font=("Segoe UI Symbol", 10,"bold"),
+        fg="white",
+        bg="#06853b",
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
+    time_label = Label(
+        status_bar,
+        bg="white",
+        fg="#1F2937",
+        font=("Segoe UI",11)
+    )
+
+    time_label.pack(side=RIGHT, padx=25)
+
+    def update_time():
+        now = datetime.now()
+
+        time_label.config(
+            text=now.strftime("%d/%m/%Y\n%I:%M:%S %p")
+        )
+
+        window.after(1000, update_time)
+
+    update_time()    
+    status_bar.pack(side=BOTTOM, fill=X)
+
+    simulation_frame = Frame(
+    status_bar,
+    bg="#005EB8",
+    width=220,
+    height=55
+    )
+
+    simulation_frame.pack(side=RIGHT, fill=Y)
+
+    Button(
+        simulation_frame,
+        text="Simulation & Calculations →",
+        font=("Segoe UI Symbol", 10,"bold"),
+        fg="white",
+        bg="#06853b",
+        command=open_ik_page
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
+    show_university_logo()     
  
  
  
-    
-
-
-
+ 
+ 
+ 
 
 # yarb IK t5ls b2aaaaaaaaaa ma4oft4 22rf mn keda 
+current_angles = [0, 0, 0, 0, 0, 0]
+SAVED_A_MATRICES = [np.eye(4) for _ in range(6)]
+SAVED_T06 = np.eye(4)
+is_sim_started = False
+ax_ik = None
+canvas_ik = None
+SELECTED_SOLUTION = "UP"  # or DOWN
+CURRENT_POSE = np.array([
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+])
 
 def open_ik_page():
 
     for widget in window.winfo_children():
         widget.destroy()
-    global SAVED_A_MATRICES, SAVED_T06,IK_STARTED
-    SAVED_A_MATRICES = []
-    SAVED_T06 = None
-    IK_STARTED = False
-    BG_COLOR = "#0c1a30"
-    IK_METHOD = StringVar(value="Geometric")
+        
+    global SAVED_A_MATRICES, SAVED_T06
+    if not isinstance(SAVED_A_MATRICES, list) or len(SAVED_A_MATRICES) < 6:
+        SAVED_A_MATRICES = [np.eye(4) for _ in range(6)]
+    if SAVED_T06 is None:
+        SAVED_T06 = np.eye(4)
+    
+    BG_COLOR = "#F3F5F8"   
+    main_frame = Frame(window, bg=BG_COLOR)
+    main_frame.pack(fill="both", expand=True) 
+    
+    header = Frame(main_frame, bg="white", height=90)
+    header.pack(fill=X)
+
+    Label(
+        header,
+        text="6-DOF ROBOTIC ARM EDUCATIONAL KIT",
+        font=("Segoe UI", 24, "bold"),
+        fg="#005EB8",
+        bg="white"
+    ).place(relx=0.5, rely=0.45, anchor=CENTER)
+
+    Label(
+        header,
+        text="VIRTUAL LAB INTERFACE v1.0",
+        font=("Consolas", 11, "bold"),
+        fg="#4B5563",
+        bg="white"
+    ).place(relx=0.5, rely=0.9, anchor=CENTER)
+    back_frame = Frame(
+    header,
+    bg="#005EB8",
+    width=120,
+    height=90
+    )
+
+    back_frame.pack(side=LEFT, fill=Y)
+
+    Button(
+        back_frame,
+        text="🔙",
+        font=("Segoe UI Symbol", 24),
+        fg="white",
+        bg="#005EB8",
+        command=open_ik_intro_page,
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+
 # simulation bt3t robot
-    def draw_3d_cylinder(ax, p1, p2, radius=7, color='#3498db'):
+    def draw_3d_cylinder(ax, p1, p2, radius=10, color='#3498db'):
 
         try:
             v = p2 - p1
@@ -2003,116 +2680,71 @@ def open_ik_page():
             )
         except:
             pass
-
-    
-    def draw_gripper(ax, p6, t1, t2, t3):
+        
+            
+    def draw_gripper(ax, p6, t1, t2, t3, grip_open=20):
         try:
-            alpha = math.radians(t2+t3)
-            beta = math.radians(t1)
+            alpha = t2 + t3
+            beta = t1
 
             forward = np.array([
                 math.cos(alpha)*math.cos(beta),
                 math.cos(alpha)*math.sin(beta),
                 math.sin(alpha)
             ])
+
             side = np.array([
                 -math.sin(beta),
                 math.cos(beta),
                 0
             ])
 
+        
             claw_length = 30
-            claw_gap = 12
-            claw1_start = p6 + side*claw_gap
-            claw1_end = claw1_start + forward*claw_length
-            claw2_start = p6 - side*claw_gap
-            claw2_end = claw2_start + forward*claw_length
+            claw_gap = grip_open  
+
+            # LEFT FINGER
+            left_start = p6 + side * claw_gap
+            left_end = left_start + forward * claw_length
+
+            # RIGHT FINGER
+            right_start = p6 - side * claw_gap
+            right_end = right_start + forward * claw_length
+
+            # draw fingers
             ax.plot3D(
-                [claw1_start[0], claw1_end[0]],
-                [claw1_start[1], claw1_end[1]],
-                [claw1_start[2], claw1_end[2]],
-                color='#f1c40f',
+                [left_start[0], left_end[0]],
+                [left_start[1], left_end[1]],
+                [left_start[2], left_end[2]],
+                color="#0f6df1",
                 linewidth=4
             )
+
             ax.plot3D(
-                [claw2_start[0], claw2_end[0]],
-                [claw2_start[1], claw2_end[1]],
-                [claw2_start[2], claw2_end[2]],
-                color='#f1c40f',
+                [right_start[0], right_end[0]],
+                [right_start[1], right_end[1]],
+                [right_start[2], right_end[2]],
+                color="#0f6df1",
                 linewidth=4
             )
+
+            # base connection
             ax.plot3D(
-                [claw1_start[0], claw2_start[0]],
-                [claw1_start[1], claw2_start[1]],
-                [claw1_start[2], claw2_start[2]],
-                color='#e67e22',
+                [left_start[0], right_start[0]],
+                [left_start[1], right_start[1]],
+                [left_start[2], right_start[2]],
+                color="#0f6df1",
                 linewidth=5
             )
 
         except:
             pass
-
-    
-    def update_matrix_view(event=None):
-
-        if len(SAVED_A_MATRICES) < 6 or SAVED_T06 is None:
-           return
-
-        idx = matrix_selector.current()
-
-        matrices = [
-            SAVED_A_MATRICES[0],
-            SAVED_A_MATRICES[1],
-            SAVED_A_MATRICES[2],
-            SAVED_A_MATRICES[3],
-            SAVED_A_MATRICES[4],
-            SAVED_A_MATRICES[5],
-            SAVED_T06
-        ]
-
-        titles = [
-            "A1 MATRIX",
-            "A2 MATRIX",
-            "A3 MATRIX",
-            "A4 MATRIX",
-            "A5 MATRIX",
-            "A6 MATRIX",
-            "T06 MATRIX"
-        ]
-        descriptions = [
-            "Base Rotation Matrix\nFrame0 → Frame1",
-
-            "Shoulder Transformation\nFrame1 → Frame2",
-
-            "Elbow Transformation\nFrame2 → Frame3",
-
-            "Wrist Pitch Matrix\nFrame3 → Frame4",
-
-            "Wrist Roll Matrix\nFrame4 → Frame5",
-
-            "Tool/Yaw Matrix\nFrame5 → Frame6",
-
-            "Final End Effector Matrix\nT06 = A1×A2×A3×A4×A5×A6"
-        ]
-        mat = matrices[idx]
-
-        matrix_title.config(text=titles[idx])
-        matrix_desc.config(text=descriptions[idx])
-
-        txt = (
-            f"[ {mat[0,0]:>8.3f} {mat[0,1]:>8.3f} {mat[0,2]:>8.3f} {mat[0,3]:>8.3f} ]\n"
-            f"[ {mat[1,0]:>8.3f} {mat[1,1]:>8.3f} {mat[1,2]:>8.3f} {mat[1,3]:>8.3f} ]\n"
-            f"[ {mat[2,0]:>8.3f} {mat[2,1]:>8.3f} {mat[2,2]:>8.3f} {mat[2,3]:>8.3f} ]\n"
-            f"[ {mat[3,0]:>8.3f} {mat[3,1]:>8.3f} {mat[3,2]:>8.3f} {mat[3,3]:>8.3f} ]"
-        )
-        matrix_lbl.config(text=txt)
-
-  # workspace m4 kwisa 3andk 
+        
 
     def draw_workspace(ax, d1, a2, a3, d6=40):
 
-        r_max = a2 + a3 + d6
-        r_min = abs(a2 - a3)
+        r_max = (a2 + a3 + d6)* 0.8
+        r_min = abs(a2 - a3)* 0.5
 
         theta = np.linspace(0, 2*np.pi, 60)
         phi = np.linspace(-np.pi/2, np.pi/2, 35)
@@ -2134,24 +2766,21 @@ def open_ik_page():
         ax.plot(np.zeros_like(z_line), np.zeros_like(z_line), z_line,
                 '--', color='white', alpha=0.1)
 
-  
 
     def draw_robot(
             theta1, theta2, theta3,
             theta4, theta5, theta6,
             d1=100, a2=160, a3=140,
-            a4=190, d6=40,
+            d4=74.17, d5=71.09, d6=40,
             projection=True):
 
         global SAVED_A_MATRICES, SAVED_T06
 
-       
         ax.clear()
+        ax.set_facecolor("#F3F5F8")
+        ax.grid(True, color="black")
 
-        ax.set_facecolor("#081b4b")
-        ax.grid(True, color="#1f2d4d")
-
-       
+      
         def DH(theta, d, a, alpha):
             return np.array([
                 [np.cos(theta), -np.sin(theta)*np.cos(alpha), np.sin(theta)*np.sin(alpha), a*np.cos(theta)],
@@ -2160,13 +2789,13 @@ def open_ik_page():
                 [0, 0, 0, 1]
             ])
 
-     
+
         T01 = DH(theta1, d1, 0, np.pi/2)
         T12 = DH(theta2, 0, a2, 0)
         T23 = DH(theta3, 0, a3, 0)
 
-        T34 = DH(theta4, 0, 0, np.pi/2)
-        T45 = DH(theta5, 0, 0, -np.pi/2)
+        T34 = DH(theta4, d4, 0, np.pi/2)
+        T45 = DH(theta5, d5, 0, -np.pi/2)
         T56 = DH(theta6, d6, 0, 0)
 
         T02 = T01 @ T12
@@ -2175,11 +2804,11 @@ def open_ik_page():
         T05 = T04 @ T45
         T06 = T05 @ T56
 
-        
         SAVED_A_MATRICES = [T01, T12, T23, T34, T45, T56]
         SAVED_T06 = T06
 
-     
+    
+
         p0 = np.array([0, 0, 0])
         p1 = T01[:3, 3]
         p2 = T02[:3, 3]
@@ -2190,34 +2819,28 @@ def open_ik_page():
 
         pts = [p0, p1, p2, p3, p4, p5, p6]
 
+    
+
         colors = [
-            '#34495e', '#3498db', '#9b59b6',
-            '#e67e22', '#1abc9c', '#f1c40f'
+            '#3498db',
+            '#9b59b6',
+            '#e67e22',
+            '#1abc9c',
+            '#f1c40f',
+            '#e74c3c'
         ]
 
-        for i in range(len(pts)-1):
-            draw_3d_cylinder(ax, pts[i], pts[i+1], radius=7, color=colors[i])
+        for i in range(len(pts) - 1):
+            draw_3d_cylinder(ax, pts[i], pts[i + 1], radius=10, color=colors[i])
 
             ax.scatter(
                 pts[i][0], pts[i][1], pts[i][2],
-                color='#e74c3c', s=80
+                color="#325f95", s=60
             )
-
-       
-        ax.scatter(
-            p6[0], p6[1], p6[2],
-            color='yellow', s=150
-        )
-
-        draw_gripper(
-            ax,
-            p6,
-            math.degrees(theta1),
-            math.degrees(theta2),
-            math.degrees(theta3)
-        )
-
-       
+            
+            
+        draw_gripper(ax, p6, theta1, theta2, theta3, grip_open=20)
+        
         if projection:
             ax.plot([p6[0], p6[0]], [p6[1], p6[1]], [0, p6[2]],
                     '--', color='#00ffff')
@@ -2225,79 +2848,147 @@ def open_ik_page():
             ax.plot([0, p6[0]], [0, p6[1]], [0, 0],
                     '--', color='#ff00ff')
 
+        # Workspace
         draw_workspace(ax, d1, a2, a3)
-
-    
-        max_range = d1 + a2 + a3 + d4 + 200
+        
+        max_range = 500
 
         ax.set_xlim([-max_range, max_range])
         ax.set_ylim([-max_range, max_range])
         ax.set_zlim([0, max_range])
 
-        ax.set_xlabel("X Axis (mm)", color='white')
-        ax.set_ylabel("Y Axis (mm)", color='white')
-        ax.set_zlabel("Z Axis (mm)", color='white')
-
-        ax.tick_params(colors='white')
+        ax.set_xlabel("X Axis (mm)", color='black')
+        ax.set_ylabel("Y Axis (mm)", color='black')
+        ax.set_zlabel("Z Axis (mm)", color='black')
+        
+        ax.tick_params(colors='black')
 
         ax.view_init(elev=28, azim=40)
 
         ax.text(
             p6[0], p6[1], p6[2] + 20,
             f"EE\nX={p6[0]:.1f}\nY={p6[1]:.1f}\nZ={p6[2]:.1f}",
-            color='yellow'
+            color='black'
         )
-
-        canvas.draw()
+        canvas.draw_idle()
+     
     
+    def animate_robot(target_angles,
+                  d1=100, a2=160, a3=140,
+                  d4=74.17, d5=71.09, d6=40,
+                  steps=60):
 
-    def animate_robot(
-        current_t1, current_t2, current_t3,
-        current_t4, current_t5, current_t6,
-        target_t1, target_t2, target_t3,
-        target_t4, target_t5, target_t6,
-        d1, a2, a3, a4):
+        global CURRENT_POSE
 
-        steps = 40
+        start = np.array(CURRENT_POSE, dtype=float)
+        end = np.array(target_angles, dtype=float)
 
         for i in range(steps + 1):
-            r = i / steps
+
+            t = i / steps
+            t = t * t * (3 - 2 * t)
+
+            interp = (1 - t) * start + t * end
 
             draw_robot(
-                current_t1 + (target_t1 - current_t1) * r,
-                current_t2 + (target_t2 - current_t2) * r,
-                current_t3 + (target_t3 - current_t3) * r,
-                current_t4 + (target_t4 - current_t4) * r,
-                current_t5 + (target_t5 - current_t5) * r,
-                current_t6 + (target_t6 - current_t6) * r,
-                d1, a2, a3, a4
+                interp[0],
+                interp[1],
+                interp[2],
+                interp[3],
+                interp[4],
+                interp[5],
+                d1, a2, a3, d4, d5, d6
             )
 
-            window.update()
+            canvas.draw_idle()
+            window.update_idletasks()
 
-    def solve_inverse_kinematics():
-        global IK_STARTED, SAVED_A_MATRICES, SAVED_T06
+        CURRENT_POSE = end.copy()
+        
+    def to_servo_angles(t1, t2, t3, t4, t5, t6):
+        
+        s1 = math.degrees(t1)
+
+        s2 = math.degrees(t2) + 90
+        s3 = math.degrees(t3)
+
+        s4 = math.degrees(t4)
+        s5 = math.degrees(t5)
+        s6 = -math.degrees(t6)
+
+        # wrap to 0–180 safely
+        s6 = (s6 + 360) % 360
+        if s6 > 180:
+            s6 -= 360
+
+        return [s1, s2, s3, s4, s5, s6]
+        
+    def check_joint_limits(angles):
+
+        servo = to_servo_angles(*angles)
+
+        limits = [
+            (-90, 90),
+            (30, 150),
+            (-45, 120),
+            (-45, 90),
+            (-180, 180),
+            (-180, 180)
+        ]
+
+        for i in range(6):
+            if servo[i] < limits[i][0] or servo[i] > limits[i][1]:
+                return False, i, servo[i]
+
+        return True, -1, None
+
+    try:
+        esp = serial.Serial('COM5', 115200, timeout=1)
+        print("ESP connected")
+    except:
+        esp = None
+        print("ESP not connected")
+
+
+    def validate_links(a2, a3):
+
+        if not (150 <= a2 <= 170):
+            return False, "Shoulder must be 150–170 mm"
+
+        if not (130 <= a3 <= 150):
+            return False, "Elbow must be 130–150 mm"
+
+        if (a2 - 150) % 10 != 0:
+            return False, "Shoulder step must be 10"
+
+        if (a3 - 130) % 10 != 0:
+            return False, "Elbow step must be 10"
+
+        return True, ""  
+    
+    def run_ik_calculations(from_button=False):
+        global SAVED_A_MATRICES, SAVED_T06, is_sim_started
 
         try:
-            IK_STARTED = True
-
-           
+            #INPUT
             x = float(x_entry.get())
             y = float(y_entry.get())
             z = float(z_entry.get())
-
-            d1 = 100
-            a2, a3 = [float(e.get()) for e in link_entries]
-            a4 = 190
-            # tool offset
-            z = z - a4
-
             roll  = math.radians(float(roll_entry.get()))
             pitch = math.radians(float(pitch_entry.get()))
             yaw   = math.radians(float(yaw_entry.get()))
+            d1 = 100
+            a2 = float(shoulder_entry.get())
+            a3 = float(elbow_entry.get())
+            d4, d5, d6 = 74.17, 71.09, 40
+            
+            ok, msg = validate_links(a2, a3)
+            if not ok:
+                messagebox.showerror("LINK ERROR", msg)
+                return
 
-           
 
+            # ROTATION
             cr, sr = math.cos(roll), math.sin(roll)
             cp, sp = math.cos(pitch), math.sin(pitch)
             cy, sy = math.cos(yaw), math.sin(yaw)
@@ -2307,40 +2998,69 @@ def open_ik_page():
                 [sy*cp, sy*sp*sr + cy*cr, sy*sp*cr - cy*sr],
                 [-sp,   cp*sr,            cp*cr]
             ])
-
-           
-            wc_x = x - a4 * R06[0, 2]
-            wc_y = y - a4 * R06[1, 2]
-            wc_z = z - a4 * R06[2, 2]
-
             
+            
+            # Wrist Center 
+            wc = np.array([x, y, z]) - d6 * R06[:, 2]
+            wc_x, wc_y, wc_z = wc
 
             theta1 = math.atan2(wc_y, wc_x)
-
             r = math.sqrt(wc_x**2 + wc_y**2)
             s = wc_z - d1
-
-            D = (r**2 + s**2 - a2**2 - a3**2) / (2 * a2 * a3)
-            D = max(min(D, 1.0), -1.0)
-
-            if abs(D) > 1.0:
-                singularity_lbl.config(text="UNREACHABLE ❌", fg="red")
-                return
+            reach = math.sqrt(x**2 + y**2 + (z-d1)**2)
+            max_reach = a2 + a3 + d6
+            reach_percent = (reach / max_reach) * 100
+            if reach <= max_reach:
+                workspace_status = "INSIDE"
+            else:
+                workspace_status = "OUTSIDE"
+                  
             
-            theta3 = math.atan2(math.sqrt(1 - D**2), D)
+            #         IK 2-LINK
+            D = (r**2 + s**2 - a2**2 - a3**2) / (2 * a2 * a3)
+            print("X =", x)
+            print("Y =", y)
+            print("Z =", z)
 
-            theta2 = math.atan2(s, r) - math.atan2(
-                a3 * math.sin(theta3),
-                a2 + a3 * math.cos(theta3)
+            print("r =", r)
+            print("s =", s)
+
+            print("D =", D)
+            if abs(D) > 1.0:
+                singularity_lbl.config(text="UNREACHABLE", fg="red")
+                return
+            D = max(-1.0, min(1.0, D))
+            
+
+            #  ELBOW UP / DOWN
+            theta3_up   = math.atan2( math.sqrt(1 - D**2), D)
+            theta3_down = math.atan2(-math.sqrt(1 - D**2), D)
+
+            theta2_up = math.atan2(s, r) - math.atan2(
+                a3 * math.sin(theta3_up),
+                a2 + a3 * math.cos(theta3_up)
             )
 
-            
+            theta2_down = math.atan2(s, r) - math.atan2(
+                a3 * math.sin(theta3_down),
+                a2 + a3 * math.cos(theta3_down)
+            )
+            #CHOOSE SOLUTION
+            theta2 = theta2_up
+            theta3 = theta3_up
 
+            # flip
+            # theta2 = theta2_down
+            # theta3 = theta3_down
+            
+            #DH
             def DH(theta, d, a, alpha):
                 return np.array([
-                    [math.cos(theta), -math.sin(theta)*math.cos(alpha), math.sin(theta)*math.sin(alpha), a*math.cos(theta)],
-                    [math.sin(theta),  math.cos(theta)*math.cos(alpha), -math.cos(theta)*math.sin(alpha), a*math.sin(theta)],
-                    [0,               math.sin(alpha),                  math.cos(alpha),                 d],
+                    [math.cos(theta), -math.sin(theta)*math.cos(alpha),
+                    math.sin(theta)*math.sin(alpha), a*math.cos(theta)],
+                    [math.sin(theta),  math.cos(theta)*math.cos(alpha),
+                    -math.cos(theta)*math.sin(alpha), a*math.sin(theta)],
+                    [0, math.sin(alpha), math.cos(alpha), d],
                     [0, 0, 0, 1]
                 ])
 
@@ -2348,121 +3068,121 @@ def open_ik_page():
             A2 = DH(theta2, 0, a2, 0)
             A3 = DH(theta3, 0, a3, 0)
 
-          
             T03 = A1 @ A2 @ A3
             R03 = T03[:3, :3]
 
+            # wrist orientation
             R36 = R03.T @ R06
 
-            theta5 = math.atan2(
-                math.sqrt(R36[0,2]**2 + R36[1,2]**2),
-                R36[2,2]
-            )
-
-            if abs(math.sin(theta5)) < 1e-6:
+            # safe singularity check
+            if np.linalg.norm(R36[:2, 2]) < 1e-6:
                 theta4 = 0
-                theta6 = math.atan2(-R36[1,0], R36[0,0])
+                theta5 = 0
+                theta6 = math.atan2(R36[1, 0], R36[0, 0])
             else:
+                R36[2, 2] = np.clip(R36[2, 2], -1, 1)
+
+                theta5 = math.atan2(
+                    math.sqrt(R36[0,2]**2 + R36[1,2]**2),
+                    R36[2,2]
+                )
+
                 theta4 = math.atan2(R36[1,2], R36[0,2])
                 theta6 = math.atan2(R36[2,1], -R36[2,2])
 
-           
-            A4 = DH(theta4, 0, 0, math.pi/2)
-            A5 = DH(theta5, 0, 0, -math.pi/2)
-            A6 = DH(theta6, a4, 0, 0)
+            manip = abs(math.sin(theta5))    
+            if manip < 0.05:
+                singularity_state = "NEAR SINGULARITY"
+            else:
+                singularity_state = "SAFE" 
+                
+            #DH 4-6 
+            A4 = DH(theta4, d4, 0, math.pi/2)
+            A5 = DH(theta5, d5, 0, -math.pi/2)
+            A6 = DH(theta6, d6, 0, 0)
 
             SAVED_A_MATRICES = [A1, A2, A3, A4, A5, A6]
             SAVED_T06 = A1 @ A2 @ A3 @ A4 @ A5 @ A6
 
-          
+            # OUTPUT
             angles = [theta1, theta2, theta3, theta4, theta5, theta6]
-
-            for i in range(6):
-                angle_labels[i].config(
-                    text=f"{math.degrees(angles[i]):.2f}°"
-                )
-
-          
-            ee_pos = SAVED_T06[:3, 3]
-            target = np.array([x, y, z])
-
-            error = np.linalg.norm(ee_pos - target)
-
-            extra_info.config(
-                text=f"Position Error: {error:.5f}"
-            )
-
+            servo_angles = to_servo_angles(*angles)
            
-            if abs(math.sin(theta3)) < 0.05:
-                singularity_lbl.config(text="SINGULARITY ⚠", fg="orange")
-            else:
-                singularity_lbl.config(text="SAFE ✔", fg="#2ecc71")
+            for i in range(6):
+                angle_labels[i].config(text=f"{servo_angles[i]:.2f}°")
+                
+            singularity_lbl.config(text="SAFE", fg="#2ecc71")
+            extra_info.config(
+                text=
+                f"WC = ({wc_x:.1f}, {wc_y:.1f}, {wc_z:.1f})\n"
+                f"Reach = {reach_percent:.1f}%\n"
+                f"Workspace = {workspace_status}\n"  
+                 f"Manipulability = {manip:.3f}"
+            )
+          
+                
 
             update_matrix_view()
+            animate_robot(angles, d1, a2, a3, d4, d5, d6)
 
-            
-            prev = getattr(solve_inverse_kinematics, "last_angles",
-                        [0,0,0,0,0,0])
-
-            animate_robot(
-                prev[0], prev[1], prev[2],
-                prev[3], prev[4], prev[5],
-                theta1, theta2, theta3,
-                theta4, theta5, theta6,
-                d1, a2, a3, a4
-            )
-
-            solve_inverse_kinematics.last_angles = angles
+            run_ik_calculations.last_angles = angles
 
         except Exception as e:
             messagebox.showerror("IK ERROR", str(e))
+            
+        
+    def sync_hardware():
+        try:
+            if esp is None:
+                messagebox.showerror("ESP", "ESP not connected")
+                return
 
-    header = Frame(window, bg=BG_COLOR)
-    header.pack(fill=X)
+            payload = {
+                "x": float(x_entry.get()),
+                "y": float(y_entry.get()),
+                "z": float(z_entry.get()),
+                "shoulder": float(shoulder_entry.get()),
+                "elbow": float(elbow_entry.get()),
+                "roll": float(roll_entry.get()),
+                "pitch": float(pitch_entry.get()),
+                "yaw": float(yaw_entry.get())
+            }
 
-    Button(
-        header,
-        text="← Back to Video Intro",
-        font=("Arial", 11, "bold"),
-        fg="#099da5",
-        bg=BG_COLOR,
-        bd=0,
-        borderwidth=10,
-        activebackground=BG_COLOR,
-        activeforeground="#00d2ff",
-        cursor="hand2",
-        command=open_ik_intro_page
-    ).pack(side=LEFT, padx=20, pady=5)
+            msg = json.dumps(payload)
 
-    Label(
-        header,
-        text="ADVANCED INVERSE KINEMATICS",
-        font=("Helvetica",16,"bold"),
-        fg="#00d2ff",
-        bg=BG_COLOR
-    ).pack(pady=10)
+            esp.reset_input_buffer()
+            esp.write((msg + "\n").encode())
+            esp.flush()
 
-    
+            response = esp.readline().decode().strip()
 
+            if response == "OK":
+                singularity_lbl.config(text="SYNC OK ", fg="#2ecc71")
+                messagebox.showinfo("ESP", "Synced successfully ✔")
 
-    main = Frame(window, bg=BG_COLOR)
-    main.pack(fill=BOTH, expand=True)
+            elif response == "":
+                singularity_lbl.config(text="NO RESPONSE ", fg="red")
+                messagebox.showerror("ESP", "No response from ESP")
+
+            else:
+                singularity_lbl.config(text="ESP ERROR ", fg="red")
+                messagebox.showwarning("ESP", f"Unexpected: {response}")
+
+        except Exception as e:
+            messagebox.showerror("ERROR", str(e))
 
 
-
-    left = Frame(main, bg=BG_COLOR)
+    left = Frame(main_frame, bg=BG_COLOR)
     left.pack(side=LEFT, fill=Y, padx=10)
 
     # TARGET
-
     target_frame = LabelFrame(
         left,
         text=" TARGET POSITION ",
         bg=BG_COLOR,
-        fg="#2ecc71",
+        fg="#005EB8",
         font=("Arial",10,"bold")
     )
-
     target_frame.pack(fill=X,pady=5)
 
     entries = []
@@ -2477,20 +3197,17 @@ def open_ik_page():
             target_frame,
             text=txt,
             bg=BG_COLOR,
-            fg="white"
+            fg="#005EB8"
         ).pack()
 
         e = Entry(
             target_frame,
-            font=("Consolas",11)
+            font=("Consolas",11,"bold")
         )
 
         e.insert(0,str(val))
-
         e.pack(fill=X,pady=2)
-
         entries.append(e)
-
     x_entry,y_entry,z_entry = entries
 
    
@@ -2499,58 +3216,48 @@ def open_ik_page():
         left,
         text=" LINK LENGTHS ",
         bg=BG_COLOR,
-        fg="#f1c40f",
+       fg="#005EB8",
         font=("Arial",10,"bold")
     )
-
-    links_frame.pack(fill=X,pady=5)
-
-    names = [
-    
-    "Link2 Shoulder (160-200)",
-    "Link3 Elbow (140-160)",
-    
-   ]
-
-    defaults = [ 160, 140]
-
-
+    links_frame.pack(fill=X, pady=5)
     link_entries = []
 
-    for i in range(2):
 
-        Label(
-            links_frame,
-            text=names[i],
-            bg=BG_COLOR,
-            fg="white"
-        ).pack()
+    Label(
+        links_frame,
+        text="Link2 Shoulder (150–170 mm | step 10)",
+        bg=BG_COLOR,
+        fg="#005EB8"
+    ).pack()
 
-        e = Entry(
-            links_frame,
-            font=("Consolas",10)
-        )
+    shoulder_entry = Entry(links_frame, font=("Consolas",10,"bold"))
+    shoulder_entry.insert(0, "160")
+    shoulder_entry.pack(fill=X, pady=2)
+    link_entries.append(shoulder_entry)
 
-        e.insert(0,str(defaults[i]))
 
-        e.pack(fill=X,pady=2)
+    Label(
+        links_frame,
+        text="Link3 Elbow (130–150 mm | step 10)",
+        bg=BG_COLOR,
+        fg="#005EB8"
+    ).pack()
 
-        link_entries.append(e)
-    
+    elbow_entry = Entry(links_frame, font=("Consolas",10,"bold"))
+    elbow_entry.insert(0, "140")
+    elbow_entry.pack(fill=X, pady=2)
+    link_entries.append(elbow_entry)
 
 
     rpy_frame = LabelFrame(
     left,
     text=" END-EFFECTOR ORIENTATION (RPY) ",
     bg=BG_COLOR,
-    fg="#9b59b6",
+   fg="#005EB8",
     font=("Arial",10,"bold")
     )
-
     rpy_frame.pack(fill=X, pady=5)
-
     rpy_entries = []
-
     for txt, val in [
         ("Roll (deg)", 0),
         ("Pitch (deg)", 0),
@@ -2560,58 +3267,229 @@ def open_ik_page():
             rpy_frame,
             text=txt,
             bg=BG_COLOR,
-            fg="white"
+            fg="#005EB8"
         ).pack()
 
         e = Entry(
             rpy_frame,
-            font=("Consolas",11)
+            font=("Consolas",11,"bold")
         )
 
         e.insert(0, str(val))
         e.pack(fill=X, pady=2)
-
         rpy_entries.append(e)
 
     roll_entry, pitch_entry, yaw_entry = rpy_entries
-        # BUTTON
+    
+        
+    Button(
+        left,
+        text=" RUN Experiment",
+        bg="#06853b",
+        fg="white",
+        font=("Arial",11,"bold"),
+        command=run_ik_calculations
+    ).pack(fill=X,pady=15)
 
     Button(
         left,
-        text="SOLVE and RUN IK",
-        bg="#2ecc71",
+        text="SYNC HARDWARE",
+        bg="#1f9c53",
         fg="white",
         font=("Arial",11,"bold"),
-        command=solve_inverse_kinematics
+        command=sync_hardware
+    ).pack(fill=X, pady=5)
+    
+    Button(left,
+       text="Generate IK Report",
+       bg="#429565",
+       fg="white",
+       font=("Arial",11,"bold"),
+       #command=generate_IK_report
     ).pack(fill=X,pady=15)
+            
+    center_frame = Frame(main_frame, bg=BG_COLOR) 
+    center_frame.pack(side=LEFT, fill=BOTH, expand=True)        
+    fig = Figure(figsize=(5, 5), dpi=100) 
+    fig.patch.set_facecolor('#F3F5F8')
+    
+    ax = fig.add_subplot(111, projection='3d')
+    ax.set_facecolor('#F3F5F8' ) 
 
    
+    def setup_axes(ax):
+        ax.clear()
+        ax.set_facecolor('#F3F5F8')
+       
+        ax.set_xlabel('X (mm)', color='black', fontsize=10)
+        ax.set_ylabel('Y (mm)', color='black', fontsize=10)
+        ax.set_zlabel('Z (mm)', color='black', fontsize=10)
+        ax.tick_params(axis='x', colors='black')
+        ax.tick_params(axis='y', colors='black')
+        ax.tick_params(axis='z', colors='black')
+    
+        ax.set_xlim([-500, 500])
+        ax.set_ylim([-500, 500])
+        ax.set_zlim([0, 500])
+        
+    
+        ax.xaxis.pane.fill = False
+        ax.yaxis.pane.fill = False
+        ax.zaxis.pane.fill = False
+        ax.grid(True)
 
-    center = Frame(main, bg="#081b4b")
-    center.pack(side=LEFT, fill=BOTH, expand=True)
+    setup_axes(ax) 
 
-    fig = plt.figure(figsize=(6,6))
+    canvas = FigureCanvasTkAgg(fig, master=center_frame)
+    canvas.get_tk_widget().pack(expand=True, fill=BOTH)
+    
+    
+    def update_matrix_view(event=None):
+        if len(SAVED_A_MATRICES) < 6 or SAVED_T06 is None:
+            return
 
-    fig.patch.set_facecolor("#081b4b")
+        selected_idx = matrix_selector.current()
 
-    ax = fig.add_subplot(
-        111,
-        projection='3d'
+        matrices = SAVED_A_MATRICES + [SAVED_T06]
+
+        matrix_titles = {
+            1: "A1 MATRIX from Base to Shoulder Joint",
+            2: "A2 MATRIX from Shoulder to Elbow Joint",
+            3: "A3 MATRIX from Elbow to Wrist Pitch Joint",
+            4: "A4 MATRIX from Wrist Pitch to Wrist Roll",
+            5: "A5 MATRIX Wrist Roll to Gripper Base",
+            6: "A6 MATRIX Gripper / End-Effector",
+            7: "T06 MATRIX"
+        }
+
+        matrix_descriptions = {
+            1: "Base rotation",
+            2: "Shoulder joint",
+            3: "Elbow joint",
+            4: "Wrist pitch",
+            5: "Wrist roll",
+            6: "Tool frame",
+            7: "Final end effector transform"
+        }
+
+        mat = matrices[selected_idx]
+
+        matrix_title.config(text=matrix_titles[selected_idx + 1])
+        matrix_desc.config(text=matrix_descriptions[selected_idx + 1])
+
+        ax.clear()
+        ax.set_facecolor('#F3F5F8')
+
+        scale = 5.0
+        x_axis = mat[0:3, 0] * scale
+        y_axis = mat[0:3, 1] * scale
+        z_axis = mat[0:3, 2] * scale
+
+        ax.scatter(0, 0, 0, color="#0f83d6", s=40)
+
+        ax.quiver(0,0,0,x_axis[0],x_axis[1],x_axis[2],color='r')
+        ax.quiver(0,0,0,y_axis[0],y_axis[1],y_axis[2],color='g')
+        ax.quiver(0,0,0,z_axis[0],z_axis[1],z_axis[2],color='b')
+
+        ax.set_xlim([-7,7])
+        ax.set_ylim([-7,7])
+        ax.set_zlim([-7,7])
+        ax.axis('off')
+
+        canvas.draw()
+
+        formatted_matrix = (
+            f"[ {mat[0,0]:>8.3f} {mat[0,1]:>8.3f} {mat[0,2]:>8.3f} {mat[0,3]:>8.3f} ]\n"
+            f"[ {mat[1,0]:>8.3f} {mat[1,1]:>8.3f} {mat[1,2]:>8.3f} {mat[1,3]:>8.3f} ]\n"
+            f"[ {mat[2,0]:>8.3f} {mat[2,1]:>8.3f} {mat[2,2]:>8.3f} {mat[2,3]:>8.3f} ]\n"
+            f"[ {mat[3,0]:>8.3f} {mat[3,1]:>8.3f} {mat[3,2]:>8.3f} {mat[3,3]:>8.3f} ]"
+        )
+
+        matrix_lbl.config(text=formatted_matrix)
+        
+    status_bar = Frame(
+        center_frame,
+        bg="white",
+        height=70,
+        highlightbackground="#D6DEE8",
+        highlightthickness=1
     )
 
-    canvas = FigureCanvasTkAgg(
-        fig,
-        master=center
+    status_bar.pack(side=BOTTOM, fill=X)
+
+    home_frame = Frame(
+    status_bar,
+    bg="#005EB8",
+    width=120,
+    height=65
     )
 
-    canvas.get_tk_widget().pack(
-        fill=BOTH,
-        expand=True
+    home_frame.pack(side=LEFT, fill=Y)
+    Button(
+        home_frame,
+        text="⌂",
+        font=("Segoe UI Symbol", 24),
+        fg="white",
+        bg="#005EB8",
+        command=show_welcome_page,
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
+    status4 = Frame(
+    status_bar,
+    bg="white",
+    width=220,
+    height=65,
+    highlightbackground="#D6DEE8",
+    highlightthickness=1
     )
 
+    status4.pack(side=LEFT)
 
+    Label(
+        status4,
+        text="🔔 ALARMS",
+        font=("Segoe UI",9),
+        fg="#1F2937",
+        bg="white"
+    ).place(x=15,y=10)
 
-    right = Frame(main, bg=BG_COLOR)
+    Label(
+        status4,
+        text="0 ACTIVE",
+        font=("Segoe UI",10,"bold"),
+        fg="#DC2626",
+        bg="white"
+    ).place(x=15,y=35)
+    
+    time_label = Label(
+        status_bar,
+        bg="white",
+        fg="#1F2937",
+        font=("Segoe UI",11)
+    )
+    
+    time_label = Label(
+        status_bar,
+        bg="white",
+        fg="#1F2937",
+        font=("Segoe UI",11)
+    )
+
+    time_label.pack(side=RIGHT, padx=25)
+
+    def update_time():
+        now = datetime.now()
+
+        time_label.config(
+            text=now.strftime("%d/%m/%Y\n%I:%M:%S %p")
+        )
+
+        window.after(1000, update_time)
+
+    update_time()    
+
+    
+    right = Frame(main_frame, bg=BG_COLOR)
     right.pack(side=RIGHT, fill=Y, padx=10)
 
     # ANGLES
@@ -2620,7 +3498,7 @@ def open_ik_page():
         right,
         text=" JOINT ANGLES ",
         bg=BG_COLOR,
-        fg="#00d2ff",
+        fg="#005EB8",
         font=("Arial",10,"bold")
     )
 
@@ -2636,16 +3514,15 @@ def open_ik_page():
     ]
 
     ranges = [
-        "-135 → 135",
-        "0 → 180",
-        "-80 → 90",
         "-90 → 90",
+        "30 → 150",
+        "-45 → 120",
+        "-45 → 90",
         "-180 → 180",
-        "0 → 180"
+        "-180 → 180"
     ]
 
     angle_labels = []
-
     for i in range(6):
 
         row = Frame(
@@ -2659,7 +3536,7 @@ def open_ik_page():
             row,
             text=joint_names[i],
             bg=BG_COLOR,
-            fg="white",
+            fg="#005EB8",
             width=10,
             anchor='w'
         ).pack(side=LEFT)
@@ -2668,21 +3545,20 @@ def open_ik_page():
             row,
             text=ranges[i],
             bg=BG_COLOR,
-            fg="#f1c40f",
+            fg="#005EB8",
             width=12
         ).pack(side=LEFT)
 
         lbl = Label(
             row,
             text="0.00°",
-            bg="#081b4b",
-            fg="#2ecc71",
+            bg="white",
+            fg="#005EB8",
             width=10,
             font=("Consolas",10,"bold")
         )
 
         lbl.pack(side=RIGHT)
-
         angle_labels.append(lbl)
 
 
@@ -2691,7 +3567,7 @@ def open_ik_page():
         right,
         text=" EXTRA CALCULATIONS ",
         bg=BG_COLOR,
-        fg="#1abc9c",
+        fg="#005EB8",
         font=("Arial",10,"bold")
     )
 
@@ -2700,36 +3576,13 @@ def open_ik_page():
     extra_info = Label(
         extra_frame,
         text="",
-        bg="#081b4b",
+        bg="#005EB8",
         fg="white",
         justify=LEFT,
-        font=("Consolas",9)
+        font=("Consolas",10,"bold")
     )
 
     extra_info.pack(fill=X,padx=5,pady=5)
-
-
-    theory_frame = LabelFrame(
-        right,
-        text=" IK THEORY ",
-        bg=BG_COLOR,
-        fg="#f1c40f",
-        font=("Arial",10,"bold")
-    )
-
-    theory_frame.pack(fill=X,pady=5)
-
-    theory_lbl = Label(
-        theory_frame,
-        text="",
-        bg="#081b4b",
-        fg="white",
-        justify=LEFT,
-        wraplength=300,
-        font=("Consolas",8)
-    )
-
-    theory_lbl.pack(fill=X,padx=5,pady=5)
 
     # MATRIX
 
@@ -2737,7 +3590,7 @@ def open_ik_page():
         right,
         text=" MATRIX ANALYSIS ",
         bg=BG_COLOR,
-        fg="#00d2ff",
+        fg="#005EB8",
         font=("Arial",10,"bold")
     )
 
@@ -2773,7 +3626,7 @@ def open_ik_page():
         matrix_frame,
         text="A1 MATRIX",
         bg=BG_COLOR,
-        fg="#2ecc71",
+        fg="#005EB8",
         font=("Arial",10,"bold")
     )
 
@@ -2783,7 +3636,7 @@ def open_ik_page():
         matrix_frame,
         text="",
         bg=BG_COLOR,
-        fg="#9db2bf",
+        fg="#005EB8",
         justify=LEFT,
         wraplength=320
     )
@@ -2793,8 +3646,8 @@ def open_ik_page():
     matrix_lbl = Label(
         matrix_frame,
         text="",
-        bg="#050c1f",
-        fg="#2ecc71",
+        bg=BG_COLOR,
+        fg="#005EB8",
         justify=LEFT,
         font=("Consolas",8),
         padx=10,
@@ -2806,43 +3659,33 @@ def open_ik_page():
         padx=5,
         pady=5
     )
-
+    
+    
     # SINGULARITY
-
     singularity_frame = LabelFrame(
         right,
         text=" SINGULARITY ",
         bg=BG_COLOR,
-        fg="#ff4d4d",
+        fg="#005EB8",
         font=("Arial",10,"bold")
     )
 
     singularity_frame.pack(fill=X,pady=5)
-
     singularity_lbl = Label(
         singularity_frame,
         text="WAITING...",
-        bg="#081b4b",
-        fg="white",
+        bg="white",
+        fg="#005EB8",
         font=("Arial",10,"bold"),
         pady=10
     )
 
     singularity_lbl.pack(fill=X)
-
     show_university_logo()
-
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
+ 
+ 
     
     
 #de FK gahza kamlaaaa intro w FK calculations
@@ -2850,15 +3693,56 @@ def open_ik_page():
 def open_fk_intro_page():
     for widget in window.winfo_children(): 
         widget.destroy()
-    base_path = os.path.dirname(os.path.abspath(__file__))
-    image_path = os.path.join(base_path, "video_preview.PNG")
-    header_frame = Frame(window, bg=BG_COLOR)
-    header_frame.pack(fill=X)
-    Button(header_frame, text="← Back to Experiments", font=("Arial", 12, "bold"), 
-           fg="#099da5", bg=BG_COLOR, bd=0, command=open_experiments_page, borderwidth=10).pack(side=LEFT, padx=20, pady=10)
+        
+    BG_COLOR = "#F3F5F8"   
+    main_frame = Frame(window, bg=BG_COLOR)
+    main_frame.pack(fill="both", expand=True) 
     
-    Label(header_frame, text="Forward Kinematics ", font=("Helvetica", 22, "bold"), 
-          fg="white", bg=BG_COLOR , anchor=W).pack(pady=20)
+    header = Frame(main_frame, bg="white", height=90)
+    header.pack(fill=X)
+
+    Label(
+        header,
+        text="6-DOF ROBOTIC ARM EDUCATIONAL KIT",
+        font=("Segoe UI", 24, "bold"),
+        fg="#005EB8",
+        bg="white"
+    ).place(relx=0.5, rely=0.45, anchor=CENTER)
+
+    Label(
+        header,
+        text="VIRTUAL LAB INTERFACE v1.0",
+        font=("Consolas", 11, "bold"),
+        fg="#4B5563",
+        bg="white"
+    ).place(relx=0.5, rely=0.9, anchor=CENTER)
+    
+    
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    image_path = os.path.join(base_path, "FK_Video_preview.PNG")
+    
+
+    back_frame = Frame(
+        header,
+        bg="#005EB8",
+        width=120,
+        height=90
+        )
+
+    back_frame.pack(side=LEFT, fill=Y)
+
+    Button(
+            back_frame,
+            text="🔙",
+            font=("Segoe UI Symbol", 24),
+            fg="white",
+            bg="#005EB8",
+            command=open_experiments_page,
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
+    
+    Label(main_frame, text="LEARN MORE ABOUT FK", font=("Helvetica", 20, "bold"), 
+          fg="#005EB8", bg=BG_COLOR , anchor=W).pack(pady=10)
 
     def play_local_video():
         video_name = "Solved Example - Forward Kinematics.mp4"
@@ -2866,19 +3750,16 @@ def open_fk_intro_page():
         if os.path.exists(video_full_path): 
             os.startfile(video_full_path)
         else:
-            from tkinter import messagebox
             messagebox.showerror("Error", f"Video not found at: {video_full_path}")
 
-    video_frame = Frame(window, bg="#0a1e4d", bd=3, relief=RIDGE)
-    video_frame.pack(pady=10, padx=50, fill=BOTH, expand=True)
+    video_frame = Frame(main_frame, bg="white", bd=3, relief=RIDGE)
+    video_frame.pack(pady=20, padx=200, fill=BOTH, expand=True)
     
-    Label(video_frame, text="Watch FK Tutorial", font=("Arial", 18, "bold"), 
-          fg="#2ecc71", bg="#0a1e4d").pack(pady=(20, 10))
 
-    preview_container = Frame(video_frame, bg="#0a1e4d")
+    preview_container = Frame(video_frame, bg="white")
     preview_container.pack(expand=True)
 
-    image_path = r"C:\Users\Bassant\robot-arm-educational-kit\GUI\video_preview.png"
+    image_path = r"C:\Users\Bassant\robot-arm-educational-kit\GUI\FK_Video_preview.png"
     try:
         img = Image.open(image_path) 
         img = img.resize((750, 420), Image.Resampling.LANCZOS)
@@ -2888,34 +3769,113 @@ def open_fk_intro_page():
         img_label.image = photo
         img_label.pack(pady=10)
         
+        
         img_label.bind("<Button-1>", lambda e: play_local_video())
-        Label(preview_container, text="Click image to play tutorial", 
-              font=("Arial", 10, "italic"), fg="white", bg="#0a1e4d").pack()
+        Label(preview_container, text="Click image to play video", 
+              font=("Arial", 15, "bold"), fg="#005EB8", bg="white").pack()
 
     except Exception as e:
     
         print(f"DEBUG: Image not found at {image_path}. Error: {e}")
-        Button(preview_container, text="▶ Watch Tutorial", font=("Arial", 16, "bold"),
+        Button(preview_container, text="Watch Tutorial", font=("Arial", 16, "bold"),
                bg="#2ecc71", fg="white", padx=30, pady=15,
                command=play_local_video, cursor="hand2").pack(pady=50)
 
-    btn_container = Frame(window, bg=BG_COLOR)
-    btn_container.pack(side=BOTTOM, fill=X, pady=40, padx=80)
-    Button(btn_container, text="Simulation & Calculations →", font=("Arial", 13, "bold"), 
-           bg="#f36412", fg="white", width=25, height=2, command=open_fk_page).pack(side=RIGHT)
-    Button(btn_container, text=" ← 3D Visualization (PyBullet)", font=("Arial", 13, "bold"), 
-           bg="#2980b9", fg="white", width=25, height=2, command=run_pybullet_sim).pack(side=LEFT)
+
+    
+    status_bar = Frame(
+        main_frame,
+        bg="white",
+        height=60,
+        highlightbackground="#D6DEE8",
+        highlightthickness=1
+    )
+
+    status_bar.pack(side=BOTTOM, fill=X)
+
+    home_frame = Frame(
+    status_bar,
+    bg="#005EB8",
+    width=120,
+    height=55
+    )
+
+    home_frame.pack(side=LEFT, fill=Y)
+
+    Button(
+        home_frame,
+        text="⌂",
+        font=("Segoe UI Symbol", 24),
+        fg="white",
+        bg="#005EB8",
+        command=show_welcome_page,
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
+    
+    
+    status_bar.pack(side=BOTTOM, fill=X)
+
+    PYBULLET_frame = Frame(
+    status_bar,
+    bg="#005EB8",
+    width=220,
+    height=55
+    )
+
+    PYBULLET_frame.pack(side=LEFT, fill=Y)
+
+    Button(
+        PYBULLET_frame,
+        text="← 3D Visualization (PyBullet)",
+        font=("Segoe UI Symbol", 10,"bold"),
+        fg="white",
+        bg="#06853b",
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
+    
+    
+    time_label = Label(
+        status_bar,
+        bg="white",
+        fg="#1F2937",
+        font=("Segoe UI",11)
+    )
+
+    time_label.pack(side=RIGHT, padx=25)
+
+    def update_time():
+        now = datetime.now()
+
+        time_label.config(
+            text=now.strftime("%d/%m/%Y\n%I:%M:%S %p")
+        )
+
+        window.after(1000, update_time)
+
+    update_time()    
+    
+    
+    status_bar.pack(side=BOTTOM, fill=X)
+
+    simulation_frame = Frame(
+    status_bar,
+    bg="#005EB8",
+    width=220,
+    height=55
+    )
+
+    simulation_frame.pack(side=RIGHT, fill=Y)
+
+    Button(
+        simulation_frame,
+        text="Simulation & Calculations →",
+        font=("Segoe UI Symbol", 10,"bold"),
+        fg="white",
+        bg="#06853b",
+        command=open_fk_page
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
     show_university_logo()
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2937,7 +3897,30 @@ def open_fk_page():
         SAVED_A_MATRICES = [np.eye(4) for _ in range(6)]
     if SAVED_T06 is None:
         SAVED_T06 = np.eye(4)
-   
+    BG_COLOR = "#F3F5F8"   
+    main_frame = Frame(window, bg=BG_COLOR)
+    main_frame.pack(fill="both", expand=True) 
+    
+    header = Frame(main_frame, bg="white", height=90)
+    header.pack(fill=X)
+
+    Label(
+        header,
+        text="6-DOF ROBOTIC ARM EDUCATIONAL KIT",
+        font=("Segoe UI", 24, "bold"),
+        fg="#005EB8",
+        bg="white"
+    ).place(relx=0.5, rely=0.45, anchor=CENTER)
+
+    Label(
+        header,
+        text="VIRTUAL LAB INTERFACE v1.0",
+        font=("Consolas", 11, "bold"),
+        fg="#4B5563",
+        bg="white"
+    ).place(relx=0.5, rely=0.9, anchor=CENTER)
+    
+    
     def draw_3d_cylinder(ax, p1, p2, radius=8, color='#2ecc71'):
         try:
             v = p2 - p1
@@ -2974,10 +3957,10 @@ def open_fk_page():
         try:
             # m7tagen n3dlhom 3la a5r 7aga 3nd mina
             joint_limits = [
-                (-135.0, 135.0), # Base
+                (-90.0, 90.0), # Base
                 (0.0, 180.0),    # Shoulder
-                (-80.0, 90.0),   # Elbow
-                (-90.0, 90.0),   # Wrist Pitch / Rest
+                (-45, 120.0),   # Elbow
+                (-45.0, 90.0),   # Wrist Pitch / Rest
                 (-180.0, 180.0), # Wrist Roll / Roll
                 (0.0, 180.0),    # Yaw 
                 (0.0, 90.0),     #Gripper
@@ -2985,7 +3968,7 @@ def open_fk_page():
             
         # limits bt3t mina kolo mm a5r update 
             dim_limits = [
-                (150.0, 180.0),  # a2
+                (150.0, 170.0),  # a2
                 (130.0, 150.0)  # a3    
             ]
 
@@ -3061,13 +4044,16 @@ def open_fk_page():
                 ca, sa = math.cos(alphas[i]), math.sin(alphas[i])
 
                 if i == 3:
-                   d_val = d4_val
+                  d_val = d4_val
+
+                elif i == 4:
+                  d_val = d5_val
 
                 elif i == 5:
-                   d_val = d6_val
+                  d_val = d6_val
 
                 else:
-                   d_val = 0.0
+                  d_val = 0.0
                 
                 SAVED_A_MATRICES[i] = np.array([
                     [c, -s*ca,  s*sa, 0.0],
@@ -3083,8 +4069,8 @@ def open_fk_page():
             
          
             ax.clear()
-            ax.set_facecolor('#081b4b')
-            ax.grid(True, color='#1a2a5a', linestyle=':')
+            ax.set_facecolor('#F3F5F8')
+            ax.grid(True, color='#F3F5F8', linestyle=':')
             
             max_range = d1_val + a2_val + a3_val + d4_val + d6_val
             
@@ -3182,10 +4168,10 @@ def open_fk_page():
             ax.set_xlim([-max_range*0.4, max_range*1.2])
             ax.set_ylim([-max_range*0.7, max_range*0.7])
             ax.set_zlim([0, max_range*1.2])
-            ax.set_xlabel('X (mm)', color='white', fontsize=8)
-            ax.set_ylabel('Y (mm)', color='white', fontsize=8)
-            ax.set_zlabel('Z (mm)', color='white', fontsize=8)
-            ax.tick_params(axis='both', colors='white', labelsize=7)
+            ax.set_xlabel('X (mm)', color='black', fontsize=8)
+            ax.set_ylabel('Y (mm)', color='black', fontsize=8)
+            ax.set_zlabel('Z (mm)', color='black', fontsize=8)
+            ax.tick_params(axis='both', colors='black', labelsize=7)
             ax.view_init(elev=25, azim=35)
             canvas.draw()
             
@@ -3197,7 +4183,7 @@ def open_fk_page():
                     val = SAVED_T06[r, c]
                     comp = ["n", "o", "a", "p"][c]
                     axis = ["x", "y", "z"][r]
-                    flat_labels[idx].config(text=f"{comp}{axis} = {val:.2f}", fg="#2ecc71")
+                    flat_labels[idx].config(text=f"{comp}{axis} = {val:.2f}", fg="#06853b")
                     idx += 1
                     
            
@@ -3259,7 +4245,7 @@ def open_fk_page():
         
     
         ax_edu.clear()
-        ax_edu.set_facecolor('#0d2142')
+        ax_edu.set_facecolor('#F3F5F8')
         
      
         mat = SAVED_A_MATRICES[selected_idx - 1]
@@ -3291,8 +4277,7 @@ def open_fk_page():
         ax_edu.axis('off') 
         ax_edu.view_init(elev=20, azim=45)
         canvas_edu.draw()
-        
-        
+              
         formatted_matrix = (
             f"[[ {mat[0,0]:>7.2f}  {mat[0,1]:>7.2f}  {mat[0,2]:>7.2f}  {mat[0,3]:>7.2f} ]\n"
             f" [ {mat[1,0]:>7.2f}  {mat[1,1]:>7.2f}  {mat[1,2]:>7.2f}  {mat[1,3]:>7.2f} ]\n"
@@ -3301,15 +4286,24 @@ def open_fk_page():
         )
         step_matrix_lbl.config(text=formatted_matrix)
 
+    back_frame = Frame(
+    header,
+    bg="#005EB8",
+    width=120,
+    height=90
+    )
 
-    header_frame = Frame(window, bg=BG_COLOR)
-    header_frame.pack(fill=X)
+    back_frame.pack(side=LEFT, fill=Y)
 
-    Button(header_frame, text="← Back to Video Intro", font=("Arial", 11, "bold"), 
-           fg="#099da5", bg=BG_COLOR, bd=0, command=open_fk_intro_page, borderwidth=10).pack(side=LEFT, padx=20, pady=5)
-
-    Label(header_frame, text="FORWARD KINEMATICS STEP BY STEP ANALYSIS", 
-          font=("Helvetica", 15, "bold"), fg="#099da5", bg=BG_COLOR).pack(side=LEFT, expand=True)
+    Button(
+        back_frame,
+        text="🔙",
+        font=("Segoe UI Symbol", 24),
+        fg="white",
+        bg="#005EB8",
+        command=open_fk_intro_page,
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
 
     main_container = Frame(window, bg=BG_COLOR)
     main_container.pack(expand=True, fill=BOTH, padx=10, pady=2)
@@ -3326,17 +4320,17 @@ def open_fk_page():
     tabs.add(joints_tab, text=" Joint Angles (θ) ")
     joints = []
     
-    joint_names = ["Base (NEMA 23)", "Shoulder (Servo 35)", "Elbow (Servo 35)", "Rest (Servo 11/20)", "Roll (NEMA 17)", "Yaw (Servo 11)","Gripper(Black Servo)"]
-    joint_ranges_text = ["[-135° to 135°]", "[0° to 180°]", "[-80° to 90°]", "[-90° to 90°]", "[-180° to 180°]", "[0° to 180°]","[0° to 90°]"]
+    joint_names = ["Base (servo 60)", "Shoulder (Servo 60)", "Elbow (Servo 60)", "Rest (Servo 11/20)", "Roll (servo 17)", "Yaw (Servo 11)","Gripper(Black Servo)"]
+    joint_ranges_text = ["[-90° to 90°]", "[0° to 180°]", "[-45° to 120°]", "[-45° to 90°]", "[-180° to 180°]", "[0° to 180°]","[0° to 90°]"]
     
     for i in range(7):
         joint_card = Frame(joints_tab, bg=BG_COLOR, pady=1)
         joint_card.pack(fill=X)
         
         lbl_text = f"θ{i+1}: {joint_names[i]} {joint_ranges_text[i]}"
-        Label(joint_card, text=lbl_text, fg="#70afc2", bg=BG_COLOR, font=("Arial", 8, "bold")).pack(anchor=W)
+        Label(joint_card, text=lbl_text, fg="#005EB8", bg=BG_COLOR, font=("Arial", 8, "bold")).pack(anchor=W)
         
-        e = Entry(joint_card, font=("Consolas", 10, "bold"), width=15, justify="center", bg="#0a1e4d", fg="#2ecc71", relief=FLAT)
+        e = Entry(joint_card, font=("Consolas", 10, "bold"), width=15, justify="center", bg="white", fg="#080808", relief=FLAT)
         e.insert(0, "0.0")
         e.pack(pady=1)
         Frame(joint_card, height=1, bg="#099da5").pack(fill=X)
@@ -3352,16 +4346,17 @@ def open_fk_page():
         d_entry.bind("<FocusOut>", lambda event: run_fk_calculations(from_button=False))
      # 7aagt mina b default   
     dim_configs = [
-    ("Link 2 Length a2 (150-180 mm)", "150.0"),
+    ("Link 2 Length a2 (150-170 mm)", "150.0"),
     ("Link 3 Length a3 (130-150 mm)", "130.0")
     ]
+    
     
     for label_text, default_val in dim_configs:
         dim_card = Frame(dims_tab, bg=BG_COLOR, pady=2)
         dim_card.pack(fill=X)
-        Label(dim_card, text=label_text, fg="#70afc2", bg=BG_COLOR, font=("Arial", 8, "bold")).pack(anchor=W)
+        Label(dim_card, text=label_text, fg="#005EB8", bg=BG_COLOR, font=("Arial", 8, "bold")).pack(anchor=W)
         
-        d_entry = Entry(dim_card, font=("Consolas", 10, "bold"), width=15, justify="center", bg="#1a2a5a", fg="#f1c40f", relief=FLAT)
+        d_entry = Entry(dim_card, font=("Consolas", 10, "bold"), width=15, justify="center", bg="white", fg="#080808", relief=FLAT)
         d_entry.insert(0, default_val)
         d_entry.pack(pady=1)
         Frame(dim_card, height=1, bg="#f1c40f").pack(fill=X)
@@ -3371,41 +4366,121 @@ def open_fk_page():
         link_dims.append(d_entry)
 
 
-    edu_frame = LabelFrame(left_p, text="  Live Frame Description (DH Axes) ", font=("Arial", 9, "bold"), fg="#f1c40f", bg="#0d2142", bd=2)
+    edu_frame = LabelFrame(left_p, text="  Live Frame Description (DH Axes) ", font=("Arial", 9, "bold"), fg="#005EB8", bg="white", bd=2)
     edu_frame.pack(fill=BOTH, expand=True, pady=4)
 
-    step_title_lbl = Label(edu_frame, text="Link 1: Base to Shoulder Joint", font=("Arial", 9, "bold"), fg="#2ecc71", bg="#0d2142")
+    step_title_lbl = Label(edu_frame, text="Link 1: Base to Shoulder Joint", font=("Arial", 9, "bold"), fg="#005EB8", bg="white")
     step_title_lbl.pack(anchor=W, padx=5, pady=2)
     
-    step_desc_lbl = Label(edu_frame, text="", font=("Arial", 8), fg="#9db2bf", bg="#0d2142", justify=LEFT, wraplength=180)
+    step_desc_lbl = Label(edu_frame, text="", font=("Arial", 8), fg="#005EB8", bg="white", justify=LEFT, wraplength=180)
     step_desc_lbl.pack(anchor=W, padx=5, pady=2)
 
 
     fig_edu = plt.figure(figsize=(2, 2))
-    fig_edu.patch.set_facecolor('#0d2142')
+    fig_edu.patch.set_facecolor('#F3F5F8')
     ax_edu = fig_edu.add_subplot(111, projection='3d')
     
     canvas_edu = FigureCanvasTkAgg(fig_edu, master=edu_frame)
     canvas_edu.get_tk_widget().pack(fill=BOTH, expand=True, padx=5, pady=2)
 
-    Button(left_p, text="RUN SIMULATION", bg="#2ecc71", fg="white", font=("Arial", 11, "bold"), command=lambda: run_fk_calculations(from_button=True)).pack(pady=8, fill=X)
+    Button(left_p, text="RUN SIMULATION", bg="#06853b", fg="white", font=("Arial", 11, "bold"), command=lambda: run_fk_calculations(from_button=True)).pack(pady=1, fill=X)
 
-
-    middle_p = Frame(main_container, bg="#081b4b", bd=2, relief=SUNKEN)
+    middle_p = Frame(main_container, bg="#F3F5F8", bd=2, relief=SUNKEN)
     middle_p.pack(side=LEFT, expand=True, fill=BOTH, padx=5, pady=5)
     
     fig = plt.figure(figsize=(5, 5))
-    fig.patch.set_facecolor('#081b4b')
+    fig.patch.set_facecolor('#F3F5F8')
     ax = fig.add_subplot(111, projection='3d')
     canvas = FigureCanvasTkAgg(fig, master=middle_p)
     canvas.get_tk_widget().pack(expand=True, fill=BOTH)
+    
+    status_bar = Frame(
+        middle_p,
+        bg="white",
+        height=70,
+        highlightbackground="#D6DEE8",
+        highlightthickness=1
+    )
 
+    status_bar.pack(side=BOTTOM, fill=X)
 
-    right_p = Frame(main_container, bg=BG_COLOR)
+    home_frame = Frame(
+    status_bar,
+    bg="#005EB8",
+    width=120,
+    height=65
+    )
+
+    home_frame.pack(side=LEFT, fill=Y)
+    Button(
+        home_frame,
+        text="⌂",
+        font=("Segoe UI Symbol", 24),
+        fg="white",
+        bg="#005EB8",
+        command=show_welcome_page,
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
+    status4 = Frame(
+    status_bar,
+    bg="white",
+    width=220,
+    height=65,
+    highlightbackground="#D6DEE8",
+    highlightthickness=1
+    )
+
+    status4.pack(side=LEFT)
+
+    Label(
+        status4,
+        text="🔔 ALARMS",
+        font=("Segoe UI",9),
+        fg="#1F2937",
+        bg="white"
+    ).place(x=15,y=10)
+
+    Label(
+        status4,
+        text="0 ACTIVE",
+        font=("Segoe UI",10,"bold"),
+        fg="#DC2626",
+        bg="white"
+    ).place(x=15,y=35)
+    
+    time_label = Label(
+        status_bar,
+        bg="white",
+        fg="#1F2937",
+        font=("Segoe UI",11)
+    )
+    
+    
+    time_label = Label(
+        status_bar,
+        bg="white",
+        fg="#1F2937",
+        font=("Segoe UI",11)
+    )
+
+    time_label.pack(side=RIGHT, padx=25)
+
+    def update_time():
+        now = datetime.now()
+
+        time_label.config(
+            text=now.strftime("%d/%m/%Y\n%I:%M:%S %p")
+        )
+
+        window.after(1000, update_time)
+
+    update_time()    
+    
+    right_p = Frame(main_container, bg="#F3F5F8")
     right_p.pack(side=RIGHT, fill=Y, padx=5, pady=2)
 
     matrix_select_frame = LabelFrame(right_p, text="Link Transformation Matrix (A_i) ", 
-                                     font=("Arial", 9, "bold"), fg="#099da5", bg=BG_COLOR)
+                                     font=("Arial", 9, "bold"), fg="#005EB8", bg="#F3F5F8")
     matrix_select_frame.pack(fill=X, pady=(50, 2)) 
     
     link_selector = ttk.Combobox(matrix_select_frame, values=["Link 1 (Base Joint)", "Link 2 (Shoulder Joint)", "Link 3 (Elbow Joint)", "Link 4 (Wrist Pitch)", "Link 5 (Wrist Roll)", "Link 6 (End-Effector)"], state="readonly", width=28)
@@ -3414,13 +4489,13 @@ def open_fk_page():
     link_selector.bind("<<ComboboxSelected>>", on_link_select)
 
     
-    step_matrix_lbl = Label(matrix_select_frame, text="", font=("Consolas", 9), fg="white", bg="#050c1f", padx=10, pady=4, justify=LEFT, width=38)
+    step_matrix_lbl = Label(matrix_select_frame, text="", font=("Consolas", 9), fg="#005EB8", bg="#F3F5F8", padx=10, pady=4, justify=LEFT, width=38)
     step_matrix_lbl.pack(fill=X, padx=10, pady=2)
 
-    chain_lbl = Label(matrix_select_frame, text="Total Chain: T06 = A1 × A2 × A3 × A4 × A5 × A6", font=("Arial", 8, "italic", "bold"), fg="#efefef", bg="#1a2a5a", pady=2)
+    chain_lbl = Label(matrix_select_frame, text="Total Chain: T06 = A1 × A2 × A3 × A4 × A5 × A6", font=("Arial", 8, "italic", "bold"), fg="#005EB8", bg="#F3F5F8", pady=2)
     chain_lbl.pack(fill=X, padx=5, pady=1)
 
-    tm_frame = LabelFrame(right_p, text=" Final Transformation Matrix (T06) ", font=("Arial", 9, "bold"), fg="white", bg=BG_COLOR)
+    tm_frame = LabelFrame(right_p, text=" Final Transformation Matrix (T06) ", font=("Arial", 9, "bold"), fg="#005EB8", bg="#F3F5F8")
     tm_frame.pack(fill=X, pady=2)
     for i in range(4): tm_frame.grid_columnconfigure(i, weight=1, uniform="matrix")
 
@@ -3429,14 +4504,14 @@ def open_fk_page():
     for r_idx, axis in enumerate(rows_names):
         for c_idx, component in enumerate(cols_names):
          
-            lbl = Label(tm_frame, text=f"{component}{axis} =  0.00", font=("Consolas", 8), fg="#70afc2", bg=BG_COLOR, width=12, anchor=W)
+            lbl = Label(tm_frame, text=f"{component}{axis} =  0.00", font=("Consolas", 8), fg="#F3F5F8", bg=BG_COLOR, width=12, anchor=W)
             lbl.grid(row=r_idx, column=c_idx, padx=1, pady=1)
             matrix_labels.append(lbl)
     for i, val in enumerate(["0.00", "0.00", "0.00", "1.00"]):
         Label(tm_frame, text=val, font=("Consolas", 8), fg="white", bg=BG_COLOR, width=12).grid(row=3, column=i, pady=2)
 
 
-    dh_frame = LabelFrame(right_p, text=" Denavit-Hartenberg Parameters ", font=("Arial", 9, "bold"), fg="white", bg=BG_COLOR, bd=2)
+    dh_frame = LabelFrame(right_p, text=" Denavit-Hartenberg Parameters ", font=("Arial", 9, "bold"), fg="#005EB8", bg=BG_COLOR, bd=2)
     dh_frame.pack(fill=X, pady=2)
     headers = ["Link", "θ*", "d", "a", "α"]
     for i, h in enumerate(headers): 
@@ -3445,108 +4520,386 @@ def open_fk_page():
     dh_labels = [] 
     my_robot_alphas = [90, 0, 0, 90, -90, 0] # keda keda l7d ma nzabta
     for i in range(6):
-        Label(dh_frame, text=str(i+1), fg="white", bg=BG_COLOR, font=("Arial", 8)).grid(row=i+1, column=0, padx=6)
+        Label(dh_frame, text=str(i+1), fg="#005EB8", bg=BG_COLOR, font=("Arial", 8)).grid(row=i+1, column=0, padx=6)
         
         t_lbl = Label(dh_frame, text="0.0", fg="#099da5", bg=BG_COLOR, font=("Arial", 8, "bold"))
         t_lbl.grid(row=i+1, column=1, padx=6)
         
-        d_lbl = Label(dh_frame, text="0.0", fg="white", bg=BG_COLOR, font=("Arial", 8))
+        d_lbl = Label(dh_frame, text="0.0", fg="#005EB8", bg=BG_COLOR, font=("Arial", 8))
         d_lbl.grid(row=i+1, column=2, padx=6)
         
-        a_lbl = Label(dh_frame, text="0.0", fg="white", bg=BG_COLOR, font=("Arial", 8))
+        a_lbl = Label(dh_frame, text="0.0", fg="#005EB8", bg=BG_COLOR, font=("Arial", 8))
         a_lbl.grid(row=i+1, column=3, padx=6)
         
-        Label(dh_frame, text=str(my_robot_alphas[i]), fg="white", bg=BG_COLOR, font=("Arial", 8)).grid(row=i+1, column=4, padx=6)
+        Label(dh_frame, text=str(my_robot_alphas[i]), fg="#005EB8", bg=BG_COLOR, font=("Arial", 8)).grid(row=i+1, column=4, padx=6)
         
         dh_labels.append({"theta": t_lbl, "d": d_lbl, "a": a_lbl})
 
-    ee_frame = LabelFrame(right_p, text=" End-Effector 3-Axes Projection ", font=("Arial", 9, "bold"), fg="#27ae60", bg=BG_COLOR, bd=2)
+    ee_frame = LabelFrame(right_p, text=" End-Effector 3-Axes Projection ", font=("Arial", 9, "bold"), fg="#27ae60", bg="#F3F5F8", bd=2)
     ee_frame.pack(fill=X, pady=4)
     for i in range(3): ee_frame.grid_columnconfigure(i, weight=1)
 
     ee_coords = {}
     axes_cfg = [("X", "#e74c3c"), ("Y", "#2ecc71"), ("Z", "#3498db")]
+    
     for i, (axis, color) in enumerate(axes_cfg):
-        container = Frame(ee_frame, bg=BG_COLOR)
+        container = Frame(ee_frame, bg="#F3F5F8")
         container.grid(row=0, column=i, pady=6, padx=2)
-        Label(container, text=f"{axis}:", font=("Arial", 10, "bold"), fg=color, bg=BG_COLOR).pack(side=LEFT)
-        val_lbl = Label(container, text="0.00", font=("Consolas", 11, "bold"), fg="white", bg="#0a1e4d", width=8, relief=RIDGE)
+        Label(container, text=f"{axis}:", font=("Arial", 10, "bold"), fg=color, bg="#F3F5F8").pack(side=LEFT)
+        val_lbl = Label(container, text="0.00", font=("Consolas", 11, "bold"), fg="#005EB8", bg="#F3F5F8", width=8, relief=RIDGE)
         val_lbl.pack(side=LEFT, padx=2)
         ee_coords[axis] = val_lbl
         
-    # seif grb hna     
-    try:          # 8yr com bs 3la 7sb htwasl fen 
-        esp = serial.Serial('COM5', 115200, timeout=1)
-        print("ESP connected ")
-    except:
-        esp = None
-        print("ESP not connected ")
-        
-    def sync_to_hardware():
+
+    def generate_report():
         try:
-            angles = [float(j.get()) for j in joints]
-            link_vals = [
-                100.0,      # d1 fixed base
-                float(link_dims[0].get()), # shoulder
-                float(link_dims[1].get()), #elbow
-                74.17, # yaw
-                71.09, #roll
-                40.0  # gripper ay 7aga l7d ma n3rf el tol
-            ] 
-            payload = {
-                "angles": angles,
-                "links": link_vals
-            }
-            
-            msg = json.dumps(payload)
-            print("SENDING TO HARDWARE:")
-            print(msg)
+            file_name = f"FK_REPORT_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+            doc = SimpleDocTemplate(file_name, pagesize=A4)
 
-            if esp is not None:
-                esp.write((msg + "\n").encode())   
-                esp.flush()
-                print("Sent to ESP32 ")
-                messagebox.showinfo("SUCCESS", "Data sent to ESP32")
-            else:
-                print("No ESP connection")
-                messagebox.showwarning("WARNING", "ESP not connected")
+            styles = getSampleStyleSheet()
+            content = []
 
-          
+            logo_path = r"C:\Users\Bassant\robot-arm-educational-kit\GUI\uni_logo.png"
 
-        except Exception as e:
-            messagebox.showerror("Error", str(e))
-           
+            if os.path.exists(logo_path):
+                logo = RLImage(logo_path, width=80, height=70)
+                content.append(logo)
+
+            content.append(Spacer(1, 15))
+
+            content.append(Paragraph("<b>BENHA NATIONAL UNIVERSITY</b>", styles['Title']))
+            content.append(Paragraph("<b>MECHATRONICS ENGINEERING</b>", styles['Title']))
+            content.append(Spacer(1, 20))
+
+            content.append(Paragraph("<b>6DOF ROBOT ARM</b>", styles['Title']))
+            content.append(Paragraph("FORWARD KINEMATICS REPORT", styles['Title']))
+
+            content.append(Spacer(1, 25))
+
+            content.append(Paragraph(f"<b>Student:</b> Bassant Salah Rashad", styles['Normal']))
+            content.append(Paragraph(f"<b>Department:</b> Mechatronics Engineering", styles['Normal']))
+            content.append(Paragraph(f"<b>Date:</b> {datetime.now().strftime('%Y-%m-%d')}", styles['Normal']))
+
+            content.append(PageBreak())
 
        
+            content.append(Paragraph("1. Objective", styles['Heading2']))
+
+            obj = Paragraph(
+                "This report analyzes forward kinematics of a 6DOF robotic arm "
+                "using Denavit–Hartenberg parameters and transformation matrices.",
+                styles['Normal']
+            )
+
+            obj_table = Table([[obj]], colWidths=[450])
+            obj_table.setStyle([
+                ('BOX', (0,0), (-1,-1), 1.5, colors.black),
+                ('BACKGROUND', (0,0), (-1,-1), colors.whitesmoke),
+                ('PADDING', (0,0), (-1,-1), 10),
+            ])
+
+            content.append(obj_table)
+            content.append(Spacer(1, 15))
+
+            content.append(Paragraph("2. Joint Angles (θ)", styles['Heading2']))
+
+            joint_data = [["Joint", "Name", "Angle (deg)"]]
+
+            for i in range(len(joints)):
+                joint_data.append([
+                    f"θ{i+1}",
+                    joint_names[i],
+                    joints[i].get()
+                ])
+
+            t1 = Table(joint_data, colWidths=[80, 200, 120])
+            t1.setStyle([
+                ('GRID', (0,0), (-1,-1), 1, colors.black),
+                ('BACKGROUND', (0,0), (-1,0), colors.darkblue),
+                ('TEXTCOLOR', (0,0), (-1,0), colors.whitesmoke),
+                ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ])
+
+            content.append(t1)
+            content.append(Spacer(1, 15))
+
+            content.append(Paragraph("3. Link Dimensions", styles['Heading2']))
+
+            link_data = [
+                ["Parameter", "Value (mm)"],
+                ["a2 (Shoulder)", link_dims[0].get()],
+                ["a3 (Elbow)", link_dims[1].get()],
+                ["d1 (Base)", "100"],
+                ["d4 (Wrist Pitch)", "74.17"],
+                ["d5 (Wrist Roll)", "71.09"],
+                ["d6 (Gripper)", "40"],
+            ]
+
+            t2 = Table(link_data, colWidths=[200, 200])
+            t2.setStyle([
+                ('GRID', (0,0), (-1,-1), 1, colors.black),
+                ('BACKGROUND', (0,0), (-1,0), colors.grey),
+                ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ])
+
+            content.append(t2)
+            content.append(Spacer(1, 15))
+
+
+            content.append(Paragraph("4. Denavit–Hartenberg Parameters", styles['Heading2']))
+
+            dh_data = [
+                ["Link", "θ", "d", "a", "α"],
+                ["1", joints[0].get(), "100", "0", "90"],
+                ["2", joints[1].get(), "0", link_dims[0].get(), "0"],
+                ["3", joints[2].get(), "0", link_dims[1].get(), "0"],
+                ["4", joints[3].get(), "74.17", "0", "90"],
+                ["5", joints[4].get(), "71.09", "0", "-90"],
+                ["6", joints[5].get(), "40", "0", "0"],
+            ]
+
+            t3 = Table(dh_data, colWidths=[60, 80, 80, 80, 80])
+            t3.setStyle([
+                ('GRID', (0,0), (-1,-1), 1, colors.black),
+                ('BACKGROUND', (0,0), (-1,0), colors.darkblue),
+                ('TEXTCOLOR', (0,0), (-1,0), colors.whitesmoke),
+                ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ])
+
+            content.append(t3)
+            content.append(Spacer(1, 15))
+
+            content.append(PageBreak())
+            content.append(Paragraph("5. Transformation Matrices (A1 → A6)", styles['Heading2']))
+
+            for i in range(6):
+                mat = SAVED_A_MATRICES[i]
+
+                mat_data = [
+                    ["A" + str(i+1), "", "", ""],
+                    [f"{mat[0,0]:.2f}", f"{mat[0,1]:.2f}", f"{mat[0,2]:.2f}", f"{mat[0,3]:.2f}"],
+                    [f"{mat[1,0]:.2f}", f"{mat[1,1]:.2f}", f"{mat[1,2]:.2f}", f"{mat[1,3]:.2f}"],
+                    [f"{mat[2,0]:.2f}", f"{mat[2,1]:.2f}", f"{mat[2,2]:.2f}", f"{mat[2,3]:.2f}"],
+                    [f"{mat[3,0]:.2f}", f"{mat[3,1]:.2f}", f"{mat[3,2]:.2f}", f"{mat[3,3]:.2f}"],
+                ]
+
+                t = Table(mat_data, colWidths=[100, 100, 100, 100])
+                t.setStyle([
+                    ('GRID', (0,0), (-1,-1), 1, colors.black),
+                    ('BACKGROUND', (0,0), (-1,0), colors.darkblue),
+                    ('TEXTCOLOR', (0,0), (-1,0), colors.whitesmoke),
+                    ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+                ])
+
+                content.append(t)
+                content.append(Spacer(1, 12))
+
+           
+            content.append(PageBreak())
+            content.append(Paragraph("6. Final Transformation Matrix (T06)", styles['Heading2']))
+
+            T = SAVED_T06
+
+            t_text = f"""
+            [{T[0,0]:.2f} {T[0,1]:.2f} {T[0,2]:.2f} {T[0,3]:.2f}]
+            [{T[1,0]:.2f} {T[1,1]:.2f} {T[1,2]:.2f} {T[1,3]:.2f}]
+            [{T[2,0]:.2f} {T[2,1]:.2f} {T[2,2]:.2f} {T[2,3]:.2f}]
+            [{T[3,0]:.2f} {T[3,1]:.2f} {T[3,2]:.2f} {T[3,3]:.2f}]
+            """
+            t = Table(mat_data, colWidths=[100, 100, 100, 100])
+            t.setStyle([
+                    ('GRID', (0,0), (-1,-1), 1, colors.black),
+                    ('BACKGROUND', (0,0), (-1,0), colors.darkblue),
+                    ('TEXTCOLOR', (0,0), (-1,0), colors.whitesmoke),
+                    ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ])
+
+            content.append(t)
+            content.append(Spacer(1, 12))
+            
+            content.append(Spacer(1, 20))
+            content.append(Paragraph("7. End Effector Position", styles['Heading2']))
+
+            ee_data = [
+                ["X", ee_coords["X"].cget("text")],
+                ["Y", ee_coords["Y"].cget("text")],
+                ["Z", ee_coords["Z"].cget("text")],
+            ]
+
+            t4 = Table(ee_data, colWidths=[150, 150])
+            t4.setStyle([
+                ('BOX', (0,0), (-1,-1), 2, colors.green),
+                ('BACKGROUND', (0,0), (-1,-1), colors.whitesmoke),
+                ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ])
+
+            content.append(t4)
+
+         
+            content.append(PageBreak())
+            content.append(Paragraph("8. Assignment Questions", styles['Heading2']))
+
+            questions = [
+                "1: What is the purpose of Forward Kinematics in robotic arms?",
+                "2. What is the physical meaning of Denavit–Hartenberg parameters?",
+                "3. How does link length (a2, a3) affect end-effector position?",
+                "4. What is the difference between rotation matrix and transformation matrix?",
+                "5. Why do we multiply transformation matrices in FK?",
+                "6. What happens to end-effector position if joint angles change?",
+                "7. Explain the importance of homogeneous transformation in robotics.",
+                "8. How does changing d parameters affect robot workspace?",
+                
+            ]
+
+            for q in questions:
+                content.append(Paragraph(q, styles['Normal']))
+                content.append(Spacer(1, 8))
+
+        
+            doc.build(content)
+
+            messagebox.showinfo("Report", f"Generated Successfully:\n{file_name}")
+
+            if platform.system() == "Windows":
+                os.startfile(file_name)
+
+        except Exception as e:
+            messagebox.showerror("Report Error", str(e))
     
     
     
-    sync_frame = Frame(right_p, bg="#0a1e4d", bd=1, relief=SOLID)
+    
+            
+    ESP_IP = "192.168.4.1"
+    ESP_PORT = 80
+    
+    
+    def sync_to_hardware():
+
+        try:
+            
+            angles = [float(j.get()) for j in joints]
+
+            if len(angles) != 7:
+                messagebox.showerror(
+                    "ERROR",
+                    f"Expected 7 angles, got {len(angles)}"
+                )
+                return
+
+          
+            msg = ",".join(str(a) for a in angles) + "\n"
+            
+            print("SENDING TO API:", msg)
+            
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            
+            sock.settimeout(2)
+            
+            sock.connect((ESP_IP, ESP_PORT))
+            
+            sock.sendall(msg.encode())
+            
+            sock.shutdown(socket.SHUT_WR)
+
+            try:
+                response = sock.recv(1024).decode().strip()
+
+                if response == "OK":
+                    messagebox.showinfo("SUCCESS", "Robot updated ✔")
+
+                elif response:
+                    messagebox.showwarning("ESP RESPONSE", response)
+
+            except:
+                print("No response from ESP")
+
+            sock.close()
+
+        except Exception as e:
+            messagebox.showerror("ERROR", str(e))
+            print(e)
+            
+                    
+    sync_frame = Frame(right_p, bg="#F3F5F8", bd=1, relief=RIDGE)
     sync_frame.pack(side=BOTTOM, fill=X, pady=4)
     Button(
         sync_frame,
         text="SYNC TO HARDWARE",
-        bg="#27ae60",
+        bg="#06853b",
         fg="white",
         font=("Arial", 10, "bold"),
         command=sync_to_hardware
+    ).pack(pady=4, padx=10, fill=X)
+    
+    Button(
+        sync_frame,
+        text="GENERATE REPORT",
+        bg="#2980b9",
+        fg="white",
+        font=("Arial", 10, "bold"),
+        command=generate_report
     ).pack(pady=4, padx=10, fill=X)
 
     run_fk_calculations(from_button=False)
     show_university_logo()
 
   
-    
+
+  
+   
 #page fiha kol experiments hna
 def open_experiments_page():
     for widget in window.winfo_children(): widget.destroy()
     
-    # Zorrar el-Back
-    Button(window, text=" ← Back to Main Menu", font=("Arial", 12, "bold"), 
-           fg="#099da5", bg=BG_COLOR, bd=0, command=show_welcome_page, borderwidth=10).pack(anchor=NW, padx=20, pady=10)
+    BG_COLOR = "#F3F5F8"
+
+    main_frame = Frame(window, bg=BG_COLOR)
+    main_frame.pack(fill="both", expand=True)
+
+   
+    header = Frame(main_frame, bg="white", height=90)
+    header.pack(fill=X)
+
+    Label(
+        header,
+        text="6-DOF ROBOTIC ARM EDUCATIONAL KIT",
+        font=("Segoe UI", 24, "bold"),
+        fg="#005EB8",
+        bg="white"
+    ).place(relx=0.5, rely=0.45, anchor=CENTER)
+
+    Label(
+        header,
+        text="VIRTUAL LAB INTERFACE v1.0",
+        font=("Consolas", 11, "bold"),
+        fg="#4B5563",
+        bg="white"
+    ).place(relx=0.5, rely=0.78, anchor=CENTER)
     
-    Label(window, text="SELECT EXPERIMENT", font=("Helvetica", 30, "bold"), 
-          fg="#099da5", bg=BG_COLOR).pack(pady=30) 
+    
+    back_frame = Frame(
+    header,
+    bg="#005EB8",
+    width=120,
+    height=90
+    )
+
+    back_frame.pack(side=LEFT, fill=Y)
+
+    Button(
+        back_frame,
+        text="🔙",
+        font=("Segoe UI Symbol", 24),
+        fg="white",
+        bg="#005EB8",
+        command=show_login_page,
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
+    
+    
+    Label(main_frame, text="SELECT EXPERIMENT", font=("Helvetica", 30, "bold"), 
+          fg="#005EB8", bg=BG_COLOR).pack(pady=30) 
 
     Experiments = [
         ("1. Forward Kinematics (FK)", open_fk_intro_page), 
@@ -3564,12 +4917,177 @@ def open_experiments_page():
                 messagebox.showinfo("lsa m3mlto4", f"{t}, isa yt3ml 3latol")
 
         
-        Button(window, text=text, font=("Arial", 16, "bold"), fg="white", 
-               bg="#03265b", width=35, pady=18, 
+        Button(main_frame, text=text, font=("Arial", 16, "bold"), fg="white", 
+               bg="#005EB8", width=35, pady=18, 
                command=log_and_open, 
-               borderwidth=5).pack(pady=15) 
+               borderwidth=5).pack(pady=10) 
+        
+    status_bar = Frame(
+        main_frame,
+        bg="white",
+        height=70,
+        highlightbackground="#D6DEE8",
+        highlightthickness=1
+    )
+
+    status_bar.pack(side=BOTTOM, fill=X)
+
+    home_frame = Frame(
+    status_bar,
+    bg="#005EB8",
+    width=120,
+    height=65
+    )
+
+    home_frame.pack(side=LEFT, fill=Y)
+
+    Button(
+        home_frame,
+        text="⌂",
+        font=("Segoe UI Symbol", 24),
+        fg="white",
+        bg="#005EB8",
+        command=show_welcome_page,
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
+    status1 = Frame(
+    status_bar,
+    bg="white",
+    width=220,
+    height=65,
+    highlightbackground="#D6DEE8",
+    highlightthickness=1
+)
+
+    status1.pack(side=LEFT)
+
+    Label(
+        status1,
+        text="🟢 SYSTEM STATUS",
+        font=("Segoe UI",9),
+        fg="#1F2937",
+        bg="white"
+    ).place(x=15,y=10)
+
+    Label(
+        status1,
+        text="READY",
+        font=("Segoe UI",10,"bold"),
+        fg="#16A34A",
+        bg="white"
+    ).place(x=15,y=35)
+    
+    status2 = Frame(
+    status_bar,
+    bg="white",
+    width=220,
+    height=65,
+    highlightbackground="#D6DEE8",
+    highlightthickness=1
+)
+
+    status2.pack(side=LEFT)
+
+    Label(
+        status2,
+        text="⚙ SIMULATION",
+        font=("Segoe UI",9),
+        fg="#1F2937",
+        bg="white"
+    ).place(x=15,y=10)
+
+    Label(
+        status2,
+        text="STOPPED",
+        font=("Segoe UI",10,"bold"),
+        fg="#374151",
+        bg="white"
+    ).place(x=15,y=35)
+    
+    status3 = Frame(
+    status_bar,
+    bg="white",
+    width=220,
+    height=65,
+    highlightbackground="#D6DEE8",
+    highlightthickness=1
+)
+
+    status3.pack(side=LEFT)
+
+    Label(
+        status3,
+        text="🔌 HARDWARE",
+        font=("Segoe UI",9),
+        fg="#1F2937",
+        bg="white"
+    ).place(x=15,y=10)
+
+    Label(
+        status3,
+        text="DISCONNECTED",
+        font=("Segoe UI",10,"bold"),
+        fg="#16A34A",
+        bg="white"
+    ).place(x=15,y=35)
+    
+    status4 = Frame(
+    status_bar,
+    bg="white",
+    width=220,
+    height=65,
+    highlightbackground="#D6DEE8",
+    highlightthickness=1
+    )
+
+    status4.pack(side=LEFT)
+
+    Label(
+        status4,
+        text="🔔 ALARMS",
+        font=("Segoe UI",9),
+        fg="#1F2937",
+        bg="white"
+    ).place(x=15,y=10)
+
+    Label(
+        status4,
+        text="0 ACTIVE",
+        font=("Segoe UI",10,"bold"),
+        fg="#DC2626",
+        bg="white"
+    ).place(x=15,y=35)
+    
+    time_label = Label(
+        status_bar,
+        bg="white",
+        fg="#1F2937",
+        font=("Segoe UI",11)
+    )
+
+    time_label.pack(side=RIGHT, padx=25)
+
+    def update_time():
+        now = datetime.now()
+
+        time_label.config(
+            text=now.strftime("%d/%m/%Y\n%I:%M:%S %p")
+        )
+
+        window.after(1000, update_time)
+
+    update_time()    
+    
     show_university_logo()    
     
+
+
+
+    
+ 
+ 
+ 
+#login excel sheet     
 # file excel     
 file_path = "lab_records.csv"
 
@@ -3591,54 +5109,220 @@ def save_lab_result(exp_name, data_values):
             data_values
         ])
 
-
 #  Login Page 
 def show_login_page():
     for widget in window.winfo_children(): 
         widget.destroy()
     
-    login_frame = Frame(window, bg=BG_COLOR)
-    login_frame.pack(expand=True, fill=BOTH)
+    BG_COLOR = "#F3F5F8"
 
-    Label(login_frame, text="6-DOF ROBOTIC ARM EDUCATIONAL KIT", 
-          font=("Helvetica", 24, "bold"), fg="#099da5", bg=BG_COLOR).place(relx=0.5, rely=0.05, anchor=CENTER)
-    Label(login_frame, text="VIRTUAL LAB INTERFACE v1.0 - LOGIN", font=("Consolas", 10, "bold"), 
-          fg="#efefef", bg=BG_COLOR).place(relx=0.5, rely=0.08, anchor=CENTER)
+    main_frame = Frame(window, bg=BG_COLOR)
+    main_frame.pack(fill="both", expand=True)
 
-    card = Frame(login_frame, bg="#0d2142", highlightbackground="#099da5", highlightthickness=2, padx=50, pady=50)
+   
+    header = Frame(main_frame, bg="white", height=90)
+    header.pack(fill=X)
+
+    Label(
+        header,
+        text="6-DOF ROBOTIC ARM EDUCATIONAL KIT",
+        font=("Segoe UI", 24, "bold"),
+        fg="#005EB8",
+        bg="white"
+    ).place(relx=0.5, rely=0.45, anchor=CENTER)
+
+    Label(
+        header,
+        text="VIRTUAL LAB INTERFACE v1.0",
+        font=("Consolas", 11, "bold"),
+        fg="#4B5563",
+        bg="white"
+    ).place(relx=0.5, rely=0.78, anchor=CENTER)
+    
+
+    card = Frame(main_frame, bg="white", highlightbackground="#D6DEE8", highlightthickness=2, padx=50, pady=50)
     card.place(relx=0.5, rely=0.5, anchor=CENTER)
 
-    Label(card, text="STUDENT IDENTIFICATION", font=("Helvetica", 18, "bold"), fg="#099da5", bg="#0d2142").pack(pady=(0, 20))
+    Label(card, text="STUDENT IDENTIFICATION", font=("Helvetica", 18, "bold"), fg="#005EB8", bg="white").pack(pady=(0, 20))
+    status_bar = Frame(
+        main_frame,
+        bg="white",
+        height=70,
+        highlightbackground="#D6DEE8",
+        highlightthickness=1
+    )
 
+    status_bar.pack(side=BOTTOM, fill=X)
 
+    home_frame = Frame(
+    status_bar,
+    bg="#005EB8",
+    width=120,
+    height=65
+    )
+
+    home_frame.pack(side=LEFT, fill=Y)
+
+    Button(
+        home_frame,
+        text="⌂",
+        font=("Segoe UI Symbol", 24),
+        fg="white",
+        bg="#005EB8",
+        command=show_welcome_page
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
+    status1 = Frame(
+    status_bar,
+    bg="white",
+    width=220,
+    height=65,
+    highlightbackground="#D6DEE8",
+    highlightthickness=1
+)
+
+    status1.pack(side=LEFT)
+
+    Label(
+        status1,
+        text="🟢 SYSTEM STATUS",
+        font=("Segoe UI",9),
+        fg="#1F2937",
+        bg="white"
+    ).place(x=15,y=10)
+
+    Label(
+        status1,
+        text="READY",
+        font=("Segoe UI",10,"bold"),
+        fg="#16A34A",
+        bg="white"
+    ).place(x=15,y=35)
+    
+    status2 = Frame(
+    status_bar,
+    bg="white",
+    width=220,
+    height=65,
+    highlightbackground="#D6DEE8",
+    highlightthickness=1
+)
+
+    status2.pack(side=LEFT)
+
+    Label(
+        status2,
+        text="⚙ SIMULATION",
+        font=("Segoe UI",9),
+        fg="#1F2937",
+        bg="white"
+    ).place(x=15,y=10)
+
+    Label(
+        status2,
+        text="STOPPED",
+        font=("Segoe UI",10,"bold"),
+        fg="#374151",
+        bg="white"
+    ).place(x=15,y=35)
+    
+    status3 = Frame(
+    status_bar,
+    bg="white",
+    width=220,
+    height=65,
+    highlightbackground="#D6DEE8",
+    highlightthickness=1
+)
+
+    status3.pack(side=LEFT)
+
+    Label(
+        status3,
+        text="🔌 HARDWARE",
+        font=("Segoe UI",9),
+        fg="#1F2937",
+        bg="white"
+    ).place(x=15,y=10)
+
+    Label(
+        status3,
+        text="DISCONNECTED",
+        font=("Segoe UI",10,"bold"),
+        fg="#16A34A",
+        bg="white"
+    ).place(x=15,y=35)
+    
+    status4 = Frame(
+    status_bar,
+    bg="white",
+    width=220,
+    height=65,
+    highlightbackground="#D6DEE8",
+    highlightthickness=1
+)
+
+    status4.pack(side=LEFT)
+
+    Label(
+        status4,
+        text="🔔 ALARMS",
+        font=("Segoe UI",9),
+        fg="#1F2937",
+        bg="white"
+    ).place(x=15,y=10)
+
+    Label(
+        status4,
+        text="0 ACTIVE",
+        font=("Segoe UI",10,"bold"),
+        fg="#DC2626",
+        bg="white"
+    ).place(x=15,y=35)
+    
+    time_label = Label(
+        status_bar,
+        bg="white",
+        fg="#1F2937",
+        font=("Segoe UI",11)
+    )
+
+    time_label.pack(side=RIGHT, padx=25)
+
+    def update_time():
+        now = datetime.now()
+
+        time_label.config(
+            text=now.strftime("%d/%m/%Y\n%I:%M:%S %p")
+        )
+
+        window.after(1000, update_time)
+
+    update_time()
+    
     #(Limitations)
-  
     def validate_name(text_inserted):
        
         if len(text_inserted) > 40:
-            return False
-            
-        
+            return False                  
         for char in text_inserted:
             if not (char.isalpha() or char.isspace()):
                 return False  
-        return True
-
-    
+        return True 
     vcmd = (window.register(validate_name), '%P')
-
-    Label(card, text="Full Name :", font=("Arial", 10), fg="#efefef", bg="#0d2142").pack(anchor=W)
+    Label(card, text="Full Name :", font=("Arial", 10,"bold"), fg="black", bg="white").pack(anchor=W)
     
-   
-    name_entry = Entry(card, font=("Arial", 14), bg="#050c1f", fg="white", insertbackground="white", bd=0,
+
+    name_entry = Entry(card, font=("Arial", 14), bg="#ECEEF1", fg="#005EB8", insertbackground="black", bd=0,
                        validate="key", validatecommand=vcmd)
     name_entry.pack(fill=X, pady=(5, 15))
-    Frame(card, height=1, bg="#099da5").pack(fill=X)
-
-    Label(card, text="Student ID:", font=("Arial", 10), fg="#efefef", bg="#0d2142").pack(anchor=W)
-    id_entry = Entry(card, font=("Arial", 14), bg="#050c1f", fg="white", insertbackground="white", bd=0)
+    
+    Frame(card, height=2, bg="#005EB8").pack(fill=X)
+    Label(card, text="Student ID:", font=("Arial", 10,"bold"), fg="black", bg="white").pack(anchor=W)
+    id_entry = Entry(card, font=("Arial", 14), bg="#ECEEF1", fg="#005EB8", insertbackground="black", bd=0)
     id_entry.pack(fill=X, pady=(5, 15))
-    Frame(card, height=1, bg="#099da5").pack(fill=X)
+    
+    Frame(card, height=2, bg="#005EB8").pack(fill=X)
 
     def final_step():
         global CURRENT_USER, CURRENT_ID
@@ -3657,106 +5341,352 @@ def show_login_page():
             except NameError:
                 print("Error: Function 'open_experiments_page' not found!")
         else:
-            err = Label(card, text="Please fill all fields correctly", fg="#f36412", bg="#0d2142")
+            err = Label(card, text="Please fill all fields correctly", fg="#7e0505", bg="white")
             err.pack(pady=5)
             window.after(2000, err.destroy)
 
-    Button(card, text="VERIFY & ENTER LAB →", bg="#099da5", fg="white", 
+    Button(card, text="VERIFY & ENTER LAB →", bg="#005EB8", fg="white", 
            font=("Arial", 12, "bold"), padx=30, pady=10, bd=0, command=final_step).pack(pady=25)
-    
+        
     show_university_logo()
+
+
+
+
 
 # logo
 def show_university_logo():
   
     try:
-        logo_path = r"C:\Users\Bassant\robot-arm-educational-kit\GUI\uni_logo.png"
-        logo_img = Image.open(logo_path).resize((80, 70), Image.Resampling.LANCZOS)
+        logo_path = r"C:\Users\Bassant\robot-arm-educational-kit\GUI\uni_logo2.png"
+
+       
+        logo_img = PILImage.open(logo_path).resize(
+            (150, 70),
+            PILImage.Resampling.LANCZOS
+        )
+      
         logo_photo = ImageTk.PhotoImage(logo_img)
-        
-     
         l_lbl = Label(window, image=logo_photo, bg=BG_COLOR)
-        l_lbl.image = logo_photo  
+        l_lbl.image = logo_photo 
         l_lbl.place(relx=0.99, rely=0.01, anchor="ne")
+
     except Exception as e:
         print(f"Logo error: {e}")
-        pass
 
-#main page
+
+
+
 def show_welcome_page():
-    for widget in window.winfo_children(): 
+
+    for widget in window.winfo_children():
         widget.destroy()
-    
+
+    BG_COLOR = "#F3F5F8"
+
     main_frame = Frame(window, bg=BG_COLOR)
-    main_frame.pack(expand=True, fill=BOTH)
+    main_frame.pack(fill="both", expand=True)
 
-    # Headers
-    Label(main_frame, text="6-DOF ROBOTIC ARM EDUCATIONAL KIT", 
-          font=("Helvetica", 24, "bold"), fg="#099da5", bg=BG_COLOR).place(relx=0.5, rely=0.05, anchor=CENTER)
-    Label(main_frame, text="VIRTUAL LAB INTERFACE v1.0", font=("Consolas", 10, "bold"), 
-          fg="#efefef", bg=BG_COLOR).place(relx=0.5, rely=0.08, anchor=CENTER)
+   
+    header = Frame(main_frame, bg="white", height=90)
+    header.pack(fill=X)
 
-    
+    Label(
+        header,
+        text="6-DOF ROBOTIC ARM EDUCATIONAL KIT",
+        font=("Segoe UI", 24, "bold"),
+        fg="#005EB8",
+        bg="white"
+    ).place(relx=0.5, rely=0.45, anchor=CENTER)
 
-    text_container = Frame(main_frame, bg=BG_COLOR)
-    text_container.place(relx=0.07, rely=0.15, width=500)
+    Label(
+        header,
+        text="VIRTUAL LAB INTERFACE v1.0",
+        font=("Consolas", 11, "bold"),
+        fg="#4B5563",
+        bg="white"
+    ).place(relx=0.5, rely=0.78, anchor=CENTER)
 
-    title_txt = "WELCOME TO\nOUR\nVIRTUAL LAB"
-    Label(text_container, text=title_txt, font=("Helvetica", 48, "bold"), 
-          fg="#050c1f", bg=BG_COLOR, justify=LEFT).place(x=3, y=3)
-    Label(text_container, text=title_txt, font=("Helvetica", 48, "bold"), 
-          fg="#099da5", bg=BG_COLOR, justify=LEFT).pack(anchor=W)
+   
+    left_frame = Frame(main_frame, bg=BG_COLOR)
+    left_frame.place(relx=0.06, rely=0.15)
 
-    desc_text = ("Explore robotics through real-time simulation, motion analysis,\n"
-                 "and live synchronization with a physical 6-DOF robotic arm.")
-    Label(text_container, text=desc_text, font=("Segoe UI", 12, "italic"), 
-          fg="#efefef", bg=BG_COLOR, justify=LEFT).pack(pady=(15, 10), anchor=W)
+    Label(
+        left_frame,
+        text="WELCOME TO\nOUR",
+        font=("Segoe UI", 31, "bold"),
+        fg="#1F2937",
+        bg=BG_COLOR,
+        justify=LEFT
+    ).pack(anchor=W)
 
-    instr_card = Frame(text_container, bg="#0d2142", bd=0, highlightbackground="#099da5", highlightthickness=1, padx=20, pady=15)
-    instr_card.pack(anchor=W, fill=X, pady=10)
-    
-    Label(instr_card, text="LABORATORY OBJECTIVES & SCOPE:", font=("Arial", 11, "bold"), fg="#efefef", bg="#0d2142").pack(anchor=W, pady=(0,5))
-    
-    points = [
+    Label(
+        left_frame,
+        text="VIRTUAL LAB",
+        font=("Segoe UI", 31, "bold"),
+        fg="#005EB8",
+        bg=BG_COLOR,
+        justify=LEFT
+    ).pack(anchor=W)
+
+    Label(
+        left_frame,
+        text=("Explore robotics through real-time simulation, motion analysis,\n"
+              "and live synchronization with a physical 6-DOF robotic arm."),
+        font=("Segoe UI", 13),
+        fg="#4B5563",
+        bg=BG_COLOR,
+        justify=LEFT
+    ).pack(anchor=W, pady=(15,20))
+
+
+    card = Frame(
+        left_frame,
+        bg="white",
+        highlightbackground="#D6DEE8",
+        highlightthickness=1,
+        padx=20,
+        pady=15
+    )
+    card.pack(fill=X)
+
+    Label(
+        card,
+        text="LABORATORY OBJECTIVES & SCOPE:",
+        font=("Segoe UI", 12, "bold"),
+        fg="#005EB8",
+        bg="white"
+    ).pack(anchor=W)
+
+    objectives = [
         "• REAL-TIME SIMULATION: Visualize robotic arm motion inside a 3D virtual workspace.",
         "• HARDWARE SYNCHRONIZATION: Observe the physical robotic arm responding live to simulation commands.",
         "• KINEMATIC ANALYSIS: Perform Forward and Inverse Kinematics calculations using DH Parameters.",
-        "• TRAJECTORY & CONTROL: Analyze motion paths, joint behavior, and actuator responses in real time."
+        "• TRAJECTORY & CONTROL: Analyze motion paths, joint behavior and actuator responses in real time."
     ]
-    for p in points:
-        Label(instr_card, text=p, font=("Arial", 9), fg="#9db2bf", bg="#0d2142", justify=LEFT, wraplength=450).pack(anchor=W, pady=2)
 
-    btn_get_started = Button(text_container, text="GET STARTED / LOGIN →", bg="#099da5", fg="white", 
-                            font=("Arial", 12, "bold"), padx=40, pady=12, bd=0, cursor="hand2",
-                            command=show_login_page) 
-    btn_get_started.pack(pady=20, anchor=W)
-
-    glow_frame = Frame(main_frame, bg="#0d2142", bd=0, highlightbackground="#099da5", highlightthickness=1)
-    glow_frame.place(relx=0.55, rely=0.20, width=520, height=580)
-
-    try:
-        robot_path = os.path.join(os.path.dirname(__file__), "robot_arm.png")
-        r_img = Image.open(robot_path).resize((480, 480), Image.Resampling.LANCZOS)
-        r_photo = ImageTk.PhotoImage(r_img)
-        robot_lbl = Label(glow_frame, image=r_photo, bg="#14264d")
-        robot_lbl.image = r_photo
-        robot_lbl.place(relx=0.5, rely=0.5, anchor=CENTER)
-
-        def animate_robot(angle=0):
-            try:
-                if 'robot_lbl' in globals() and robot_lbl.winfo_exists():
-                    off_y = math.sin(angle) * 10 
-                    robot_lbl.place(relx=0.5, rely=0.5, y=off_y, anchor="center")
-                    window.after(20, lambda: animate_robot(angle + 0.1))
-            except:
-                pass
-# w2fa hna zbtiha fe venu bt3tk v14
-        animate_robot()
-        
-    except Exception as e:
-        print(f"Error in animation or image: {e}")
+    for item in objectives:
+        Label(
+            card,
+            text=item,
+            font=("Segoe UI", 10),
+            fg="#374151",
+            bg="white",
+            justify=LEFT,
+            wraplength=500
+        ).pack(anchor=W, pady=3)
 
     
+    Button(
+        left_frame,
+        text="GET STARTED / LOGIN →",
+        bg="#005EB8",
+        fg="white",
+        activebackground="#004A93",
+        activeforeground="white",
+        font=("Segoe UI", 12, "bold"),
+        padx=35,
+        pady=12,
+        bd=0,
+        cursor="hand2",
+        command=show_login_page
+    ).pack(anchor=W, pady=20)
+
+  
+    image_frame = Frame(
+        main_frame,
+        bg="white",
+        highlightbackground="#8BB8FF",
+        highlightthickness=1
+    )
+
+    image_frame.place(relx=0.55, rely=0.17, width=650, height=550)
+
+    try:
+
+        robot_path = os.path.join(
+            os.path.dirname(__file__),
+            "robot_arm.png"
+        )
+
+        img = PILImage.open(robot_path)
+        img = img.resize((550,450), PILImage.Resampling.LANCZOS)
+
+        photo = ImageTk.PhotoImage(img)
+
+        robot_lbl = Label(
+            image_frame,
+            image=photo,
+            bg="white"
+        )
+
+        robot_lbl.image = photo
+        robot_lbl.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+    except Exception as e:
+        print("Image Error:", e)
+
+ 
+    status_bar = Frame(
+        main_frame,
+        bg="white",
+        height=70,
+        highlightbackground="#D6DEE8",
+        highlightthickness=1
+    )
+
+    status_bar.pack(side=BOTTOM, fill=X)
+
+    home_frame = Frame(
+    status_bar,
+    bg="#005EB8",
+    width=120,
+    height=65
+    )
+
+    home_frame.pack(side=LEFT, fill=Y)
+
+    Button(
+        home_frame,
+        text="⌂",
+        font=("Segoe UI Symbol", 24),
+        fg="white",
+        bg="#005EB8",
+        command=show_welcome_page
+    ).place(relx=0, rely=0, relwidth=1, relheight=1)
+    
+    status1 = Frame(
+    status_bar,
+    bg="white",
+    width=220,
+    height=65,
+    highlightbackground="#D6DEE8",
+    highlightthickness=1
+)
+
+    status1.pack(side=LEFT)
+
+    Label(
+        status1,
+        text="🟢 SYSTEM STATUS",
+        font=("Segoe UI",9),
+        fg="#1F2937",
+        bg="white"
+    ).place(x=15,y=10)
+
+    Label(
+        status1,
+        text="READY",
+        font=("Segoe UI",10,"bold"),
+        fg="#16A34A",
+        bg="white"
+    ).place(x=15,y=35)
+    
+    status2 = Frame(
+    status_bar,
+    bg="white",
+    width=220,
+    height=65,
+    highlightbackground="#D6DEE8",
+    highlightthickness=1
+)
+
+    status2.pack(side=LEFT)
+
+    Label(
+        status2,
+        text="⚙ SIMULATION",
+        font=("Segoe UI",9),
+        fg="#1F2937",
+        bg="white"
+    ).place(x=15,y=10)
+
+    Label(
+        status2,
+        text="STOPPED",
+        font=("Segoe UI",10,"bold"),
+        fg="#374151",
+        bg="white"
+    ).place(x=15,y=35)
+    
+    status3 = Frame(
+    status_bar,
+    bg="white",
+    width=220,
+    height=65,
+    highlightbackground="#D6DEE8",
+    highlightthickness=1
+)
+
+    status3.pack(side=LEFT)
+
+    Label(
+        status3,
+        text="🔌 HARDWARE",
+        font=("Segoe UI",9),
+        fg="#1F2937",
+        bg="white"
+    ).place(x=15,y=10)
+
+    Label(
+        status3,
+        text="DISCONNECTED",
+        font=("Segoe UI",10,"bold"),
+        fg="#16A34A",
+        bg="white"
+    ).place(x=15,y=35)
+    
+    status4 = Frame(
+    status_bar,
+    bg="white",
+    width=220,
+    height=65,
+    highlightbackground="#D6DEE8",
+    highlightthickness=1
+)
+
+    status4.pack(side=LEFT)
+
+    Label(
+        status4,
+        text="🔔 ALARMS",
+        font=("Segoe UI",9),
+        fg="#1F2937",
+        bg="white"
+    ).place(x=15,y=10)
+
+    Label(
+        status4,
+        text="0 ACTIVE",
+        font=("Segoe UI",10,"bold"),
+        fg="#DC2626",
+        bg="white"
+    ).place(x=15,y=35)
+    
+    
+    
+    
+   
+    
+    time_label = Label(
+        status_bar,
+        bg="white",
+        fg="#1F2937",
+        font=("Segoe UI",11)
+    )
+
+    time_label.pack(side=RIGHT, padx=25)
+
+    def update_time():
+        now = datetime.now()
+
+        time_label.config(
+            text=now.strftime("%d/%m/%Y\n%I:%M:%S %p")
+        )
+
+        window.after(1000, update_time)
+
+    update_time()
     show_university_logo()
 
 

@@ -1,633 +1,441 @@
 Timestamp,Student Name,Student ID,Experiment Type,Result Data
-2026-05-10 00:43:02,Shahd Ahmed Mahboub,2201583,Login System,Student Verified & Entered Lab
-2026-05-10 00:43:03,Shahd Ahmed Mahboub,2201583,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-10 00:45:26,Passant salah ,12025,Login System,Student Verified & Entered Lab
-2026-05-10 00:45:28,Passant salah ,12025,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-10 00:46:19,Bassant Salah,2505300,Login System,Student Verified & Entered Lab
-2026-05-10 00:46:20,Bassant Salah,2505300,1. Forward Kinematics (FK),Experiment Started Successfully
-<<<<<<< HEAD
-2026-05-13 22:32:07,seif,22020037,Login System,Student Verified & Entered Lab
-2026-05-13 22:32:09,seif,22020037,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 22:33:31,seif,22020037,3. Trajectory Planning,Experiment Started Successfully
-2026-05-13 22:33:40,seif,22020037,3. Trajectory Planning,Experiment Started Successfully
-2026-05-13 22:33:44,seif,22020037,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-13 22:33:48,seif,22020037,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 22:58:52,k,2,Login System,Student Verified & Entered Lab
-2026-05-13 22:58:54,k,2,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 23:06:55,k,2,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 23:07:40,ss,3,Login System,Student Verified & Entered Lab
-2026-05-13 23:07:41,ss,3,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 23:15:49,s,s,Login System,Student Verified & Entered Lab
-2026-05-13 23:15:51,s,s,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 23:32:27,s,s,Login System,Student Verified & Entered Lab
-2026-05-13 23:32:28,s,s,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 23:34:26,s,4,Login System,Student Verified & Entered Lab
-2026-05-13 23:34:28,s,4,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-14 00:03:51,seifwael,22020037,Login System,Student Verified & Entered Lab
-2026-05-14 00:03:54,seifwael,22020037,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-14 00:13:02,s,s,Login System,Student Verified & Entered Lab
-2026-05-14 00:13:07,s,s,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-14 00:52:35,seifwael,22020037,Login System,Student Verified & Entered Lab
-2026-05-14 00:52:37,seifwael,22020037,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-14 00:52:45,s,s,Login System,Student Verified & Entered Lab
-2026-05-14 00:52:48,s,s,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-14 00:58:36,S,P,Login System,Student Verified & Entered Lab
-2026-05-14 00:58:37,S,P,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-24 15:53:33,2,2,Login System,Student Verified & Entered Lab
-2026-05-24 15:53:34,2,2,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-25 01:52:37,ss,ss,Login System,Student Verified & Entered Lab
-2026-05-25 01:52:39,ss,ss,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-25 01:53:47,seifwael,22020037,Login System,Student Verified & Entered Lab
-2026-05-25 01:53:49,seifwael,22020037,1. Forward Kinematics (FK),Experiment Started Successfully
-=======
-2026-05-12 21:06:32,bassant,220212,Login System,Student Verified & Entered Lab
-2026-05-12 21:06:35,bassant,220212,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-12 21:06:38,bassant,220212,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-12 21:30:17,bass,553+3,Login System,Student Verified & Entered Lab
-2026-05-12 21:30:18,bass,553+3,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-12 21:30:20,bass,553+3,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-12 21:35:01,b,53+,Login System,Student Verified & Entered Lab
-2026-05-12 21:35:02,b,53+,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-12 21:39:07,fgh,425,Login System,Student Verified & Entered Lab
-2026-05-12 21:39:08,fgh,425,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-12 21:47:02,maria,645,Login System,Student Verified & Entered Lab
-2026-05-12 21:47:03,maria,645,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-12 22:00:15,fcf,526,Login System,Student Verified & Entered Lab
-2026-05-12 22:00:16,fcf,526,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-12 22:00:30,fcf,526,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-12 22:04:22,frc,522,Login System,Student Verified & Entered Lab
-2026-05-12 22:04:25,frc,522,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-12 22:22:32,rgh,2521,Login System,Student Verified & Entered Lab
-2026-05-12 22:22:34,rgh,2521,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-12 22:28:12,gh,251,Login System,Student Verified & Entered Lab
-2026-05-12 22:28:14,gh,251,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-12 22:32:56,hn,20,Login System,Student Verified & Entered Lab
-2026-05-12 22:32:58,hn,20,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-12 22:33:34,hn,20,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-12 22:44:58,gfh,0505,Login System,Student Verified & Entered Lab
-2026-05-12 22:44:59,gfh,0505,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-12 22:48:52,tgr,515,Login System,Student Verified & Entered Lab
-2026-05-12 22:48:53,tgr,515,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-12 22:52:23,tgr,515,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-12 22:54:36,ggy,252,Login System,Student Verified & Entered Lab
-2026-05-12 22:54:37,ggy,252,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-12 22:57:17,tgbh,5241,Login System,Student Verified & Entered Lab
-2026-05-12 22:57:22,tgbh,5241,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-12 22:59:58,yvu,8525,Login System,Student Verified & Entered Lab
-2026-05-12 22:59:59,yvu,8525,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-12 23:03:49,yuj,5251,Login System,Student Verified & Entered Lab
-2026-05-12 23:03:49,yuj,5251,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-12 23:10:48,fgh,24,Login System,Student Verified & Entered Lab
-2026-05-12 23:10:49,fgh,24,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-12 23:11:45,ghfgb,240527,Login System,Student Verified & Entered Lab
-2026-05-12 23:11:46,ghfgb,240527,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-12 23:45:54,dyu,4417,Login System,Student Verified & Entered Lab
-2026-05-12 23:45:56,dyu,4417,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 15:24:45,fgh,525,Login System,Student Verified & Entered Lab
-2026-05-13 15:24:46,fgh,525,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 15:24:50,fgh,525,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-13 15:45:50,ghj,141541,Login System,Student Verified & Entered Lab
-2026-05-13 15:45:52,ghj,141541,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 15:57:50,tghgnhg,5282,Login System,Student Verified & Entered Lab
-2026-05-13 15:57:51,tghgnhg,5282,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 15:59:01,rvgvg,5266,Login System,Student Verified & Entered Lab
-2026-05-13 15:59:01,rvgvg,5266,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 16:18:50,rgtgh,5228182,Login System,Student Verified & Entered Lab
-2026-05-13 16:18:51,rgtgh,5228182,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 16:47:42,dfref,52263,Login System,Student Verified & Entered Lab
-2026-05-13 16:47:42,dfref,52263,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 16:55:52,erfrfr,522,Login System,Student Verified & Entered Lab
-2026-05-13 16:55:54,erfrfr,522,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 17:02:26,rgtg5yh,5216,Login System,Student Verified & Entered Lab
-2026-05-13 17:02:27,rgtg5yh,5216,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 17:07:55,gtftftv,58582,Login System,Student Verified & Entered Lab
-2026-05-13 17:07:56,gtftftv,58582,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 17:09:39,tgrtgt,411551,Login System,Student Verified & Entered Lab
-2026-05-13 17:09:40,tgrtgt,411551,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 17:14:58,fgbrhty,4181,Login System,Student Verified & Entered Lab
-2026-05-13 17:14:59,fgbrhty,4181,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 21:04:38,fghty,226,Login System,Student Verified & Entered Lab
-2026-05-13 21:04:40,fghty,226,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 21:07:28,rgthyt,2858,Login System,Student Verified & Entered Lab
-2026-05-13 21:07:29,rgthyt,2858,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 21:08:59,ery6y,855,Login System,Student Verified & Entered Lab
-2026-05-13 21:09:00,ery6y,855,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 21:23:29,ytjuj,85959,Login System,Student Verified & Entered Lab
-2026-05-13 21:23:30,ytjuj,85959,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 21:26:17,tyu,526,Login System,Student Verified & Entered Lab
-2026-05-13 21:26:17,tyu,526,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-13 21:31:33,gfytf,44,Login System,Student Verified & Entered Lab
-2026-05-13 21:31:33,gfytf,44,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-14 00:08:20,rg45,7585,Login System,Student Verified & Entered Lab
-2026-05-14 00:08:21,rg45,7585,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-25 21:30:21,bassant salah,22020018,Login System,Student Verified & Entered Lab
-2026-05-25 21:30:21,bassant salah,22020018,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-25 21:55:28,bassany,252,Login System,Student Verified & Entered Lab
-2026-05-25 21:55:28,bassany,252,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-25 22:02:23,korv,639,Login System,Student Verified & Entered Lab
-2026-05-25 22:02:33,hth,2518,Login System,Student Verified & Entered Lab
-2026-05-25 22:02:34,hth,2518,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-25 22:18:37,basdnh,5650,Login System,Student Verified & Entered Lab
-2026-05-25 22:18:38,basdnh,5650,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-25 22:20:11,edrgc,5261,Login System,Student Verified & Entered Lab
-2026-05-25 22:20:12,edrgc,5261,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-25 22:30:33,iibo,3526,Login System,Student Verified & Entered Lab
-2026-05-25 22:30:34,iibo,3526,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-25 23:06:20,yhvko,5261,Login System,Student Verified & Entered Lab
-2026-05-25 23:06:21,yhvko,5261,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-25 23:14:19,gik,626,Login System,Student Verified & Entered Lab
-2026-05-25 23:14:20,gik,626,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-25 23:20:22,efth,526,Login System,Student Verified & Entered Lab
-2026-05-25 23:20:23,efth,526,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-25 23:24:17,yud,569,Login System,Student Verified & Entered Lab
-2026-05-25 23:24:17,yud,569,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-25 23:28:41,buuc,629292,Login System,Student Verified & Entered Lab
-2026-05-25 23:28:42,buuc,629292,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-25 23:54:00,hvgt,5484,Login System,Student Verified & Entered Lab
-2026-05-25 23:54:00,hvgt,5484,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 00:02:33,bioiv,9693,Login System,Student Verified & Entered Lab
-2026-05-26 00:02:34,bioiv,9693,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 00:07:27,edfr,9692,Login System,Student Verified & Entered Lab
-2026-05-26 00:07:27,edfr,9692,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 00:10:47,efi,8595,Login System,Student Verified & Entered Lab
-2026-05-26 00:10:47,efi,8595,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 00:12:29,hguv,8596,Login System,Student Verified & Entered Lab
-2026-05-26 00:12:29,hguv,8596,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 00:16:57,uffjj,451126,Login System,Student Verified & Entered Lab
-2026-05-26 00:16:57,uffjj,451126,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 00:38:51,tuck,859,Login System,Student Verified & Entered Lab
-2026-05-26 00:38:52,tuck,859,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 00:58:43,ghy,526,Login System,Student Verified & Entered Lab
-2026-05-26 00:58:43,ghy,526,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 01:02:54,fyvhbhug,81959,Login System,Student Verified & Entered Lab
-2026-05-26 01:02:55,fyvhbhug,81959,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 01:08:21,hgch,5484,Login System,Student Verified & Entered Lab
-2026-05-26 01:08:21,hgch,5484,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 01:13:46,shahd Ahmed Mahboub,22020018,Login System,Student Verified & Entered Lab
-2026-05-26 01:14:03,shahd Ahmed Mahboub,22020018,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 01:15:02,hxuj,526,Login System,Student Verified & Entered Lab
-2026-05-26 01:15:03,hxuj,526,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 01:16:43,gzh,266,Login System,Student Verified & Entered Lab
-2026-05-26 01:16:44,gzh,266,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 01:17:13,huxj,59,Login System,Student Verified & Entered Lab
-2026-05-26 01:17:15,huxj,59,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 01:17:36,jo,*696,Login System,Student Verified & Entered Lab
-2026-05-26 01:17:37,jo,*696,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 13:28:54,bassant,526,Login System,Student Verified & Entered Lab
-2026-05-26 13:28:55,bassant,526,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 14:09:10,ybu,526,Login System,Student Verified & Entered Lab
-2026-05-26 14:09:11,ybu,526,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 14:36:02,gh,826,Login System,Student Verified & Entered Lab
-2026-05-26 14:36:03,gh,826,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 16:20:10,rtcu,82616,Login System,Student Verified & Entered Lab
-2026-05-26 16:20:11,rtcu,82616,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 16:37:08,bassant salah,22020018,Login System,Student Verified & Entered Lab
-2026-05-26 16:37:09,bassant salah,22020018,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 16:38:57,Bassant Salah,22020018,Login System,Student Verified & Entered Lab
-2026-05-26 16:38:58,Bassant Salah,22020018,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 16:39:58,vuu,263,Login System,Student Verified & Entered Lab
-2026-05-26 16:39:59,vuu,263,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 16:41:38,Bassant Salah,22020018,Login System,Student Verified & Entered Lab
-2026-05-26 16:41:38,Bassant Salah,22020018,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 17:39:47,hjyji,86,Login System,Student Verified & Entered Lab
-2026-05-26 17:39:49,hjyji,86,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 18:09:36,erhyj,526,Login System,Student Verified & Entered Lab
-2026-05-26 18:09:37,erhyj,526,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 18:09:38,erhyj,526,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 18:10:30,erhyj,526,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 18:16:59,rttv,5266,Login System,Student Verified & Entered Lab
-2026-05-26 18:17:00,rttv,5266,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 18:17:31,rttv,5266,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 18:19:36,fgyb,562,Login System,Student Verified & Entered Lab
-2026-05-26 18:19:37,fgyb,562,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 18:21:27,rtvy,539,Login System,Student Verified & Entered Lab
-2026-05-26 18:21:28,rtvy,539,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 18:28:14,chuj,516,Login System,Student Verified & Entered Lab
-2026-05-26 18:28:14,chuj,516,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 18:33:37,vjcuki,5152,Login System,Student Verified & Entered Lab
-2026-05-26 18:33:38,vjcuki,5152,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 18:43:47,hdhdfn,56541,Login System,Student Verified & Entered Lab
-2026-05-26 18:43:48,hdhdfn,56541,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 18:53:41,drhhj,242452,Login System,Student Verified & Entered Lab
-2026-05-26 18:53:43,drhhj,242452,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 18:54:07,ty,51,Login System,Student Verified & Entered Lab
-2026-05-26 18:55:49,ttfg,718,Login System,Student Verified & Entered Lab
-2026-05-26 18:56:00,ttfg,718,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 18:57:03,t t,14,Login System,Student Verified & Entered Lab
-2026-05-26 18:57:07,t t,14,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 18:58:25,ect,47,Login System,Student Verified & Entered Lab
-2026-05-26 18:58:25,ect,47,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 19:00:09,ytb,52,Login System,Student Verified & Entered Lab
-2026-05-26 19:00:10,ytb,52,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 19:14:35,dt,25,Login System,Student Verified & Entered Lab
-2026-05-26 19:14:36,dt,25,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 21:10:32,df,522,Login System,Student Verified & Entered Lab
-2026-05-26 21:10:33,df,522,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 21:24:21,ygf,5484,Login System,Student Verified & Entered Lab
-2026-05-26 21:24:22,ygf,5484,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 22:17:59,ggg,555,Login System,Student Verified & Entered Lab
-2026-05-26 22:18:00,ggg,555,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 22:35:11,gc,51,Login System,Student Verified & Entered Lab
-2026-05-26 22:35:11,gc,51,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 22:42:47,ggff,822,Login System,Student Verified & Entered Lab
-2026-05-26 22:42:48,ggff,822,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 22:50:58,hhyh,5566,Login System,Student Verified & Entered Lab
-2026-05-26 22:50:59,hhyh,5566,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 23:12:55,wedd,5636,Login System,Student Verified & Entered Lab
-2026-05-26 23:12:55,wedd,5636,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 23:50:06,gn,2959,Login System,Student Verified & Entered Lab
-2026-05-26 23:50:07,gn,2959,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 23:52:07,xb,5162,Login System,Student Verified & Entered Lab
-2026-05-26 23:52:07,xb,5162,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-26 23:52:14,xb,5162,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-26 23:52:16,xb,5162,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 01:05:23,xb,5162,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-27 01:06:36,hygy,4484,Login System,Student Verified & Entered Lab
-2026-05-27 01:06:37,hygy,4484,1. Forward Kinematics (FK),Experiment Started Successfully
->>>>>>> 1bc9bdb (h2)
-2026-05-27 01:47:27,fgtg,5262,Login System,Student Verified & Entered Lab
-2026-05-27 01:47:28,fgtg,5262,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-27 01:49:46,t gtyh,582,Login System,Student Verified & Entered Lab
-2026-05-27 01:49:47,t gtyh,582,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-27 01:49:54,t gtyh,582,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 16:06:22,dcd,5252,Login System,Student Verified & Entered Lab
-2026-05-27 16:06:23,dcd,5252,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-27 16:08:51,cg,252,Login System,Student Verified & Entered Lab
-2026-05-27 16:08:51,cg,252,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-27 16:10:54,rhy,25,Login System,Student Verified & Entered Lab
-2026-05-27 16:10:55,rhy,25,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-27 16:13:16,b yj,78,Login System,Student Verified & Entered Lab
-2026-05-27 16:13:16,b yj,78,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 16:28:36,gggggggb,525,Login System,Student Verified & Entered Lab
-2026-05-27 16:28:37,gggggggb,525,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-27 16:29:21,gggggggb,525,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 17:15:25,bubj,15252,Login System,Student Verified & Entered Lab
-2026-05-27 17:15:26,bubj,15252,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-27 17:15:29,bubj,15252,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-27 17:15:41,bubj,15252,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 17:36:27,fg,56,Login System,Student Verified & Entered Lab
-2026-05-27 17:36:27,fg,56,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 17:42:39,vhv,52,Login System,Student Verified & Entered Lab
-2026-05-27 17:42:40,vhv,52,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 17:42:43,vhv,52,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 18:05:11,rt h,826,Login System,Student Verified & Entered Lab
-2026-05-27 18:05:12,rt h,826,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 18:10:53,gvvg,525,Login System,Student Verified & Entered Lab
-2026-05-27 18:10:56,gvvg,525,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 18:15:35,yhcy,269,Login System,Student Verified & Entered Lab
-2026-05-27 18:15:36,yhcy,269,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 18:32:45,cthy,15,Login System,Student Verified & Entered Lab
-2026-05-27 18:32:45,cthy,15,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 18:44:52,vjjjcj,81515,Login System,Student Verified & Entered Lab
-2026-05-27 18:44:52,vjjjcj,81515,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 18:48:06,bggug,584,Login System,Student Verified & Entered Lab
-2026-05-27 18:48:22,bggug,584,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 18:54:51,bhgyg,2655,Login System,Student Verified & Entered Lab
-2026-05-27 18:54:51,bhgyg,2655,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 19:26:28,rxgt,95,Login System,Student Verified & Entered Lab
-2026-05-27 19:26:29,rxgt,95,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 19:39:42,fff,555,Login System,Student Verified & Entered Lab
-2026-05-27 19:39:43,fff,555,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 19:45:12,ggg,52,Login System,Student Verified & Entered Lab
-2026-05-27 19:45:13,ggg,52,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 21:00:30,nnn,555,Login System,Student Verified & Entered Lab
-2026-05-27 21:00:30,nnn,555,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 21:05:13,hh,52,Login System,Student Verified & Entered Lab
-2026-05-27 21:05:14,hh,52,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 21:17:34,ggg,555,Login System,Student Verified & Entered Lab
-2026-05-27 21:17:35,ggg,555,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 21:19:08,ddd,552,Login System,Student Verified & Entered Lab
-2026-05-27 21:19:09,ddd,552,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 21:19:17,ddd,552,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-27 21:20:51,kk,33,Login System,Student Verified & Entered Lab
-2026-05-27 21:20:52,kk,33,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 21:21:18,kk,33,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-27 21:22:28,un,25,Login System,Student Verified & Entered Lab
-2026-05-27 21:22:30,un,25,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-27 21:22:44,un,25,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 21:22:49,un,25,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-27 21:26:27,nn,55,Login System,Student Verified & Entered Lab
-2026-05-27 21:26:27,nn,55,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 21:26:33,nn,55,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-27 21:28:38,hhh,111,Login System,Student Verified & Entered Lab
-2026-05-27 21:28:38,hhh,111,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 21:28:46,hhh,111,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-27 21:29:01,hhh,111,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 22:27:01,ddd,144,Login System,Student Verified & Entered Lab
-2026-05-27 22:27:04,ddd,144,3. Pick and Place Control,Experiment Started Successfully
-2026-05-27 22:27:47,dd,111,Login System,Student Verified & Entered Lab
-2026-05-27 22:27:48,dd,111,3. Pick and Place Control,Experiment Started Successfully
-2026-05-27 22:31:58,ccc,111,Login System,Student Verified & Entered Lab
-2026-05-27 22:31:59,ccc,111,3. Pick and Place Control,Experiment Started Successfully
-2026-05-27 22:48:06,cc,11,Login System,Student Verified & Entered Lab
-2026-05-27 22:48:08,cc,11,3. Pick and Place Control,Experiment Started Successfully
-2026-05-27 23:03:01,hjh,120,Login System,Student Verified & Entered Lab
-2026-05-27 23:03:02,hjh,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-27 23:08:26,vh,152,Login System,Student Verified & Entered Lab
-2026-05-27 23:08:31,vh,152,3. Pick and Place Control,Experiment Started Successfully
-2026-05-27 23:08:49,vh,152,3. Pick and Place Control,Experiment Started Successfully
-2026-05-27 23:22:42,hg,125,Login System,Student Verified & Entered Lab
-2026-05-27 23:22:43,hg,125,3. Pick and Place Control,Experiment Started Successfully
-2026-05-27 23:40:15,cvf,120,Login System,Student Verified & Entered Lab
-2026-05-27 23:40:16,cvf,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-27 23:43:51,cvf,120,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 23:44:22,cvf,120,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-27 23:53:50,bgg,120,Login System,Student Verified & Entered Lab
-2026-05-27 23:53:51,bgg,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-27 23:54:43,bgg,120,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-27 23:55:07,bgg,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-28 00:06:36,bgfh,81,Login System,Student Verified & Entered Lab
-2026-05-28 00:06:37,bgfh,81,3. Pick and Place Control,Experiment Started Successfully
-2026-05-28 00:35:15,bbb,120,Login System,Student Verified & Entered Lab
-2026-05-28 00:35:16,bbb,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-28 00:40:15,cvv,120,Login System,Student Verified & Entered Lab
-2026-05-28 00:40:16,cvv,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-29 16:13:52,bassant,2535,Login System,Student Verified & Entered Lab
-2026-05-29 16:13:58,bassant,2535,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-29 16:14:28,jhde,546,Login System,Student Verified & Entered Lab
-2026-05-29 16:14:29,jhde,546,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-29 16:15:36,ytyt,852,Login System,Student Verified & Entered Lab
-2026-05-29 16:15:37,ytyt,852,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-29 16:16:04,xd,54,Login System,Student Verified & Entered Lab
-2026-05-29 16:16:05,xd,54,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-29 16:33:41,gh,525,Login System,Student Verified & Entered Lab
-2026-05-29 16:33:43,gh,525,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-29 16:34:37,gh,525,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-29 16:36:20,gh,525,3. Pick and Place Control,Experiment Started Successfully
-2026-05-29 20:38:01,bassant,63,Login System,Student Verified & Entered Lab
-2026-05-29 20:38:02,bassant,63,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-29 21:06:28,bassant,63,3. Pick and Place Control,Experiment Started Successfully
-2026-05-29 21:14:29,bass,120,Login System,Student Verified & Entered Lab
-2026-05-29 21:14:31,bass,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-29 21:14:51,bass,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-29 21:22:41,vbg,120,Login System,Student Verified & Entered Lab
-2026-05-29 21:22:42,vbg,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-29 21:27:43,cccc,1512,Login System,Student Verified & Entered Lab
-2026-05-29 21:27:44,cccc,1512,3. Pick and Place Control,Experiment Started Successfully
-2026-05-29 21:43:45,gng,20,Login System,Student Verified & Entered Lab
-2026-05-29 21:43:45,gng,20,3. Pick and Place Control,Experiment Started Successfully
-2026-05-29 21:51:22,vvvv,120,Login System,Student Verified & Entered Lab
-2026-05-29 21:51:23,vvvv,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-29 23:14:42,ggg,333,Login System,Student Verified & Entered Lab
-2026-05-29 23:14:43,ggg,333,3. Pick and Place Control,Experiment Started Successfully
-2026-05-29 23:18:35,bassant,120,Login System,Student Verified & Entered Lab
-2026-05-29 23:18:37,bassant,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-29 23:26:02,bassant,120,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-05-29 23:38:54,basssant,120,Login System,Student Verified & Entered Lab
-2026-05-29 23:38:58,basssant,120,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-05-30 01:25:14,bgf,120,Login System,Student Verified & Entered Lab
-2026-05-30 01:25:15,bgf,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 01:42:14,cvvv,120,Login System,Student Verified & Entered Lab
-2026-05-30 01:42:15,cvvv,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 01:51:59,ddv,120,Login System,Student Verified & Entered Lab
-2026-05-30 01:51:59,ddv,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 01:54:07,dd,120,Login System,Student Verified & Entered Lab
-2026-05-30 01:54:07,dd,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 01:58:34,bassant,120,Login System,Student Verified & Entered Lab
-2026-05-30 01:58:35,bassant,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 02:02:03,bbb,120,Login System,Student Verified & Entered Lab
-2026-05-30 02:02:03,bbb,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 02:04:37,aaa,120,Login System,Student Verified & Entered Lab
-2026-05-30 02:04:38,aaa,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 02:07:13,bg,12,Login System,Student Verified & Entered Lab
-2026-05-30 02:07:14,bg,12,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 02:09:48,bbb,120,Login System,Student Verified & Entered Lab
-2026-05-30 02:09:49,bbb,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 02:22:45,bass,100,Login System,Student Verified & Entered Lab
-2026-05-30 02:22:46,bass,100,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 02:26:43,vvv,120,Login System,Student Verified & Entered Lab
-2026-05-30 02:26:44,vvv,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 02:28:42,bb,120,Login System,Student Verified & Entered Lab
-2026-05-30 02:28:43,bb,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 02:35:38,bass,120,Login System,Student Verified & Entered Lab
-2026-05-30 02:35:38,bass,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 02:40:34,ddd,120,Login System,Student Verified & Entered Lab
-2026-05-30 02:40:35,ddd,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 02:43:43,vvv,120,Login System,Student Verified & Entered Lab
-2026-05-30 02:43:44,vvv,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 02:48:04,dddd,120,Login System,Student Verified & Entered Lab
-2026-05-30 02:48:04,dddd,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 02:49:48,sss,2222,Login System,Student Verified & Entered Lab
-2026-05-30 02:49:49,sss,2222,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 02:57:50,fff,120,Login System,Student Verified & Entered Lab
-2026-05-30 02:57:51,fff,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 03:02:53,vvv,120,Login System,Student Verified & Entered Lab
-2026-05-30 03:02:54,vvv,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 03:09:35,bbb,120,Login System,Student Verified & Entered Lab
-2026-05-30 03:09:35,bbb,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 03:10:16,hhh,120,Login System,Student Verified & Entered Lab
-2026-05-30 03:10:17,hhh,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 03:10:49,bbbb,120,Login System,Student Verified & Entered Lab
-2026-05-30 03:10:50,bbbb,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 03:16:03,fff,120,Login System,Student Verified & Entered Lab
-2026-05-30 03:16:03,fff,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-30 15:41:05,vvv,120,Login System,Student Verified & Entered Lab
-2026-05-30 15:41:06,vvv,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-31 03:12:32,vvvv,12220,Login System,Student Verified & Entered Lab
-2026-05-31 03:12:33,vvvv,12220,3. Pick and Place Control,Experiment Started Successfully
-2026-05-31 03:14:09,vvvv,1220,Login System,Student Verified & Entered Lab
-2026-05-31 03:14:10,vvvv,1220,3. Pick and Place Control,Experiment Started Successfully
-2026-05-31 03:18:08,vv,120,Login System,Student Verified & Entered Lab
-2026-05-31 03:18:09,vv,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-31 03:19:15,ccc,120,Login System,Student Verified & Entered Lab
-2026-05-31 03:19:15,ccc,120,3. Pick and Place Control,Experiment Started Successfully
-2026-05-31 17:12:41,ccccc,122220,Login System,Student Verified & Entered Lab
-2026-05-31 17:12:42,ccccc,122220,3. Pick and Place Control,Experiment Started Successfully
-2026-05-31 17:21:10,bbbb,12220,Login System,Student Verified & Entered Lab
-2026-05-31 17:21:11,bbbb,12220,3. Pick and Place Control,Experiment Started Successfully
-2026-05-31 17:25:08,ccccc,1111,Login System,Student Verified & Entered Lab
-2026-05-31 17:25:08,ccccc,1111,3. Pick and Place Control,Experiment Started Successfully
-2026-05-31 17:28:35,vvvv,12200,Login System,Student Verified & Entered Lab
-2026-05-31 17:28:36,vvvv,12200,3. Pick and Place Control,Experiment Started Successfully
-2026-05-31 17:33:07,bbbbbb,122220,Login System,Student Verified & Entered Lab
-2026-05-31 17:33:08,bbbbbb,122220,3. Pick and Place Control,Experiment Started Successfully
-2026-05-31 17:40:35,vvvv,1222220,Login System,Student Verified & Entered Lab
-2026-05-31 17:40:35,vvvv,1222220,3. Pick and Place Control,Experiment Started Successfully
-2026-05-31 17:56:59,nnnn,12222000,Login System,Student Verified & Entered Lab
-2026-05-31 17:57:00,nnnn,12222000,4. Torque & Forces,Experiment Started Successfully
-2026-05-31 17:59:59,vvvvv,12220,Login System,Student Verified & Entered Lab
-2026-05-31 18:00:00,vvvvv,12220,4. Torque & Forces,Experiment Started Successfully
-2026-05-31 18:00:12,vvvvv,12220,4. Torque & Forces,Experiment Started Successfully
-2026-05-31 18:00:22,bbbb,120,Login System,Student Verified & Entered Lab
-2026-05-31 18:00:23,bbbb,120,4. Torque & Forces,Experiment Started Successfully
-2026-05-31 18:06:54,bbbbb,1222220,Login System,Student Verified & Entered Lab
-2026-05-31 18:06:55,bbbbb,1222220,4. Torque & Forces,Experiment Started Successfully
-2026-05-31 18:57:21,vvvv,120,Login System,Student Verified & Entered Lab
-2026-05-31 18:57:22,vvvv,120,4. Torque & Forces,Experiment Started Successfully
-2026-05-31 19:01:42,mmm,120,Login System,Student Verified & Entered Lab
-2026-05-31 19:01:43,mmm,120,4. Torque & Forces,Experiment Started Successfully
-2026-05-31 19:01:51,mmm,120,4. Torque & Forces,Experiment Started Successfully
-2026-05-31 19:14:57,vvvv,122220,Login System,Student Verified & Entered Lab
-2026-05-31 19:14:58,vvvv,122220,4. Torque & Forces,Experiment Started Successfully
-2026-05-31 19:18:42,ccccc,1222220,Login System,Student Verified & Entered Lab
-2026-05-31 19:18:43,ccccc,1222220,4. Torque & Forces,Experiment Started Successfully
-2026-05-31 19:19:15,bbbbb,112220,Login System,Student Verified & Entered Lab
-2026-05-31 19:19:15,bbbbb,112220,4. Torque & Forces,Experiment Started Successfully
-2026-05-31 19:22:03,ccccc,12220,Login System,Student Verified & Entered Lab
-2026-05-31 19:22:04,ccccc,12220,4. Torque & Forces,Experiment Started Successfully
-2026-05-31 19:25:58,bbbb,122220,Login System,Student Verified & Entered Lab
-2026-05-31 19:25:59,bbbb,122220,4. Torque & Forces,Experiment Started Successfully
-2026-05-31 19:28:52,vvvvv,122220,Login System,Student Verified & Entered Lab
-2026-05-31 19:28:52,vvvvv,122220,4. Torque & Forces,Experiment Started Successfully
-2026-05-31 19:31:43,vvvv,1222220,Login System,Student Verified & Entered Lab
-2026-05-31 19:31:44,vvvv,1222220,4. Torque & Forces,Experiment Started Successfully
-2026-05-31 19:34:36,bbbb,122220,Login System,Student Verified & Entered Lab
-2026-05-31 19:34:37,bbbb,122220,4. Torque & Forces,Experiment Started Successfully
-2026-05-31 19:37:43,cccc,12220,Login System,Student Verified & Entered Lab
-2026-05-31 19:37:44,cccc,12220,4. Torque & Forces,Experiment Started Successfully
-2026-05-31 19:40:00,vvvvv,122258,Login System,Student Verified & Entered Lab
-2026-05-31 19:40:00,vvvvv,122258,4. Torque & Forces,Experiment Started Successfully
-2026-06-01 15:52:08,cccc,1200,Login System,Student Verified & Entered Lab
-2026-06-01 15:52:09,cccc,1200,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-06-01 16:15:18,ccc,12000,Login System,Student Verified & Entered Lab
-2026-06-01 16:15:20,ccc,12000,4. Torque & Forces,Experiment Started Successfully
-2026-06-01 16:15:52,cccc,1200,Login System,Student Verified & Entered Lab
-2026-06-01 16:16:32,cccc,1200,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-06-01 17:30:24,bbbb,12220,Login System,Student Verified & Entered Lab
-2026-06-01 17:30:25,bbbb,12220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-01 17:33:37,bbbb,1222220,Login System,Student Verified & Entered Lab
-2026-06-01 17:33:38,bbbb,1222220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-01 17:58:15,bbbbbb,1222220,Login System,Student Verified & Entered Lab
-2026-06-01 17:58:15,bbbbbb,1222220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-01 18:28:24,bbbbbb,122220,Login System,Student Verified & Entered Lab
-2026-06-01 18:28:25,bbbbbb,122220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-01 18:50:42,cccc,1220,Login System,Student Verified & Entered Lab
-2026-06-01 18:50:43,cccc,1220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-01 21:19:45,ccccc,122220,Login System,Student Verified & Entered Lab
-2026-06-01 21:19:46,ccccc,122220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 15:04:18,vvvvv,1222220,Login System,Student Verified & Entered Lab
-2026-06-02 15:04:19,vvvvv,1222220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 15:09:14,vvv,12220,Login System,Student Verified & Entered Lab
-2026-06-02 15:09:15,vvv,12220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 15:14:59,vvv,122220,Login System,Student Verified & Entered Lab
-2026-06-02 15:14:59,vvv,122220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 15:26:48,bbbb,122220,Login System,Student Verified & Entered Lab
-2026-06-02 15:26:49,bbbb,122220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 15:28:12,vvvb,122220,Login System,Student Verified & Entered Lab
-2026-06-02 15:28:13,vvvb,122220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 15:34:06,vvvb,122220,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-06-02 15:39:45,vvvb,122220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 15:51:53,vvvv,12220,Login System,Student Verified & Entered Lab
-2026-06-02 15:51:54,vvvv,12220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 16:03:10,vvvvv,12220,Login System,Student Verified & Entered Lab
-2026-06-02 16:03:11,vvvvv,12220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 16:03:51,cccc,1220,Login System,Student Verified & Entered Lab
-2026-06-02 16:03:52,cccc,1220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 16:04:47,bbbb,122220,Login System,Student Verified & Entered Lab
-2026-06-02 16:04:47,bbbb,122220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 16:06:32,vvvvvv,12220,Login System,Student Verified & Entered Lab
-2026-06-02 16:06:32,vvvvvv,12220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 16:13:39,vvvvv,12222,Login System,Student Verified & Entered Lab
-2026-06-02 16:13:40,vvvvv,12222,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 16:14:50,ccccc,122222000,Login System,Student Verified & Entered Lab
-2026-06-02 16:14:50,ccccc,122222000,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 16:26:53,vvvvv,122220,Login System,Student Verified & Entered Lab
-2026-06-02 16:26:55,vvvvv,122220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 16:40:07,vvvvv,122220,Login System,Student Verified & Entered Lab
-2026-06-02 16:40:08,vvvvv,122220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 16:43:20,vvv,12220,Login System,Student Verified & Entered Lab
-2026-06-02 16:43:21,vvv,12220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 16:45:20,ccccc,122220,Login System,Student Verified & Entered Lab
-2026-06-02 16:45:21,ccccc,122220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 16:46:46,basss,1220,Login System,Student Verified & Entered Lab
-2026-06-02 16:46:46,basss,1220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 16:47:00,basss,1220,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-06-02 16:57:01,vvvvv,122220,Login System,Student Verified & Entered Lab
-2026-06-02 16:57:02,vvvvv,122220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 17:00:40,vvvv,12220,Login System,Student Verified & Entered Lab
-2026-06-02 17:00:40,vvvv,12220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 17:02:04,bbbbb,12220,Login System,Student Verified & Entered Lab
-2026-06-02 17:02:04,bbbbb,12220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 17:03:14,bbbbb,1222220,Login System,Student Verified & Entered Lab
-2026-06-02 17:03:15,bbbbb,1222220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 17:04:28,ccccc,122220,Login System,Student Verified & Entered Lab
-2026-06-02 17:04:29,ccccc,122220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 17:08:04,fffff,122220,Login System,Student Verified & Entered Lab
-2026-06-02 17:08:05,fffff,122220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 17:08:45,hhhh,12220,Login System,Student Verified & Entered Lab
-2026-06-02 17:08:46,hhhh,12220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 17:15:33,vvvvv,12220,Login System,Student Verified & Entered Lab
-2026-06-02 17:15:34,vvvvv,12220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 17:16:49,ccccc,122220,Login System,Student Verified & Entered Lab
-2026-06-02 17:16:49,ccccc,122220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 17:17:27,bbbbb,122220,Login System,Student Verified & Entered Lab
-2026-06-02 17:17:27,bbbbb,122220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 18:19:27,bbbbb,2222222,Login System,Student Verified & Entered Lab
-2026-06-02 18:19:27,bbbbb,2222222,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-02 18:21:12,cccccc,122220,Login System,Student Verified & Entered Lab
-2026-06-02 18:21:12,cccccc,122220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-03 19:58:35,bbb,122220,Login System,Student Verified & Entered Lab
-2026-06-03 19:58:37,bbb,122220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-03 20:14:48,bbb,122220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-03 21:10:23,cccc,12220,Login System,Student Verified & Entered Lab
-2026-06-03 21:10:24,cccc,12220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-03 21:10:32,cccc,12220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-03 21:21:15,xxxx,12220,Login System,Student Verified & Entered Lab
-2026-06-03 21:21:16,xxxx,12220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-03 21:22:21,cccc,1222220,Login System,Student Verified & Entered Lab
-2026-06-03 21:22:22,cccc,1222220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-03 21:24:20,vvvv,1220,Login System,Student Verified & Entered Lab
-2026-06-03 21:24:21,vvvv,1220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-03 21:25:16,bbbb,12220,Login System,Student Verified & Entered Lab
-2026-06-03 21:25:17,bbbb,12220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-04 16:24:48,vvvvv,12220,Login System,Student Verified & Entered Lab
-2026-06-04 16:24:49,vvvvv,12220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-06 21:24:20,jhgyg,4522,Login System,Student Verified & Entered Lab
-2026-06-06 21:24:22,jhgyg,4522,3. Pick and Place Control,Experiment Started Successfully
-2026-06-06 21:25:29,bhbbub,2151515,Login System,Student Verified & Entered Lab
-2026-06-06 21:25:30,bhbbub,2151515,3. Pick and Place Control,Experiment Started Successfully
-2026-06-06 21:28:37,bbb,12222,Login System,Student Verified & Entered Lab
-2026-06-06 21:28:38,bbb,12222,3. Pick and Place Control,Experiment Started Successfully
-2026-06-06 22:24:58,ddddd,122220,Login System,Student Verified & Entered Lab
-2026-06-06 22:24:59,ddddd,122220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-06 22:26:26,vvvvv,1220,Login System,Student Verified & Entered Lab
-2026-06-06 22:26:27,vvvvv,1220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-06 22:34:12,bbbb,122220,Login System,Student Verified & Entered Lab
-2026-06-06 22:34:12,bbbb,122220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-06 22:35:47,vvvv,12222,Login System,Student Verified & Entered Lab
-2026-06-06 22:35:48,vvvv,12222,3. Pick and Place Control,Experiment Started Successfully
-2026-06-06 22:37:08,hhhh,12220,Login System,Student Verified & Entered Lab
-2026-06-06 22:37:08,hhhh,12220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-06 22:38:39,bbbb,12220,Login System,Student Verified & Entered Lab
-2026-06-06 22:38:40,bbbb,12220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-06 22:41:41,bbbb,122220,Login System,Student Verified & Entered Lab
-2026-06-06 22:41:42,bbbb,122220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-06 23:36:27,cccc,12220,Login System,Student Verified & Entered Lab
-2026-06-06 23:36:27,cccc,12220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-06 23:42:10,cccc,12220,Login System,Student Verified & Entered Lab
-2026-06-06 23:42:11,cccc,12220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-06 23:48:03,vvvvv,12220,Login System,Student Verified & Entered Lab
-2026-06-06 23:48:04,vvvvv,12220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-07 00:04:02,bbbb,122220,Login System,Student Verified & Entered Lab
-2026-06-07 00:04:03,bbbb,122220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-07 00:48:47,bbbb,1220,Login System,Student Verified & Entered Lab
-2026-06-07 00:48:48,bbbb,1220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-07 01:08:20,bbbbbbbb,1220,Login System,Student Verified & Entered Lab
-2026-06-07 01:08:21,bbbbbbbb,1220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-07 03:18:56,bbbb,12220,Login System,Student Verified & Entered Lab
-2026-06-07 03:18:57,bbbb,12220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-07 03:28:11,tbbbbb,1222220,Login System,Student Verified & Entered Lab
-2026-06-07 03:28:11,tbbbbb,1222220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-07 03:39:36,ccccc,122220,Login System,Student Verified & Entered Lab
-2026-06-07 03:39:37,ccccc,122220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-07 03:41:18,cccc,12220,Login System,Student Verified & Entered Lab
-2026-06-07 03:41:19,cccc,12220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-07 03:43:47,vvvv,12220,Login System,Student Verified & Entered Lab
-2026-06-07 03:43:48,vvvv,12220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-07 03:46:36,vvvv,12220,2. Inverse Kinematics (IK),Experiment Started Successfully
-2026-06-07 03:58:18,cccc,1222220,Login System,Student Verified & Entered Lab
-2026-06-07 03:58:18,cccc,1222220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-07 04:05:58,ccccc,122220,Login System,Student Verified & Entered Lab
-2026-06-07 04:05:58,ccccc,122220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-07 04:22:21,cccc,122220,Login System,Student Verified & Entered Lab
-2026-06-07 04:22:21,cccc,122220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-07 04:25:46,ccccc,1222220,Login System,Student Verified & Entered Lab
-2026-06-07 04:25:47,ccccc,1222220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-07 04:26:42,cccc,122220,Login System,Student Verified & Entered Lab
-2026-06-07 04:26:42,cccc,122220,3. Pick and Place Control,Experiment Started Successfully
-2026-06-07 04:36:46,ccc,1220,Login System,Student Verified & Entered Lab
-2026-06-07 04:36:47,ccc,1220,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-06-07 04:48:11,vvvvv,122220,Login System,Student Verified & Entered Lab
-2026-06-07 04:48:12,vvvvv,122220,1. Forward Kinematics (FK),Experiment Started Successfully
-2026-06-07 05:00:28,vvvv,122220,Login System,Student Verified & Entered Lab
-2026-06-07 05:00:29,vvvv,122220,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-12 04:04:59,rger,2572752,Login System,Student Verified & Entered Lab
+2026-06-12 04:05:00,rger,2572752,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-12 04:09:26,ffdbdb,525257,Login System,Student Verified & Entered Lab
+2026-06-12 04:09:26,ffdbdb,525257,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-12 04:10:44,hjytjy,572752,Login System,Student Verified & Entered Lab
+2026-06-12 04:10:45,hjytjy,572752,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-12 04:11:19,ggbgfbgf,752752752,Login System,Student Verified & Entered Lab
+2026-06-12 04:11:20,ggbgfbgf,752752752,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-12 13:19:24,hryjt,57278,Login System,Student Verified & Entered Lab
+2026-06-12 13:19:25,hryjt,57278,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-12 13:22:16,hghg,52782,Login System,Student Verified & Entered Lab
+2026-06-12 13:22:16,hghg,52782,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-12 13:22:43,yuykyuk,2393,Login System,Student Verified & Entered Lab
+2026-06-12 13:22:44,yuykyuk,2393,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-12 13:23:09,vngnghg,686378,Login System,Student Verified & Entered Lab
+2026-06-12 13:23:09,vngnghg,686378,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-12 13:23:39,fefggtrg,7522,Login System,Student Verified & Entered Lab
+2026-06-12 13:23:40,fefggtrg,7522,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-12 13:34:11,thtytn,752752,Login System,Student Verified & Entered Lab
+2026-06-12 13:34:12,thtytn,752752,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-12 13:44:31,gbrgbrgb,75252,Login System,Student Verified & Entered Lab
+2026-06-12 13:44:31,gbrgbrgb,75252,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-12 13:45:26,vffg,425,Login System,Student Verified & Entered Lab
+2026-06-12 13:45:26,vffg,425,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-12 13:51:23,vfbgbrg,86863,Login System,Student Verified & Entered Lab
+2026-06-12 13:51:23,vfbgbrg,86863,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-12 13:52:00,vfbgbrg,86863,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-12 13:52:08,vfbgbrg,86863,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-13 00:41:02,ytyu,78578,Login System,Student Verified & Entered Lab
+2026-06-13 00:41:04,ytyu,78578,3. Pick and Place Control,Experiment Started Successfully
+2026-06-13 01:17:26,yjtyjytj,563636,Login System,Student Verified & Entered Lab
+2026-06-13 01:17:26,yjtyjytj,563636,3. Pick and Place Control,Experiment Started Successfully
+2026-06-13 01:20:19,gfghh,527525,Login System,Student Verified & Entered Lab
+2026-06-13 01:20:20,gfghh,527525,3. Pick and Place Control,Experiment Started Successfully
+2026-06-13 01:21:27,bffbg,525,Login System,Student Verified & Entered Lab
+2026-06-13 01:21:27,bffbg,525,3. Pick and Place Control,Experiment Started Successfully
+2026-06-13 01:23:06,fgrgrtg,58363,Login System,Student Verified & Entered Lab
+2026-06-13 01:23:06,fgrgrtg,58363,3. Pick and Place Control,Experiment Started Successfully
+2026-06-13 01:24:46,thhyh,752862,Login System,Student Verified & Entered Lab
+2026-06-13 01:24:47,thhyh,752862,3. Pick and Place Control,Experiment Started Successfully
+2026-06-13 01:29:10,hhythyth,///5,Login System,Student Verified & Entered Lab
+2026-06-13 01:29:10,hhythyth,///5,3. Pick and Place Control,Experiment Started Successfully
+2026-06-13 01:39:37,gfgfvg,626,Login System,Student Verified & Entered Lab
+2026-06-13 01:39:38,gfgfvg,626,3. Pick and Place Control,Experiment Started Successfully
+2026-06-13 01:40:38,hghv,546,Login System,Student Verified & Entered Lab
+2026-06-13 01:40:39,hghv,546,3. Pick and Place Control,Experiment Started Successfully
+2026-06-13 01:42:32,ui i,587578,Login System,Student Verified & Entered Lab
+2026-06-13 01:42:33,ui i,587578,3. Pick and Place Control,Experiment Started Successfully
+2026-06-13 01:46:31,iyki,8,Login System,Student Verified & Entered Lab
+2026-06-13 01:46:32,iyki,8,3. Pick and Place Control,Experiment Started Successfully
+2026-06-13 10:48:37,bgfhgh,4\4\,Login System,Student Verified & Entered Lab
+2026-06-13 10:48:39,bgfhgh,4\4\,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-13 10:54:09,ghyjty,5252,Login System,Student Verified & Entered Lab
+2026-06-13 10:54:10,ghyjty,5252,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-13 10:57:28,ghyjty,5252,3. Pick and Place Control,Experiment Started Successfully
+2026-06-13 11:16:10,gyuu,8555,Login System,Student Verified & Entered Lab
+2026-06-13 11:31:52,gyuu,8555,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 11:34:32,Marina,20200167,Login System,Student Verified & Entered Lab
+2026-06-13 11:34:33,Marina,20200167,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 12:56:40,hanen ahmed hamed,14120,Login System,Student Verified & Entered Lab
+2026-06-13 12:56:44,hanen ahmed hamed,14120,4. Torque & Forces,Experiment Started Successfully
+2026-06-13 12:56:55,hanen ahmed hamed,14120,3. Pick and Place Control,Experiment Started Successfully
+2026-06-13 12:59:40,hanen ahmed hamed,14120,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-13 13:00:21,hanen ahmed hamed,14120,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 13:02:15,Haneen Ahmed Hamed,2220220,Login System,Student Verified & Entered Lab
+2026-06-13 13:02:16,Haneen Ahmed Hamed,2220220,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 13:17:14,bassant,122220,Login System,Student Verified & Entered Lab
+2026-06-13 13:17:15,bassant,122220,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 13:24:00,gggg,111,Login System,Student Verified & Entered Lab
+2026-06-13 13:24:07,gggg,111,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 13:27:07,seif,111111,Login System,Student Verified & Entered Lab
+2026-06-13 13:27:08,seif,111111,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 13:29:11,seif,111111,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-13 13:36:50,seif,111111,3. Pick and Place Control,Experiment Started Successfully
+2026-06-13 13:44:20,seif,11111,Login System,Student Verified & Entered Lab
+2026-06-13 13:44:21,seif,11111,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 15:19:17,vvv,1220,Login System,Student Verified & Entered Lab
+2026-06-13 15:19:24,vvv,1220,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 21:06:41,dcreg,755,Login System,Student Verified & Entered Lab
+2026-06-13 21:06:42,dcreg,755,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 22:02:59,Bassant Salah Rashad,22020018,Login System,Student Verified & Entered Lab
+2026-06-13 22:06:33,Bassant salah,22020018,Login System,Student Verified & Entered Lab
+2026-06-13 22:07:28,Bassant,1111,Login System,Student Verified & Entered Lab
+2026-06-13 22:08:43,jjj,1111,Login System,Student Verified & Entered Lab
+2026-06-13 22:08:50,mmm,111,Login System,Student Verified & Entered Lab
+2026-06-13 22:10:21,bbb,111,Login System,Student Verified & Entered Lab
+2026-06-13 22:14:05,shahd Ahmed,111,Login System,Student Verified & Entered Lab
+2026-06-13 22:14:46,nnn,11,Login System,Student Verified & Entered Lab
+2026-06-13 22:15:14,ffff,111,Login System,Student Verified & Entered Lab
+2026-06-13 22:17:19,Shahd Ahmed Mahboub,22020018,Login System,Student Verified & Entered Lab
+2026-06-13 22:18:10,fvrg,57285,Login System,Student Verified & Entered Lab
+2026-06-13 22:18:30,jmum,582,Login System,Student Verified & Entered Lab
+2026-06-13 22:18:51,ht nyuj,8268,Login System,Student Verified & Entered Lab
+2026-06-13 22:19:40,vrfvr,57285,Login System,Student Verified & Entered Lab
+2026-06-13 22:20:23,hshshhss,528,Login System,Student Verified & Entered Lab
+2026-06-13 22:21:03,ffvgrbrg,775,Login System,Student Verified & Entered Lab
+2026-06-13 22:21:37,ffvgrbrg,775,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 22:21:39,ffvgrbrg,775,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-13 22:21:41,ffvgrbrg,775,3. Pick and Place Control,Experiment Started Successfully
+2026-06-13 22:21:43,ffvgrbrg,775,4. Torque & Forces,Experiment Started Successfully
+2026-06-13 22:22:33,hnhtn,4157,Login System,Student Verified & Entered Lab
+2026-06-13 22:24:17,fvfevrfv,525,Login System,Student Verified & Entered Lab
+2026-06-13 22:24:47,fvrfvrg,528,Login System,Student Verified & Entered Lab
+2026-06-13 22:25:30,fvrfvrg,528,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 22:28:58,shahd,555,Login System,Student Verified & Entered Lab
+2026-06-13 22:33:51,shahd,555,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 22:37:13,Basss,1111,Login System,Student Verified & Entered Lab
+2026-06-13 22:37:13,Basss,1111,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 22:38:43,fbgbg,41752,Login System,Student Verified & Entered Lab
+2026-06-13 22:38:45,fbgbg,41752,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 22:39:43,bhef,52,Login System,Student Verified & Entered Lab
+2026-06-13 22:40:23,ioo,363,Login System,Student Verified & Entered Lab
+2026-06-13 22:40:41,tyjtj,2572,Login System,Student Verified & Entered Lab
+2026-06-13 22:41:04,jjyuj,556.,Login System,Student Verified & Entered Lab
+2026-06-13 22:41:32,yutyuty,52572,Login System,Student Verified & Entered Lab
+2026-06-13 22:42:12,jmhjk,525,Login System,Student Verified & Entered Lab
+2026-06-13 22:42:56,jmyuk,562,Login System,Student Verified & Entered Lab
+2026-06-13 22:43:21,jjkjk,52753,Login System,Student Verified & Entered Lab
+2026-06-13 22:43:42,juyii,5658,Login System,Student Verified & Entered Lab
+2026-06-13 22:44:06,yjtju,3683,Login System,Student Verified & Entered Lab
+2026-06-13 22:45:14,hgjghj,5572,Login System,Student Verified & Entered Lab
+2026-06-13 22:47:09,rrgbtb,5252,Login System,Student Verified & Entered Lab
+2026-06-13 22:47:37,vfgbg,57285,Login System,Student Verified & Entered Lab
+2026-06-13 22:48:08,vfgbg,57285,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 22:48:58,hgnhgn,525,Login System,Student Verified & Entered Lab
+2026-06-13 22:49:12,iuiu,75252,Login System,Student Verified & Entered Lab
+2026-06-13 22:49:31,hgjyuj,424,Login System,Student Verified & Entered Lab
+2026-06-13 22:49:36,hgjyuj,424,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 22:50:59,jyuk,8585,Login System,Student Verified & Entered Lab
+2026-06-13 22:51:15,jkkk,757,Login System,Student Verified & Entered Lab
+2026-06-13 22:51:42,jkuik,55,Login System,Student Verified & Entered Lab
+2026-06-13 22:52:03,jkhjk,5665,Login System,Student Verified & Entered Lab
+2026-06-13 22:52:29,ukukuy,5383,Login System,Student Verified & Entered Lab
+2026-06-13 22:53:30,gbgbg,52525,Login System,Student Verified & Entered Lab
+2026-06-13 22:54:03,fvfvf,475257,Login System,Student Verified & Entered Lab
+2026-06-13 22:54:28,fvfv,41572,Login System,Student Verified & Entered Lab
+2026-06-13 22:54:49,ffeg,8668,Login System,Student Verified & Entered Lab
+2026-06-13 22:54:56,ffeg,8668,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 22:56:44,hghj,25725,Login System,Student Verified & Entered Lab
+2026-06-13 22:56:45,hghj,25725,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 23:10:16,hghj,25725,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 23:11:27,Shahd Ahmed,22020018,Login System,Student Verified & Entered Lab
+2026-06-13 23:11:28,Shahd Ahmed,22020018,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 23:12:43,Shahd Ahmed,000,Login System,Student Verified & Entered Lab
+2026-06-13 23:12:44,Shahd Ahmed,000,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 23:13:03,bfgn,52752,Login System,Student Verified & Entered Lab
+2026-06-13 23:13:03,bfgn,52752,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 23:13:16,hjyuyu,5252,Login System,Student Verified & Entered Lab
+2026-06-13 23:13:16,hjyuyu,5252,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 23:15:52,Shahd Ahmed,220,Login System,Student Verified & Entered Lab
+2026-06-13 23:15:53,Shahd Ahmed,220,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 23:17:10,rgrhh,5868,Login System,Student Verified & Entered Lab
+2026-06-13 23:17:11,rgrhh,5868,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 23:17:34,fgbgb,5205,Login System,Student Verified & Entered Lab
+2026-06-13 23:17:34,fgbgb,5205,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 23:18:20,bgfbgbfg,558686,Login System,Student Verified & Entered Lab
+2026-06-13 23:18:20,bgfbgbfg,558686,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 23:18:51,rgrtgrtg,27525,Login System,Student Verified & Entered Lab
+2026-06-13 23:18:51,rgrtgrtg,27525,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 23:19:13,gfbrgbrg,2522,Login System,Student Verified & Entered Lab
+2026-06-13 23:19:14,gfbrgbrg,2522,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 23:20:37,grthrtrt,8686386,Login System,Student Verified & Entered Lab
+2026-06-13 23:20:38,grthrtrt,8686386,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 23:21:30,grthrtrt,8686386,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 23:30:03,shahd Ahmed,222,Login System,Student Verified & Entered Lab
+2026-06-13 23:36:40,trthrt,2752,Login System,Student Verified & Entered Lab
+2026-06-13 23:38:38,mjhmhj,524,Login System,Student Verified & Entered Lab
+2026-06-13 23:39:15,hjj,2575,Login System,Student Verified & Entered Lab
+2026-06-13 23:42:20,gbgb,5286,Login System,Student Verified & Entered Lab
+2026-06-13 23:43:38,Shahd Ahmed,338386,Login System,Student Verified & Entered Lab
+2026-06-13 23:43:50,fvfvf,4252,Login System,Student Verified & Entered Lab
+2026-06-13 23:45:13,ffgrg,72752,Login System,Student Verified & Entered Lab
+2026-06-13 23:45:46,frgr,68863,Login System,Student Verified & Entered Lab
+2026-06-13 23:51:54,juu,525725,Login System,Student Verified & Entered Lab
+2026-06-13 23:52:16,hnghgh,52572,Login System,Student Verified & Entered Lab
+2026-06-13 23:54:50,shahd,111,Login System,Student Verified & Entered Lab
+2026-06-13 23:55:44,ytyty,52752,Login System,Student Verified & Entered Lab
+2026-06-13 23:55:46,ytyty,52752,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 23:57:16,frrg,52863,Login System,Student Verified & Entered Lab
+2026-06-13 23:58:03,shahd,11111,Login System,Student Verified & Entered Lab
+2026-06-13 23:58:04,shahd,11111,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-13 23:58:38,shahd,11111,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 00:04:44,fhtyh,2572,Login System,Student Verified & Entered Lab
+2026-06-14 00:04:45,fhtyh,2572,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 00:06:13,efrf,939,Login System,Student Verified & Entered Lab
+2026-06-14 00:06:14,efrf,939,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 00:11:41,bfgbgbg,255,Login System,Student Verified & Entered Lab
+2026-06-14 00:11:42,bfgbgbg,255,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 00:15:25,gbrgbgr,688636,Login System,Student Verified & Entered Lab
+2026-06-14 00:15:25,gbrgbgr,688636,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 00:15:50,dbrggr,753863,Login System,Student Verified & Entered Lab
+2026-06-14 00:15:50,dbrggr,753863,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 00:21:07,dbrggr,753863,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 00:21:12,dbrggr,753863,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 00:24:07,dbrggr,753863,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 00:25:24,dbrggr,753863,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 00:36:53,vfgb,552,Login System,Student Verified & Entered Lab
+2026-06-14 00:36:54,vfgb,552,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 00:39:41,vfgb,552,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 00:40:17,uui,5753,Login System,Student Verified & Entered Lab
+2026-06-14 00:40:18,uui,5753,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 00:41:13,frbgr,28,Login System,Student Verified & Entered Lab
+2026-06-14 00:41:14,frbgr,28,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 00:47:15,ruytu,2452,Login System,Student Verified & Entered Lab
+2026-06-14 00:47:16,ruytu,2452,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 00:49:55,ruytu,2452,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 00:50:31,gbgbgb,25.3.3,Login System,Student Verified & Entered Lab
+2026-06-14 00:50:32,gbgbgb,25.3.3,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 00:53:18,thy hyj,.6969,Login System,Student Verified & Entered Lab
+2026-06-14 00:53:20,thy hyj,.6969,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 00:56:27,thy hyj,.6969,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 00:59:20,unii,55,Login System,Student Verified & Entered Lab
+2026-06-14 00:59:21,unii,55,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 00:59:48,ikii,6368,Login System,Student Verified & Entered Lab
+2026-06-14 00:59:49,ikii,6368,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:00:24,jkuk,4525,Login System,Student Verified & Entered Lab
+2026-06-14 01:00:24,jkuk,4525,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:01:20,ii,525,Login System,Student Verified & Entered Lab
+2026-06-14 01:01:20,ii,525,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:01:52,ytj,55,Login System,Student Verified & Entered Lab
+2026-06-14 01:01:53,ytj,55,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:03:36,ujuu,7585,Login System,Student Verified & Entered Lab
+2026-06-14 01:03:36,ujuu,7585,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:04:05,yju,858,Login System,Student Verified & Entered Lab
+2026-06-14 01:04:05,yju,858,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:04:45,ujj,565,Login System,Student Verified & Entered Lab
+2026-06-14 01:04:45,ujj,565,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:06:23,rthh,42052,Login System,Student Verified & Entered Lab
+2026-06-14 01:06:23,rthh,42052,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:06:44,nhnh,20,Login System,Student Verified & Entered Lab
+2026-06-14 01:06:45,nhnh,20,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:07:09,gbgb,535,Login System,Student Verified & Entered Lab
+2026-06-14 01:07:10,gbgb,535,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:10:17,hnyy,8626,Login System,Student Verified & Entered Lab
+2026-06-14 01:10:18,hnyy,8626,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:11:29,fff,111,Login System,Student Verified & Entered Lab
+2026-06-14 01:11:30,fff,111,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:12:15,cccc,111,Login System,Student Verified & Entered Lab
+2026-06-14 01:12:16,cccc,111,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:12:39,cccc,111,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:13:44,fvvv,11111,Login System,Student Verified & Entered Lab
+2026-06-14 01:13:45,fvvv,11111,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:14:13,vvv,11,Login System,Student Verified & Entered Lab
+2026-06-14 01:14:27,vvv,11,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:16:15,vvv,11,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:27:10,fvfv,58,Login System,Student Verified & Entered Lab
+2026-06-14 01:27:10,fvfv,58,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:29:11,juyjyuj,425,Login System,Student Verified & Entered Lab
+2026-06-14 01:29:12,juyjyuj,425,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:30:20,yytty,27,Login System,Student Verified & Entered Lab
+2026-06-14 01:30:20,yytty,27,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:37:50,bb,111,Login System,Student Verified & Entered Lab
+2026-06-14 01:37:51,bb,111,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:40:10,bbb,1111,Login System,Student Verified & Entered Lab
+2026-06-14 01:40:11,bbb,1111,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:40:28,vvv,111,Login System,Student Verified & Entered Lab
+2026-06-14 01:40:28,vvv,111,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:42:41,ggg,111,Login System,Student Verified & Entered Lab
+2026-06-14 01:42:41,ggg,111,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:43:59,vvv,111,Login System,Student Verified & Entered Lab
+2026-06-14 01:43:59,vvv,111,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:44:40,vvvv,1111,Login System,Student Verified & Entered Lab
+2026-06-14 01:44:41,vvvv,1111,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:45:20,bbbb,111,Login System,Student Verified & Entered Lab
+2026-06-14 01:45:20,bbbb,111,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:47:40,bbb,11,Login System,Student Verified & Entered Lab
+2026-06-14 01:47:41,bbb,11,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:47:58,fghth,578,Login System,Student Verified & Entered Lab
+2026-06-14 01:47:58,fghth,578,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:48:16,hgnghnh,53.,Login System,Student Verified & Entered Lab
+2026-06-14 01:48:17,hgnghnh,53.,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:50:08,vvvv,111,Login System,Student Verified & Entered Lab
+2026-06-14 01:50:09,vvvv,111,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:50:41,ttyhtyh,52852,Login System,Student Verified & Entered Lab
+2026-06-14 01:50:42,ttyhtyh,52852,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:52:53,rgbgbg,157,Login System,Student Verified & Entered Lab
+2026-06-14 01:52:54,rgbgbg,157,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:53:56,gbgtbt,52582,Login System,Student Verified & Entered Lab
+2026-06-14 01:53:56,gbgtbt,52582,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:54:03,hgnhn,252,Login System,Student Verified & Entered Lab
+2026-06-14 01:54:03,hgnhn,252,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:55:52,gbhtbh,52752,Login System,Student Verified & Entered Lab
+2026-06-14 01:55:53,gbhtbh,52752,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:57:52,bgbgfb,42425020,Login System,Student Verified & Entered Lab
+2026-06-14 01:57:52,bgbgfb,42425020,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 01:59:30,vvvv,1111,Login System,Student Verified & Entered Lab
+2026-06-14 01:59:31,vvvv,1111,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 02:00:48,frfer,5252,Login System,Student Verified & Entered Lab
+2026-06-14 02:00:49,frfer,5252,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 02:03:08,bbbbb,11111,Login System,Student Verified & Entered Lab
+2026-06-14 02:03:08,bbbbb,11111,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 02:04:06,vvv,11111,Login System,Student Verified & Entered Lab
+2026-06-14 02:04:07,vvv,11111,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 02:16:11,bbbbb,1112,Login System,Student Verified & Entered Lab
+2026-06-14 02:16:12,bbbbb,1112,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 02:19:01,bgbtb,415,Login System,Student Verified & Entered Lab
+2026-06-14 02:19:01,bgbtb,415,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 02:19:31,gbgbg,252,Login System,Student Verified & Entered Lab
+2026-06-14 02:19:32,gbgbg,252,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 02:19:56,gbgtbg,75268,Login System,Student Verified & Entered Lab
+2026-06-14 02:19:56,gbgtbg,75268,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 02:24:00,grgrg,51751,Login System,Student Verified & Entered Lab
+2026-06-14 02:24:01,grgrg,51751,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 02:44:08,Bassant Salah Rashad,22020018,Login System,Student Verified & Entered Lab
+2026-06-14 02:44:53,ghgfh,75252,Login System,Student Verified & Entered Lab
+2026-06-14 02:45:11,ghgfh,75252,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 02:48:54,bnhn,5386,Login System,Student Verified & Entered Lab
+2026-06-14 02:48:56,bnhn,5386,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 02:50:20,dvdf,277,Login System,Student Verified & Entered Lab
+2026-06-14 02:50:21,dvdf,277,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 02:51:31,vvbfb,557,Login System,Student Verified & Entered Lab
+2026-06-14 02:51:32,vvbfb,557,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 02:53:09,bgh,888,Login System,Student Verified & Entered Lab
+2026-06-14 02:53:10,bgh,888,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 02:54:30,ghhh,576,Login System,Student Verified & Entered Lab
+2026-06-14 02:54:31,ghhh,576,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 02:57:29,ghhh,576,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 18:23:32,gbgrbg,152852,Login System,Student Verified & Entered Lab
+2026-06-14 18:23:34,gbgrbg,152852,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 18:26:42,fvrvr,2828,Login System,Student Verified & Entered Lab
+2026-06-14 18:26:43,fvrvr,2828,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 18:29:10,bbb,5252,Login System,Student Verified & Entered Lab
+2026-06-14 18:29:11,bbb,5252,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 18:29:52,gbgbg,7528,Login System,Student Verified & Entered Lab
+2026-06-14 18:29:53,gbgbg,7528,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 18:57:04,gbgbg,7528,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 18:57:57,gbgbg,7528,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 19:17:53,ffg g,1020,Login System,Student Verified & Entered Lab
+2026-06-14 19:17:54,ffg g,1020,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 19:31:26,gnyjm,4020,Login System,Student Verified & Entered Lab
+2026-06-14 19:31:29,gnyjm,4020,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 19:41:48,b b bn,5285,Login System,Student Verified & Entered Lab
+2026-06-14 19:41:49,b b bn,5285,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 19:49:38,grgbg,41741,Login System,Student Verified & Entered Lab
+2026-06-14 19:49:39,grgbg,41741,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 19:51:08,fvfvf,58528,Login System,Student Verified & Entered Lab
+2026-06-14 19:51:09,fvfvf,58528,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 19:52:14,fvfvfv,52852,Login System,Student Verified & Entered Lab
+2026-06-14 19:52:15,fvfvfv,52852,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 19:56:13,vvgrv,5285,Login System,Student Verified & Entered Lab
+2026-06-14 19:56:14,vvgrv,5285,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 20:00:58,vv v,414,Login System,Student Verified & Entered Lab
+2026-06-14 20:00:59,vv v,414,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 20:02:40,vbbb,5252,Login System,Student Verified & Entered Lab
+2026-06-14 20:02:41,vbbb,5252,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 20:04:22,hhhh,4444,Login System,Student Verified & Entered Lab
+2026-06-14 20:04:22,hhhh,4444,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 20:05:32,vvvv,11111,Login System,Student Verified & Entered Lab
+2026-06-14 20:05:33,vvvv,11111,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 20:07:28,cccc,11111,Login System,Student Verified & Entered Lab
+2026-06-14 20:07:31,cccc,11111,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 20:07:49,cccc,555,Login System,Student Verified & Entered Lab
+2026-06-14 20:07:50,cccc,555,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 20:40:34,vvvv,1111,Login System,Student Verified & Entered Lab
+2026-06-14 20:40:34,vvvv,1111,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 20:42:26,bbbb,1111,Login System,Student Verified & Entered Lab
+2026-06-14 20:42:26,bbbb,1111,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 20:44:41,bbbb,1111,Login System,Student Verified & Entered Lab
+2026-06-14 20:44:42,bbbb,1111,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 20:50:07,vvvv,11111,Login System,Student Verified & Entered Lab
+2026-06-14 20:50:07,vvvv,11111,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 20:57:35,vvvv,111,Login System,Student Verified & Entered Lab
+2026-06-14 20:57:36,vvvv,111,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 20:59:16,bbb,1111,Login System,Student Verified & Entered Lab
+2026-06-14 20:59:16,bbb,1111,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 21:03:55,vvvv,11111,Login System,Student Verified & Entered Lab
+2026-06-14 21:03:55,vvvv,11111,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 21:04:14,vvvv,11111,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-14 21:04:28,vvvv,11111,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 21:14:05,vvv,111,Login System,Student Verified & Entered Lab
+2026-06-14 21:14:05,vvv,111,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 21:21:32,vvvv,1111,Login System,Student Verified & Entered Lab
+2026-06-14 21:21:33,vvvv,1111,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 21:22:34,vvvv,1111,Login System,Student Verified & Entered Lab
+2026-06-14 21:22:35,vvvv,1111,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 21:25:29,vvvvvvv,1111,Login System,Student Verified & Entered Lab
+2026-06-14 21:25:37,vvvvvvv,1111,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 21:28:32,vvvv,111120,Login System,Student Verified & Entered Lab
+2026-06-14 21:28:33,vvvv,111120,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 21:29:13,vvv,111,Login System,Student Verified & Entered Lab
+2026-06-14 21:29:13,vvv,111,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 21:29:48,vvvv,111220,Login System,Student Verified & Entered Lab
+2026-06-14 21:29:48,vvvv,111220,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 21:33:15,vvvv,11120,Login System,Student Verified & Entered Lab
+2026-06-14 21:33:16,vvvv,11120,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 21:34:06,vvv,1111,Login System,Student Verified & Entered Lab
+2026-06-14 21:34:07,vvv,1111,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 21:36:00,vvv,1120,Login System,Student Verified & Entered Lab
+2026-06-14 21:36:00,vvv,1120,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 22:25:48,vvv,1111,Login System,Student Verified & Entered Lab
+2026-06-14 22:25:49,vvv,1111,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 22:31:45,nmmm,1120,Login System,Student Verified & Entered Lab
+2026-06-14 22:31:45,nmmm,1120,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 22:35:47,bbbb,1111,Login System,Student Verified & Entered Lab
+2026-06-14 22:35:51,bbbb,1111,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 22:42:09,bbbbb,1110,Login System,Student Verified & Entered Lab
+2026-06-14 22:42:10,bbbbb,1110,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 23:33:33,vvvv,11120,Login System,Student Verified & Entered Lab
+2026-06-14 23:33:33,vvvv,11120,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-14 23:42:13,vvvv,11120,3. Pick and Place Control,Experiment Started Successfully
+2026-06-15 00:23:13,nnnn,1111,Login System,Student Verified & Entered Lab
+2026-06-15 00:23:15,nnnn,1111,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-15 00:25:04,vvv,41,Login System,Student Verified & Entered Lab
+2026-06-15 00:25:05,vvv,41,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-15 00:26:00,bbbb,11111,Login System,Student Verified & Entered Lab
+2026-06-15 00:26:02,bbbb,11111,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-15 00:49:28,ccccccc,111120,Login System,Student Verified & Entered Lab
+2026-06-15 00:49:29,ccccccc,111120,3. Pick and Place Control,Experiment Started Successfully
+2026-06-15 00:50:15,ccccc,1111200,Login System,Student Verified & Entered Lab
+2026-06-15 00:50:16,ccccc,1111200,3. Pick and Place Control,Experiment Started Successfully
+2026-06-15 00:52:16,cccccc,111120,Login System,Student Verified & Entered Lab
+2026-06-15 00:52:17,cccccc,111120,3. Pick and Place Control,Experiment Started Successfully
+2026-06-15 01:00:58,vvvv,11111,Login System,Student Verified & Entered Lab
+2026-06-15 01:00:59,vvvv,11111,4. Torque & Forces,Experiment Started Successfully
+2026-06-15 01:08:47,vvvv,11111,3. Pick and Place Control,Experiment Started Successfully
+2026-06-15 01:17:47,bbbbb,11120,Login System,Student Verified & Entered Lab
+2026-06-15 01:17:47,bbbbb,11120,4. Torque & Forces,Experiment Started Successfully
+2026-06-15 01:17:49,bbbbb,11120,3. Pick and Place Control,Experiment Started Successfully
+2026-06-15 01:23:22,bbbb,111,Login System,Student Verified & Entered Lab
+2026-06-15 01:23:23,bbbb,111,3. Pick and Place Control,Experiment Started Successfully
+2026-06-15 01:38:41,vvv,1111,Login System,Student Verified & Entered Lab
+2026-06-15 01:38:42,vvv,1111,3. Pick and Place Control,Experiment Started Successfully
+2026-06-15 01:39:35,bbbb,1111,Login System,Student Verified & Entered Lab
+2026-06-15 01:39:36,bbbb,1111,3. Pick and Place Control,Experiment Started Successfully
+2026-06-15 01:44:57,vvvv,11111,Login System,Student Verified & Entered Lab
+2026-06-15 01:44:59,vvvv,11111,3. Pick and Place Control,Experiment Started Successfully
+2026-06-15 01:45:43,vvvvv,11120,Login System,Student Verified & Entered Lab
+2026-06-15 01:45:44,vvvvv,11120,3. Pick and Place Control,Experiment Started Successfully
+2026-06-15 01:53:24,bbbbb,1111201,Login System,Student Verified & Entered Lab
+2026-06-15 01:53:26,bbbbb,1111201,3. Pick and Place Control,Experiment Started Successfully
+2026-06-15 01:56:08,bvvvv,1111,Login System,Student Verified & Entered Lab
+2026-06-15 01:56:11,bvvvv,1111,3. Pick and Place Control,Experiment Started Successfully
+2026-06-15 02:08:33,bvvvv,1111,4. Torque & Forces,Experiment Started Successfully
+2026-06-15 02:53:41,bassant salah,2210,Login System,Student Verified & Entered Lab
+2026-06-15 02:53:43,bassant salah,2210,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-15 02:54:05,bassant salah,2210,2. Inverse Kinematics (IK),Experiment Started Successfully
+2026-06-15 02:59:38,bassant salah,2210,3. Pick and Place Control,Experiment Started Successfully
+2026-06-15 03:00:18,bassant salah,2210,4. Torque & Forces,Experiment Started Successfully
+2026-06-15 03:01:51,bassant salah,2210,1. Forward Kinematics (FK),Experiment Started Successfully
+2026-06-15 03:02:00,bassant salah,2210,2. Inverse Kinematics (IK),Experiment Started Successfully
