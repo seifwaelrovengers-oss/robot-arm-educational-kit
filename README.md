@@ -173,15 +173,12 @@ it is a **complete robotics learning ecosystem** that connects:
 * **SeifAllah Wael Hassan**
 * **Bassant Salah Rashad**
 
-### ⚙️ Mechanical Team
-
-* **Shahd Ahmed Mahboub**
 
 ---
 
 ## 👨‍💻 Project Lead
 
-**Mina Bahgat**
+**Shahd Ahmed Mahboub**
 Mechatronics Engineering Student
 
 ---
